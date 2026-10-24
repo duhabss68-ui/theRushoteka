@@ -116,6 +116,58 @@ def test_broadcast_reaches_all_clients():
         a.close(); b.close(); srv.stop()
 
 
+def test_proclist_roundtrip():
+    server_mod.HEARTBEAT_INTERVAL = 5.0
+    server_mod.DEAD_TIMEOUT = 30.0
+    port = _next_port()
+    srv = server_mod.AdminServer(AdminConfig(listen_host="127.0.0.1", listen_port=port, token="tok"))
+    srv.start(); time.sleep(0.2)
+    s = _connect_and_auth(port); time.sleep(0.2)
+    c = srv.clients()[0]
+    try:
+        srv.request_proclist(c.id)
+        _recv_until(s, proto.T_PROCLIST)
+        proto.send_msg(s, {"t": proto.T_PROCLIST_RESP, "procs": [{"name": "chrome.exe", "pid": 42}]})
+        time.sleep(0.3)
+        assert c.proclist and c.proclist[0]["pid"] == 42
+        assert c.proclist_counter >= 1
+    finally:
+        s.close(); srv.stop()
+
+
+def test_management_commands_reach_client():
+    server_mod.HEARTBEAT_INTERVAL = 5.0
+    server_mod.DEAD_TIMEOUT = 30.0
+    port = _next_port()
+    srv = server_mod.AdminServer(AdminConfig(listen_host="127.0.0.1", listen_port=port, token="tok"))
+    srv.start(); time.sleep(0.2)
+    s = _connect_and_auth(port); time.sleep(0.2)
+    c = srv.clients()[0]
+    try:
+        srv.kill_process(c.id, pid=99)
+        obj, _ = _recv_until(s, proto.T_KILL)
+        assert obj["pid"] == 99
+
+        srv.set_appblock(c.id, ["x.exe"], True)
+        obj, _ = _recv_until(s, proto.T_APPBLOCK)
+        assert obj["on"] is True and "x.exe" in obj["names"]
+
+        srv.set_webblock(c.id, ["y.com"], True)
+        obj, _ = _recv_until(s, proto.T_WEBBLOCK)
+        assert "y.com" in obj["domains"]
+
+        import tempfile
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".txt") as tf:
+            tf.write(b"datos")
+            fp = tf.name
+        srv.broadcast_file(fp)
+        obj, blob = _recv_until(s, proto.T_FILE)
+        assert blob == b"datos" and obj["name"].endswith(".txt")
+        os.unlink(fp)
+    finally:
+        s.close(); srv.stop()
+
+
 if __name__ == "__main__":
     failures = 0
     for name, fn in sorted(globals().items()):

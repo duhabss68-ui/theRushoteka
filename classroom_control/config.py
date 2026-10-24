@@ -26,6 +26,9 @@ class ClientConfig:
     allow_remote_control: bool = True
     allow_power: bool = True
     allow_lock: bool = True         # permitir inmovilizar teclado/ratón
+    allow_manage: bool = True       # procesos, bloqueo de apps y de webs
+    allow_files: bool = True        # recibir archivos del profesor
+    download_dir: str = ""          # carpeta de archivos recibidos (vacío = Escritorio)
     show_indicator: bool = True     # mostrar aviso visible de supervisión
     # Cifrado TLS (opcional). Si se activa, el cliente verifica el certificado
     # del profesor contra ca_cert (fijado), evitando intermediarios (MITM).
@@ -108,6 +111,9 @@ def load_client_config(path: Optional[str] = None) -> ClientConfig:
         cfg.allow_remote_control = s.getboolean("allow_remote_control", cfg.allow_remote_control)
         cfg.allow_power = s.getboolean("allow_power", cfg.allow_power)
         cfg.allow_lock = s.getboolean("allow_lock", cfg.allow_lock)
+        cfg.allow_manage = s.getboolean("allow_manage", cfg.allow_manage)
+        cfg.allow_files = s.getboolean("allow_files", cfg.allow_files)
+        cfg.download_dir = s.get("download_dir", cfg.download_dir)
         cfg.show_indicator = s.getboolean("show_indicator", cfg.show_indicator)
         cfg.use_tls = s.getboolean("use_tls", cfg.use_tls)
         cfg.ca_cert = s.get("ca_cert", cfg.ca_cert)

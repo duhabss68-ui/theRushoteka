@@ -18,7 +18,7 @@ import logging
 import threading
 import time
 import tkinter as tk
-from tkinter import messagebox, simpledialog, ttk
+from tkinter import filedialog, messagebox, simpledialog, ttk
 from typing import Dict, Optional
 
 from PIL import Image, ImageTk
@@ -68,6 +68,7 @@ class DetailWindow:
         self._disp_w = 1
         self._disp_h = 1
         self.controlling = False
+        self._procwin = None
 
         conn = self.server.get(cid)
         title = conn.label() if conn else f"Cliente #{cid}"
@@ -89,6 +90,7 @@ class DetailWindow:
                                    command=self.toggle_lock)
         self.btn_lock.pack(side="left", padx=6)
         ttk.Button(inner, text="💬  Mensaje", command=self.send_message).pack(side="left", padx=6)
+        ttk.Button(inner, text="🧾  Procesos", command=self.open_processes).pack(side="left", padx=6)
         ttk.Button(inner, text="⏻  Apagar", style="Danger.TButton",
                    command=lambda: self.power("shutdown")).pack(side="left", padx=6)
         ttk.Button(inner, text="↻  Reiniciar",
@@ -173,6 +175,12 @@ class DetailWindow:
         if text:
             self.server.send_message(self.cid, text, show=True)
 
+    def open_processes(self) -> None:
+        if self._procwin is not None and self._procwin.alive():
+            self._procwin.top.lift()
+            return
+        self._procwin = ProcessWindow(self.console, self.cid)
+
     def power(self, action: str) -> None:
         names = {"shutdown": "apagar", "restart": "reiniciar", "logoff": "cerrar la sesión de"}
         conn = self.server.get(self.cid)
@@ -216,6 +224,99 @@ class DetailWindow:
             self.server.set_control(self.cid, False)
         self.server.set_grid_quality(self.cid)
         self.console._detail_closed(self.cid)
+        try:
+            self.top.destroy()
+        except Exception:
+            pass
+
+
+class ProcessWindow:
+    """Lista de procesos de un equipo, con finalizar y bloquear aplicación."""
+
+    def __init__(self, console: "Console", cid: int) -> None:
+        self.console = console
+        self.server = console.server
+        self.p = console.p
+        self.cid = cid
+        self._last = -1
+        self._procs: list = []
+        self._open = True
+
+        self.top = tk.Toplevel(console.root)
+        conn = self.server.get(cid)
+        self.top.title(f"Procesos — {conn.label() if conn else cid}")
+        self.top.geometry("480x540")
+        self.top.configure(bg=self.p["bg"])
+        self.top.protocol("WM_DELETE_WINDOW", self.close)
+
+        bar = tk.Frame(self.top, bg=self.p["panel"])
+        bar.pack(side="top", fill="x")
+        inner = tk.Frame(bar, bg=self.p["panel"])
+        inner.pack(side="left", padx=6, pady=6)
+        ttk.Button(inner, text="🔄  Actualizar", command=self.refresh_now).pack(side="left", padx=4)
+        ttk.Button(inner, text="⛔  Finalizar", style="Danger.TButton",
+                   command=self.kill_selected).pack(side="left", padx=4)
+        ttk.Button(inner, text="🚫  Bloquear app", style="Warn.TButton",
+                   command=self.block_selected).pack(side="left", padx=4)
+
+        frame = tk.Frame(self.top, bg=self.p["bg"])
+        frame.pack(fill="both", expand=True, padx=8, pady=8)
+        scroll = ttk.Scrollbar(frame, orient="vertical")
+        self.listbox = tk.Listbox(frame, bg=self.p["panel2"], fg=self.p["text"],
+                                  selectbackground=self.p["accent"], borderwidth=0,
+                                  highlightthickness=0, font=("Consolas", 10),
+                                  yscrollcommand=scroll.set)
+        scroll.config(command=self.listbox.yview)
+        scroll.pack(side="right", fill="y")
+        self.listbox.pack(side="left", fill="both", expand=True)
+
+        self.server.request_proclist(cid)
+        self._schedule()
+
+    def alive(self) -> bool:
+        return self._open
+
+    def _schedule(self) -> None:
+        if self._open:
+            self.top.after(400, self._refresh)
+
+    def _refresh(self) -> None:
+        conn = self.server.get(self.cid)
+        if conn is None or not conn.alive:
+            self.close()
+            return
+        if conn.proclist_counter != self._last:
+            self._procs = sorted(conn.proclist, key=lambda x: str(x.get("name", "")).lower())
+            self.listbox.delete(0, "end")
+            for pr in self._procs:
+                self.listbox.insert("end", f"{pr.get('name','?'):<32}  PID {pr.get('pid','?')}")
+            self._last = conn.proclist_counter
+        self._schedule()
+
+    def _selected(self):
+        sel = self.listbox.curselection()
+        return self._procs[sel[0]] if sel else None
+
+    def refresh_now(self) -> None:
+        self.server.request_proclist(self.cid)
+
+    def kill_selected(self) -> None:
+        pr = self._selected()
+        if pr and messagebox.askyesno("Finalizar proceso",
+                                      f"¿Finalizar '{pr.get('name')}' (PID {pr.get('pid')})?", parent=self.top):
+            self.server.kill_process(self.cid, pid=pr.get("pid"))
+            self.top.after(600, self.refresh_now)
+
+    def block_selected(self) -> None:
+        pr = self._selected()
+        if pr:
+            name = pr.get("name")
+            self.server.set_appblock(self.cid, [name], True)
+            messagebox.showinfo("Bloquear app",
+                                f"'{name}' quedará bloqueada en este equipo.", parent=self.top)
+
+    def close(self) -> None:
+        self._open = False
         try:
             self.top.destroy()
         except Exception:
@@ -271,6 +372,12 @@ class Console:
                    command=lambda: self._broadcast_lock(False)).pack(side="left", padx=6)
         ttk.Button(pad, text="🧹  Quitar mensajes",
                    command=self._clear_messages).pack(side="left", padx=6)
+        ttk.Button(pad, text="🚫  Bloquear webs",
+                   command=self._broadcast_webblock).pack(side="left", padx=6)
+        ttk.Button(pad, text="🚫  Bloquear apps",
+                   command=self._broadcast_appblock).pack(side="left", padx=6)
+        ttk.Button(pad, text="📂  Enviar archivo",
+                   command=self._send_file_all).pack(side="left", padx=6)
         ttk.Button(pad, text="⏻  Apagar todos", style="Danger.TButton",
                    command=lambda: self._broadcast_power("shutdown")).pack(side="left", padx=6)
         ttk.Button(pad, text="↻  Reiniciar todos",
@@ -414,6 +521,53 @@ class Console:
                                f"¿Seguro que deseas {names.get(action, action)} los {n} equipos conectados?",
                                icon="warning", parent=self.root):
             self.server.broadcast_power(action)
+
+    # --- Gestión de aula: bloqueos y archivos ------------------------------
+    def _broadcast_webblock(self) -> None:
+        text = simpledialog.askstring(
+            "Bloquear sitios web",
+            "Dominios a bloquear, separados por comas (vacío = desbloquear todo):\n"
+            "ej.:  youtube.com, facebook.com, tiktok.com", parent=self.root)
+        if text is None:
+            return
+        domains = [d.strip() for d in text.split(",") if d.strip()]
+        if domains:
+            self.server.broadcast_webblock(domains, True)
+            messagebox.showinfo("Bloqueo de webs",
+                                f"Bloqueados {len(domains)} dominios en todos los equipos.", parent=self.root)
+        else:
+            self.server.broadcast_webblock([], False)
+            messagebox.showinfo("Bloqueo de webs", "Webs desbloqueadas en todos los equipos.", parent=self.root)
+
+    def _broadcast_appblock(self) -> None:
+        text = simpledialog.askstring(
+            "Bloquear aplicaciones",
+            "Ejecutables a bloquear, separados por comas (vacío = desbloquear todo):\n"
+            "ej.:  chrome.exe, steam.exe, minecraft.exe", parent=self.root)
+        if text is None:
+            return
+        names = [n.strip() for n in text.split(",") if n.strip()]
+        if names:
+            self.server.broadcast_appblock(names, True)
+            messagebox.showinfo("Bloqueo de apps",
+                                f"Se cerrarán {len(names)} aplicaciones en todos los equipos.", parent=self.root)
+        else:
+            self.server.broadcast_appblock([], False)
+            messagebox.showinfo("Bloqueo de apps", "Apps desbloqueadas en todos los equipos.", parent=self.root)
+
+    def _send_file_all(self) -> None:
+        path = filedialog.askopenfilename(title="Enviar archivo a todos los equipos", parent=self.root)
+        if not path:
+            return
+        n = len(self.server.clients())
+        if messagebox.askyesno("Enviar archivo",
+                               f"¿Enviar '{path}' a los {n} equipos conectados?", parent=self.root):
+            try:
+                self.server.broadcast_file(path)
+                messagebox.showinfo("Enviar archivo", "Archivo enviado. Se guardará en el Escritorio "
+                                    "(carpeta ClassroomControl) de cada equipo.", parent=self.root)
+            except Exception as exc:  # noqa: BLE001
+                messagebox.showerror("Enviar archivo", f"No se pudo enviar: {exc}", parent=self.root)
 
     # --- Proyección de la pantalla del profesor ----------------------------
     def _toggle_broadcast(self) -> None:

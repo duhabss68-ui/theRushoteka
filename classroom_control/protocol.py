@@ -50,6 +50,12 @@ T_LOCK = "lock"            # inmovilizar/liberar teclado y ratón del equipo
 T_POWER = "power"          # apagar / reiniciar / cerrar sesión
 T_BCAST = "bcast"          # iniciar/detener proyección de la pantalla del profesor
 T_BCAST_FRAME = "bframe"   # fotograma de la pantalla del profesor (+ blob JPEG)
+T_PROCLIST = "proclist"        # Admin->Cliente: pide la lista de procesos
+T_PROCLIST_RESP = "proclistresp"  # Cliente->Admin: devuelve la lista de procesos
+T_KILL = "kill"            # Admin->Cliente: finalizar un proceso (pid o nombre)
+T_APPBLOCK = "appblock"    # Admin->Cliente: bloquear/permitir aplicaciones
+T_WEBBLOCK = "webblock"    # Admin->Cliente: bloquear/permitir sitios web
+T_FILE = "file"            # Admin->Cliente: enviar un archivo (+ blob)
 T_PING = "ping"
 
 

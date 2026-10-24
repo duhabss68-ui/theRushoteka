@@ -23,6 +23,7 @@ from dataclasses import dataclass
 from .. import protocol as proto
 from .. import security
 from .. import tlsutil
+from . import actions
 from ..config import ClientConfig, load_client_config
 from ..logutil import install_excepthook, setup_logging
 
@@ -64,6 +65,10 @@ class Agent:
         # reconectar. Si el certificado falta, falla pronto y con claridad.
         self._ssl_ctx = tlsutil.make_client_context(cfg.ca_cert) if cfg.use_tls else None
 
+        # Gestión de aula (procesos / apps / webs).
+        self._appblocker = actions.AppBlocker()
+        self._webblocker = actions.WebBlocker()
+
     # --- Envío con bloqueo para no entrelazar fotogramas y respuestas ------
     def _send(self, obj, blob: bytes = b"") -> None:
         sock = self._sock
@@ -87,6 +92,10 @@ class Agent:
                 self.overlay.unlock()
                 self.overlay.hide_message()
                 self.overlay.broadcast_stop()
+                # Si perdemos al profesor, no dejamos el equipo con webs/apps
+                # bloqueadas de forma permanente.
+                self._webblocker.set_blocked([], False)
+                self._appblocker.stop()
                 self.overlay.set_state(connected=False, controlled=False)
             if self._stop.is_set():
                 break
@@ -221,6 +230,23 @@ class Agent:
                 self.overlay.broadcast_stop()
         elif t == proto.T_BCAST_FRAME:
             self.overlay.broadcast_frame(blob)
+        elif t == proto.T_PROCLIST:
+            if self.cfg.allow_manage:
+                self._send({"t": proto.T_PROCLIST_RESP, "procs": actions.list_processes()})
+        elif t == proto.T_KILL:
+            if self.cfg.allow_manage:
+                actions.kill_process(pid=msg.get("pid"), name=msg.get("name"))
+        elif t == proto.T_APPBLOCK:
+            if self.cfg.allow_manage:
+                self._appblocker.set_blocked(msg.get("names", []), bool(msg.get("on", False)))
+        elif t == proto.T_WEBBLOCK:
+            if self.cfg.allow_manage:
+                self._webblocker.set_blocked(msg.get("domains", []), bool(msg.get("on", False)))
+        elif t == proto.T_FILE:
+            if self.cfg.allow_files:
+                path = actions.save_file(msg.get("name", ""), blob, self.cfg.download_dir)
+                if path:
+                    log.info("Archivo recibido: %s", path)
         elif t == proto.T_PING:
             self._send({"t": proto.T_PONG})
 

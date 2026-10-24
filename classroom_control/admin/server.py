@@ -8,6 +8,7 @@ clientes y llama a los métodos de envío. Toda la concurrencia vive aquí.
 from __future__ import annotations
 
 import logging
+import os
 import socket
 import threading
 import time
@@ -53,6 +54,9 @@ class ClientConn:
         self.focused = False
         self.locked = False
         self.alive = True
+        # Última lista de procesos recibida (para la ventana de procesos).
+        self.proclist: list = []
+        self.proclist_counter = 0
         self._send_lock = threading.Lock()
 
     def send(self, obj, blob: bytes = b"") -> None:
@@ -193,6 +197,9 @@ class AdminServer:
             conn.frame_h = int(msg.get("h", 0))
             conn.frame_counter += 1
             conn.last_frame_at = conn.last_seen
+        elif t == proto.T_PROCLIST_RESP:
+            conn.proclist = msg.get("procs", [])
+            conn.proclist_counter += 1
         # T_PONG solo sirve para refrescar last_seen (ya hecho arriba).
 
     # --- Latido: detecta y cierra conexiones muertas -----------------------
@@ -298,6 +305,48 @@ class AdminServer:
         for c in self.clients():
             c.locked = on
             c.send({"t": proto.T_LOCK, "on": on, "text": text})
+
+    # --- Gestión de aula: procesos, bloqueos y archivos --------------------
+    def request_proclist(self, cid: int) -> None:
+        c = self.get(cid)
+        if c:
+            c.send({"t": proto.T_PROCLIST})
+
+    def kill_process(self, cid: int, pid=None, name=None) -> None:
+        c = self.get(cid)
+        if c:
+            c.send({"t": proto.T_KILL, "pid": pid, "name": name})
+
+    def set_appblock(self, cid: int, names: list, on: bool) -> None:
+        c = self.get(cid)
+        if c:
+            c.send({"t": proto.T_APPBLOCK, "names": names, "on": on})
+
+    def set_webblock(self, cid: int, domains: list, on: bool) -> None:
+        c = self.get(cid)
+        if c:
+            c.send({"t": proto.T_WEBBLOCK, "domains": domains, "on": on})
+
+    def send_file(self, cid: int, path: str) -> None:
+        c = self.get(cid)
+        if c:
+            with open(path, "rb") as f:
+                c.send({"t": proto.T_FILE, "name": os.path.basename(path)}, f.read())
+
+    def broadcast_appblock(self, names: list, on: bool) -> None:
+        for c in self.clients():
+            c.send({"t": proto.T_APPBLOCK, "names": names, "on": on})
+
+    def broadcast_webblock(self, domains: list, on: bool) -> None:
+        for c in self.clients():
+            c.send({"t": proto.T_WEBBLOCK, "domains": domains, "on": on})
+
+    def broadcast_file(self, path: str) -> None:
+        with open(path, "rb") as f:
+            data = f.read()
+        name = os.path.basename(path)
+        for c in self.clients():
+            c.send({"t": proto.T_FILE, "name": name}, data)
 
     # --- Proyección de la pantalla del profesor ----------------------------
     def broadcast_show(self, on: bool) -> None:
