@@ -26,7 +26,7 @@ if errorlevel 1 (
 
 REM --collect-all pyautogui incluye sus modulos auxiliares (evita fallos al
 REM arrancar el .exe por imports que PyInstaller no detecta automaticamente).
-%PY% -m PyInstaller --noconfirm --clean --onefile --noconsole --name ClassroomClient --collect-all pyautogui run_client.py
+%PY% -m PyInstaller --noconfirm --clean --onefile --noconsole --name ClassroomClient --icon assets\client.ico --collect-all pyautogui run_client.py
 if errorlevel 1 (
     echo.
     echo [ERROR] Fallo la compilacion. Revisa los mensajes anteriores.

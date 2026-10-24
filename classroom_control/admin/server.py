@@ -14,6 +14,7 @@ from typing import Callable, Dict, List, Optional
 
 from .. import protocol as proto
 from .. import security
+from .. import tlsutil
 from ..config import AdminConfig
 
 
@@ -65,16 +66,20 @@ class AdminServer:
         self._next_id = 1
         self._srv: Optional[socket.socket] = None
         self._stop = threading.Event()
+        self._ssl_ctx = None
         self.on_change: Optional[Callable[[], None]] = None  # aviso a la GUI
 
     # --- Arranque/parada ----------------------------------------------------
     def start(self) -> None:
+        if self.cfg.use_tls:
+            self._ssl_ctx = tlsutil.make_server_context(self.cfg.certfile, self.cfg.keyfile)
         self._srv = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self._srv.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self._srv.bind((self.cfg.listen_host, self.cfg.listen_port))
         self._srv.listen(64)
         threading.Thread(target=self._accept_loop, daemon=True).start()
-        print(f"[admin] escuchando en {self.cfg.listen_host}:{self.cfg.listen_port}")
+        tls = "TLS" if self._ssl_ctx else "sin cifrar"
+        print(f"[admin] escuchando en {self.cfg.listen_host}:{self.cfg.listen_port} ({tls})")
 
     def stop(self) -> None:
         self._stop.set()
@@ -104,9 +109,20 @@ class AdminServer:
     # --- Ciclo de vida de una conexión -------------------------------------
     def _handle(self, sock: socket.socket, addr) -> None:
         sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
+        sock.settimeout(15)
+        # Envoltura TLS (si está activada) antes de cualquier intercambio.
+        if self._ssl_ctx is not None:
+            try:
+                sock = self._ssl_ctx.wrap_socket(sock, server_side=True)
+            except Exception as exc:  # noqa: BLE001
+                print(f"[admin] handshake TLS fallido desde {addr}: {exc}")
+                try:
+                    sock.close()
+                except Exception:
+                    pass
+                return
         try:
             # Autenticación con tiempo límite para no dejar hilos colgados.
-            sock.settimeout(15)
             nonce = security.make_nonce()
             proto.send_msg(sock, {"t": proto.T_CHALLENGE, "nonce": nonce})
             msg, _ = proto.recv_msg(sock)

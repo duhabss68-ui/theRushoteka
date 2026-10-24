@@ -16,3 +16,8 @@ dist/
 
 # Empaquetado
 *.spec
+
+# Certificados TLS (NO subir: la clave privada es secreta).
+*.key
+*.crt
+*.pem

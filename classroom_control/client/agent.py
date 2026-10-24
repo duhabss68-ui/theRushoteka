@@ -21,6 +21,7 @@ from dataclasses import dataclass
 
 from .. import protocol as proto
 from .. import security
+from .. import tlsutil
 from ..config import ClientConfig, load_client_config
 from .inputctl import InputInjector
 from .overlay import OverlayManager
@@ -53,6 +54,10 @@ class Agent:
         self._screen_size = (1920, 1080)
         self._injector: InputInjector | None = None
 
+        # Contexto TLS (si está activado). Se crea una vez; se reutiliza al
+        # reconectar. Si el certificado falta, falla pronto y con claridad.
+        self._ssl_ctx = tlsutil.make_client_context(cfg.ca_cert) if cfg.use_tls else None
+
     # --- Envío con bloqueo para no entrelazar fotogramas y respuestas ------
     def _send(self, obj, blob: bytes = b"") -> None:
         sock = self._sock
@@ -83,8 +88,11 @@ class Agent:
     def _session(self) -> None:
         print(f"[cliente] conectando a {self.cfg.admin_host}:{self.cfg.admin_port} ...")
         sock = socket.create_connection((self.cfg.admin_host, self.cfg.admin_port), timeout=10)
-        sock.settimeout(None)
         sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
+        if self._ssl_ctx is not None:
+            # Verifica el certificado del profesor (fijado) y cifra el canal.
+            sock = self._ssl_ctx.wrap_socket(sock)
+        sock.settimeout(None)
         self._sock = sock
 
         # 1) Desafío-respuesta.

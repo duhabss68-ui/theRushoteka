@@ -25,7 +25,7 @@ if errorlevel 1 (
     exit /b 1
 )
 
-%PY% -m PyInstaller --noconfirm --clean --onefile --noconsole --name ClassroomAdmin run_admin.py
+%PY% -m PyInstaller --noconfirm --clean --onefile --noconsole --name ClassroomAdmin --icon assets\admin.ico run_admin.py
 if errorlevel 1 (
     echo.
     echo [ERROR] Fallo la compilacion. Revisa los mensajes anteriores.

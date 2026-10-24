@@ -27,6 +27,10 @@ class ClientConfig:
     allow_power: bool = True
     allow_lock: bool = True         # permitir inmovilizar teclado/ratón
     show_indicator: bool = True     # mostrar aviso visible de supervisión
+    # Cifrado TLS (opcional). Si se activa, el cliente verifica el certificado
+    # del profesor contra ca_cert (fijado), evitando intermediarios (MITM).
+    use_tls: bool = False
+    ca_cert: str = "server.crt"
 
 
 @dataclass
@@ -39,6 +43,10 @@ class AdminConfig:
     focus_scale: float = 1.0
     focus_quality: int = 70
     columns: int = 8                # columnas de la rejilla (8x5 = 40)
+    # Cifrado TLS (opcional). Requiere certificado y clave del servidor.
+    use_tls: bool = False
+    certfile: str = "server.crt"
+    keyfile: str = "server.key"
 
 
 def _find_config(filename: str, explicit: Optional[str]) -> Optional[str]:
@@ -65,6 +73,24 @@ def _find_config(filename: str, explicit: Optional[str]) -> Optional[str]:
     return None
 
 
+def _resolve_data(name: str) -> str:
+    """Resuelve un fichero de datos (p. ej. un certificado) buscándolo junto al
+    ejecutable/.ini. Si no se encuentra, devuelve el nombre tal cual."""
+    if not name or os.path.isabs(name):
+        return name
+    here = os.path.dirname(os.path.abspath(__file__))
+    if getattr(sys, "frozen", False):
+        exe_dir = os.path.dirname(os.path.abspath(sys.executable))
+    else:
+        exe_dir = os.path.dirname(os.path.abspath(sys.argv[0] or "."))
+    for base in (os.getcwd(), exe_dir, os.path.join(exe_dir, "config"),
+                 os.path.join(here, "..", "config")):
+        path = os.path.join(base, name)
+        if os.path.isfile(path):
+            return path
+    return name
+
+
 def load_client_config(path: Optional[str] = None) -> ClientConfig:
     cfg = ClientConfig()
     resolved = _find_config("client.ini", path)
@@ -83,6 +109,10 @@ def load_client_config(path: Optional[str] = None) -> ClientConfig:
         cfg.allow_power = s.getboolean("allow_power", cfg.allow_power)
         cfg.allow_lock = s.getboolean("allow_lock", cfg.allow_lock)
         cfg.show_indicator = s.getboolean("show_indicator", cfg.show_indicator)
+        cfg.use_tls = s.getboolean("use_tls", cfg.use_tls)
+        cfg.ca_cert = s.get("ca_cert", cfg.ca_cert)
+    if cfg.use_tls:
+        cfg.ca_cert = _resolve_data(cfg.ca_cert)
     return cfg
 
 
@@ -100,4 +130,10 @@ def load_admin_config(path: Optional[str] = None) -> AdminConfig:
         cfg.focus_scale = s.getfloat("focus_scale", cfg.focus_scale)
         cfg.focus_quality = s.getint("focus_quality", cfg.focus_quality)
         cfg.columns = s.getint("columns", cfg.columns)
+        cfg.use_tls = s.getboolean("use_tls", cfg.use_tls)
+        cfg.certfile = s.get("certfile", cfg.certfile)
+        cfg.keyfile = s.get("keyfile", cfg.keyfile)
+    if cfg.use_tls:
+        cfg.certfile = _resolve_data(cfg.certfile)
+        cfg.keyfile = _resolve_data(cfg.keyfile)
     return cfg

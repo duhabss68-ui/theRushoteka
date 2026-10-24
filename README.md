@@ -188,15 +188,29 @@ profesor. Todos los equipos deben estar en la misma red/subred.
 ## Seguridad y límites (con honestidad)
 
 - **Control de acceso**: el token HMAC impide que equipos ajenos se conecten.
-- **Confidencialidad**: el contenido (fotogramas, pulsaciones) viaja **sin
-  cifrar**. Es adecuado para una LAN de aula cerrada y de confianza. Para redes
-  no confiables, despliega sobre VPN o añade una capa TLS (`ssl.wrap_socket`)
-  —es una extensión natural del `protocol.py` actual.
+- **Confidencialidad**: por defecto el contenido viaja **sin cifrar** (ideal
+  para una LAN de aula cerrada). Puedes activar **cifrado TLS opcional** (ver
+  abajo) para redes donde quieras proteger el tráfico frente a intermediarios.
 - Cambia **siempre** el token por defecto.
 - Los permisos `allow_remote_control` y `allow_power` permiten limitar por
   política lo que cada equipo acepta.
 
 ---
+
+## Cifrado TLS (opcional)
+
+Para cifrar todo el tráfico (TLS 1.2+, con el certificado del profesor fijado
+en los clientes para evitar intermediarios):
+
+1. En el equipo del profesor, genera el certificado (doble clic en
+   `generate_cert.bat`, o `python tools/generate_cert.py dist`). Crea
+   `server.key` (privado, solo en el profesor) y `server.crt` (público).
+2. En `admin.ini`: `use_tls = true` (con `certfile`/`keyfile` apuntando a
+   `server.crt`/`server.key`, que van junto al `.exe`).
+3. Copia **solo** `server.crt` a cada cliente, junto a su `.exe`, y en
+   `client.ini`: `use_tls = true` y `ca_cert = server.crt`.
+
+El token HMAC sigue autenticando a los clientes; TLS añade la confidencialidad.
 
 ## Pruebas
 
@@ -210,7 +224,6 @@ python tests/test_core.py
 
 ## Hoja de ruta (ideas de ampliación)
 
-- Capa TLS opcional para cifrado de extremo a extremo.
 - Transferencia de archivos y lanzamiento remoto de aplicaciones.
 - Descubrimiento automático de la consola por difusión UDP.
 - Grabación/instantáneas de pantalla bajo política del centro.

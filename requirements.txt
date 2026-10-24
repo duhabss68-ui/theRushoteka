@@ -6,3 +6,7 @@
 mss>=9.0.1          # captura de pantalla rápida y multiplataforma
 Pillow>=10.0.0      # escalado y codificación/decodificación JPEG
 PyAutoGUI>=0.9.54   # inyección de ratón/teclado para el control remoto
+
+# Opcional: solo si activas el cifrado TLS (use_tls = true) para generar el
+# certificado con generate_cert.bat. No es necesario para el uso normal.
+# cryptography>=41.0.0
