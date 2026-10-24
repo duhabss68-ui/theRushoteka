@@ -10,3 +10,7 @@ PyAutoGUI>=0.9.54   # inyección de ratón/teclado para el control remoto
 # Opcional: solo si activas el cifrado TLS (use_tls = true) para generar el
 # certificado con generate_cert.bat. No es necesario para el uso normal.
 # cryptography>=41.0.0
+
+# Opcional: solo para el BLINDAJE TOTAL (servicio de Windows, run_service.py).
+# No es necesario para el vigilante ni el uso normal.
+# pywin32>=306

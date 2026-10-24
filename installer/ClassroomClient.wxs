@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Instalador MSI del AGENTE cliente (WiX Toolset v3).
+  Pensado para despliegue por GPO (Directiva de grupo) en un dominio.
+
+  Compilar (requiere WiX Toolset):
+      candle installer\ClassroomClient.wxs -o build\ClassroomClient.wixobj
+      light  build\ClassroomClient.wixobj -o build\ClassroomClient.msi
+
+  Requisitos previos (junto a este .wxs o en ..\dist):
+      dist\ClassroomClient.exe, dist\ClassroomWatchdog.exe  (compilados)
+      installer\client.ini                                  (configurado)
+
+  Instala en C:\ClassroomControl y registra la tarea del vigilante al iniciar
+  sesión. Validar en un equipo real antes del despliegue masivo.
+-->
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Product Id="*" Name="ClassroomControl Agente" Language="3082" Version="1.0.0.0"
+           Manufacturer="ClassroomControl" UpgradeCode="c60c996b-6ee5-4750-aec8-da3e67c6da9c">
+    <Package InstallerVersion="500" Compressed="yes" InstallScope="perMachine"
+             Description="Agente de supervisión de aula" />
+    <MajorUpgrade DowngradeErrorMessage="Ya hay una versión más reciente instalada." />
+    <MediaTemplate EmbedCab="yes" />
+
+    <!-- Carpeta de instalación sin espacios (facilita la tarea programada). -->
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="INSTALLFOLDER" Name="ClassroomControl" />
+    </Directory>
+    <SetDirectory Id="INSTALLFOLDER" Value="C:\ClassroomControl" />
+
+    <DirectoryRef Id="INSTALLFOLDER">
+      <Component Id="AgentFiles" Guid="93d01c6f-87c1-4703-ab11-26c42a44a1dd">
+        <File Id="ClientExe"   Source="..\dist\ClassroomClient.exe"   KeyPath="yes" />
+        <File Id="WatchdogExe" Source="..\dist\ClassroomWatchdog.exe" />
+        <File Id="ClientIni"   Source="client.ini" />
+      </Component>
+    </DirectoryRef>
+
+    <Feature Id="Main" Title="Agente ClassroomControl" Level="1">
+      <ComponentRef Id="AgentFiles" />
+    </Feature>
+
+    <!-- Registrar / quitar la tarea del vigilante (arranque al iniciar sesión). -->
+    <CustomAction Id="CreateTask" Directory="INSTALLFOLDER" Execute="deferred"
+                  Impersonate="no" Return="ignore"
+                  ExeCommand="&quot;[SystemFolder]schtasks.exe&quot; /create /tn &quot;ClassroomControl Agent&quot; /tr &quot;[INSTALLFOLDER]ClassroomWatchdog.exe&quot; /sc onlogon /rl highest /f" />
+    <CustomAction Id="DeleteTask" Directory="INSTALLFOLDER" Execute="deferred"
+                  Impersonate="no" Return="ignore"
+                  ExeCommand="&quot;[SystemFolder]schtasks.exe&quot; /delete /tn &quot;ClassroomControl Agent&quot; /f" />
+
+    <InstallExecuteSequence>
+      <Custom Action="CreateTask" After="InstallFiles">NOT Installed</Custom>
+      <Custom Action="DeleteTask" Before="RemoveFiles">Installed AND NOT UPGRADINGPRODUCTCODE</Custom>
+    </InstallExecuteSequence>
+  </Product>
+</Wix>

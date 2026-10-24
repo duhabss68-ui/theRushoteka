@@ -41,15 +41,27 @@ elimina la tarea y detiene el agente.
 
 ## Nivel 3 — Despliegue por dominio (GPO / Active Directory)
 
-Si el aula está en un dominio, distribuye el `ClassroomClient-Setup.exe` (o un
-MSI equivalente) mediante **Directiva de grupo → Instalación de software**, o
-un **script de inicio** de GPO que ejecute el instalador en modo silencioso:
+Si el aula está en un dominio, tienes dos vías:
+
+**a) MSI nativo (recomendado para GPO)** — compila `build\ClassroomClient.msi`
+con WiX Toolset (doble clic en `build_msi.bat`, requiere WiX en el PATH) y
+publícalo en **Directiva de grupo → Configuración del equipo → Instalación de
+software**. Se instala solo en los 40 equipos. Instalación silenciosa manual:
+
+```bat
+msiexec /i ClassroomClient.msi /qn
+```
+
+El MSI instala en `C:\ClassroomControl` y registra la tarea del vigilante.
+
+**b) Instalador .exe silencioso** — un **script de inicio** de GPO que ejecute
+el instalador Inno Setup en modo silencioso:
 
 ```bat
 ClassroomClient-Setup.exe /VERYSILENT /SUPPRESSMSGBOXES /NORESTART
 ```
 
-Así se instala en los 40 equipos sin tocarlos uno a uno.
+Ambas vías instalan en los 40 equipos sin tocarlos uno a uno.
 
 ## Firma de código (recomendado)
 
@@ -63,11 +75,23 @@ signtool sign /fd SHA256 /a /tr http://timestamp.digicert.com /td SHA256 dist\Cl
 (Repite para `ClassroomAdmin.exe` y `ClassroomWatchdog.exe`.) Sin certificado,
 añade una excepción en el antivirus del centro para la carpeta de instalación.
 
-## Nota honesta sobre el bloqueo "a prueba de todo"
+## Blindaje total (Servicio de Windows, sesión 0)
 
-El vigilante corre en la sesión del usuario para que la interfaz y la captura
-funcionen; un alumno **con permisos de administrador** aún podría detenerlo.
-Para un control inviolable haría falta un **Servicio de Windows** en la sesión
-0 que lance el agente en la sesión del alumno (vía `CreateProcessAsUser`). Es
-la siguiente mejora natural; para cuentas de alumno estándar (lo habitual), el
-vigilante + tarea ya impide el cierre casual y cubre caídas.
+Para que el agente **no se pueda cerrar** ni siquiera con el Administrador de
+tareas, instálalo como **Servicio de Windows**. El servicio corre como SYSTEM
+(sesión 0) y lanza el agente en la sesión del alumno con `CreateProcessAsUser`,
+así la interfaz y la captura siguen funcionando pero el control lo tiene un
+proceso que el alumno no puede detener.
+
+Requiere **Python + pywin32** en el equipo. Como administrador:
+
+```bat
+installer\install_client_service.bat
+```
+
+Para quitarlo: `installer\uninstall_client_service.bat`.
+
+> No uses a la vez el **servicio** y la **tarea del vigilante**: elige uno. El
+> servicio es el modo inviolable; el vigilante (Nivel 1) es el modo sencillo.
+> Por su naturaleza (sesión 0 / tokens de usuario), **valida el servicio en un
+> equipo real** antes de un despliegue masivo.
