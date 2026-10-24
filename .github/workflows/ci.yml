@@ -1,0 +1,42 @@
+name: CI
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+
+jobs:
+  test:
+    name: Pruebas (Linux)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Compilar todos los módulos
+        run: |
+          python -m compileall -q classroom_control run_admin.py run_client.py run_watchdog.py tools
+      - name: Pruebas de núcleo (protocolo y autenticación)
+        run: python tests/test_core.py
+      - name: Pruebas del servidor (latido, caídos, proyección)
+        run: python tests/test_server.py
+      - name: Pruebas de configuración
+        run: python tests/test_config.py
+
+  build-check-windows:
+    name: Dependencias y compilación (Windows)
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Instalar dependencias
+        run: pip install -r requirements.txt
+      - name: Compilar todos los módulos
+        run: python -m compileall -q classroom_control run_admin.py run_client.py run_watchdog.py tools
+      - name: Pruebas que no requieren pantalla
+        run: |
+          python tests/test_core.py
+          python tests/test_config.py
