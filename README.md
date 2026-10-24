@@ -35,8 +35,15 @@ institucionales** en un laboratorio, con autoridad del centro educativo y
 - **Control remoto** de ratón y teclado del equipo seleccionado.
 - **Bloqueo total** (inmovilizar teclado y ratón) con mensaje a pantalla
   completa, individual o masivo; se libera solo si cae la conexión.
+- **Proyección de la pantalla del profesor** a todos los alumnos (broadcast).
 - **Mensaje de atención** a pantalla completa (a un equipo o a todos).
 - **Apagar / Reiniciar / Cerrar sesión** (individual o masivo).
+- **Detección de caídos** (latido): los equipos sin respuesta se marcan
+  **"SIN SEÑAL"** y se depuran automáticamente.
+- **Registro a fichero** (`.log`) y captura global de errores: el programa no
+  "muere en silencio" aunque sea un `.exe` sin consola.
+- **Arranque automático con vigilante** (se reinicia solo si se cierra) e
+  **instalador** para desplegar en 40 equipos.
 - **Interfaz moderna** (tema oscuro, tarjetas, indicadores de estado por color).
 - **Autenticación** por token precompartido (desafío-respuesta HMAC-SHA256):
   un equipo cualquiera de la red no puede conectarse a la consola.
@@ -76,15 +83,19 @@ classroom_control/
 ├── protocol.py        # Trama TCP: MAGIC | len | json | blob  (control + fotogramas)
 ├── security.py        # Autenticación HMAC-SHA256 por desafío-respuesta
 ├── config.py          # Carga de client.ini / admin.ini
+├── tlsutil.py         # Cifrado TLS opcional (contextos servidor/cliente)
+├── logutil.py         # Registro a fichero + captura global de errores
 ├── client/
 │   ├── agent.py       # Conexión, transmisión y ejecución de órdenes
 │   ├── screen.py      # Captura de pantalla (mss) + JPEG (Pillow)
 │   ├── inputctl.py    # Inyección de ratón/teclado (pyautogui)
-│   ├── overlay.py     # Indicador visible + mensaje de atención (Tkinter)
-│   └── power.py       # Apagar/reiniciar/cerrar sesión (shutdown de Windows)
+│   ├── overlay.py     # Indicador, mensaje, bloqueo y proyección (Tkinter)
+│   ├── power.py       # Apagar/reiniciar/cerrar sesión (shutdown de Windows)
+│   └── watchdog.py    # Vigilante: relanza el agente si se cierra
 └── admin/
-    ├── server.py      # Acepta clientes, autentica, recibe fotogramas, envía órdenes
-    └── console.py     # Interfaz: rejilla, vista ampliada, control, acciones
+    ├── server.py      # Clientes, autenticación, fotogramas, latido, órdenes
+    ├── console.py     # Interfaz: rejilla, vista ampliada, control, proyección
+    └── theme.py       # Tema visual oscuro moderno
 ```
 
 ---
@@ -154,6 +165,7 @@ show_indicator = true
 3. En la consola:
    - **Clic** en un equipo → vista ampliada.
    - **🖱 Tomar control** → manejas su ratón/teclado (el equipo avisa en rojo).
+   - **📡 Proyectar pantalla** → muestra la pantalla del profesor en todos.
    - **💬 Mensaje** → aviso a pantalla completa.
    - **⏻ / ↻ / ⎋** → apagar / reiniciar / cerrar sesión.
    - Barra superior → las mismas acciones para **todos** los equipos.
@@ -182,6 +194,25 @@ Opciones, de menor a mayor automatización:
 
 **Cortafuegos**: permite el puerto TCP (47800 por defecto) en el equipo del
 profesor. Todos los equipos deben estar en la misma red/subred.
+
+**Instalador y arranque automático**: para desplegar de forma robusta (vigilante
+que relanza el agente, tarea programada e instalador Inno Setup con despliegue
+silencioso por GPO), consulta `installer/README.md`.
+
+## Robustez y operación
+
+- **Registro (.log)**: cada programa escribe un log rotativo junto a su
+  ejecutable (`ClassroomAdmin.log`, `ClassroomClient.log`,
+  `ClassroomWatchdog.log`). Cualquier error no controlado queda registrado y,
+  en la consola, se muestra un diálogo — nada "muere en silencio".
+- **Detección de caídos (latido)**: la consola envía PING periódicos; un equipo
+  sin respuesta se marca **"SIN SEÑAL"** en la rejilla y se depura.
+- **Vigilante (watchdog)**: `ClassroomWatchdog.exe` relanza el agente si se
+  cierra o falla. Se instala como tarea al iniciar sesión (ver
+  `installer/README.md`). Nota honesta: corre en la sesión del usuario (para que
+  la interfaz y la captura funcionen), así que un alumno **administrador** aún
+  podría detenerlo; para un bloqueo inviolable haría falta un servicio en
+  sesión 0 (mejora documentada).
 
 ---
 

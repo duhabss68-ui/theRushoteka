@@ -14,6 +14,7 @@ IP dinámica y reconectan solos si la consola arranca después.
 from __future__ import annotations
 
 import getpass
+import logging
 import socket
 import threading
 import time
@@ -23,6 +24,9 @@ from .. import protocol as proto
 from .. import security
 from .. import tlsutil
 from ..config import ClientConfig, load_client_config
+from ..logutil import install_excepthook, setup_logging
+
+log = logging.getLogger("classroomcontrol")
 from .inputctl import InputInjector
 from .overlay import OverlayManager
 from .power import execute as power_execute
@@ -41,6 +45,8 @@ class Agent:
     def __init__(self, cfg: ClientConfig) -> None:
         self.cfg = cfg
         self.overlay = OverlayManager(show_indicator=cfg.show_indicator)
+        self.overlay.root.report_callback_exception = lambda *a: log.error(
+            "Excepción en callback de Tkinter (overlay)", exc_info=a)
 
         self._stop = threading.Event()
         self._sock: socket.socket | None = None
@@ -72,21 +78,22 @@ class Agent:
             try:
                 self._session()
             except Exception as exc:  # noqa: BLE001 - reconexión ante cualquier fallo
-                print(f"[cliente] conexión perdida: {exc}")
+                log.warning("Conexión perdida: %s", exc)
             finally:
                 self._close_socket()
                 self._controlled = False
                 # Anti-cuelgue: si caemos conectados, liberamos cualquier
-                # bloqueo o mensaje para no dejar el equipo inutilizable.
+                # bloqueo, mensaje o proyección para no dejar el equipo inutilizable.
                 self.overlay.unlock()
                 self.overlay.hide_message()
+                self.overlay.broadcast_stop()
                 self.overlay.set_state(connected=False, controlled=False)
             if self._stop.is_set():
                 break
             time.sleep(self.cfg.reconnect_seconds)
 
     def _session(self) -> None:
-        print(f"[cliente] conectando a {self.cfg.admin_host}:{self.cfg.admin_port} ...")
+        log.info("Conectando a %s:%s ...", self.cfg.admin_host, self.cfg.admin_port)
         sock = socket.create_connection((self.cfg.admin_host, self.cfg.admin_port), timeout=10)
         sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
         if self._ssl_ctx is not None:
@@ -121,7 +128,7 @@ class Agent:
         if result.get("t") != proto.T_AUTH_OK:
             raise proto.ProtocolError("autenticación rechazada por el administrador")
 
-        print("[cliente] autenticado. Transmitiendo pantalla.")
+        log.info("Autenticado. Transmitiendo pantalla.")
         self.overlay.set_state(connected=True, controlled=False)
 
         # 2) Hilo transmisor, atado a ESTE socket: si reconectamos, el socket
@@ -168,7 +175,7 @@ class Agent:
                 except OSError:
                     break  # socket caído -> termina el hilo, la red reconectará
                 except Exception as exc:  # noqa: BLE001
-                    print(f"[cliente] error al capturar/enviar: {exc}")
+                    log.warning("Error al capturar/enviar: %s", exc)
                     time.sleep(0.2)
                     continue
                 # Mantener el ritmo de fotogramas.
@@ -207,6 +214,13 @@ class Agent:
         elif t == proto.T_POWER:
             if self.cfg.allow_power:
                 power_execute(msg.get("action", ""), int(msg.get("delay", 5)))
+        elif t == proto.T_BCAST:
+            if msg.get("on", False):
+                self.overlay.broadcast_start()
+            else:
+                self.overlay.broadcast_stop()
+        elif t == proto.T_BCAST_FRAME:
+            self.overlay.broadcast_frame(blob)
         elif t == proto.T_PING:
             self._send({"t": proto.T_PONG})
 
@@ -238,10 +252,10 @@ class Agent:
 
 
 def main(config_path: str | None = None) -> None:
+    setup_logging("ClassroomClient")
+    install_excepthook(log, gui_title="ClassroomControl - Agente")
+    log.info("Iniciando agente cliente (supervisión transparente de aula).")
     cfg = load_client_config(config_path)
-    print("ClassroomControl - Agente cliente")
-    print("Herramienta de supervisión transparente de aula. El equipo mostrará")
-    print("un indicador visible mientras esté conectado al profesor.\n")
     Agent(cfg).start()
 
 

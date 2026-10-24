@@ -14,6 +14,9 @@ fotogramas nuevos, comparando un contador por cliente.
 from __future__ import annotations
 
 import io
+import logging
+import threading
+import time
 import tkinter as tk
 from tkinter import messagebox, simpledialog, ttk
 from typing import Dict, Optional
@@ -21,14 +24,24 @@ from typing import Dict, Optional
 from PIL import Image, ImageTk
 
 from ..config import AdminConfig, load_admin_config
+from ..client.screen import ScreenGrabber
+from ..logutil import install_excepthook, setup_logging
 from .server import AdminServer, ClientConn
 from .theme import apply_theme
+
+log = logging.getLogger("classroomcontrol")
 
 # Tamaño de cada miniatura en la rejilla (16:9).
 THUMB_W, THUMB_H = 260, 146
 # Tamaño máximo de la vista ampliada.
 FOCUS_MAX_W, FOCUS_MAX_H = 1024, 576
 REFRESH_MS = 150
+# Si no llega un fotograma nuevo en este tiempo, el equipo se marca "sin señal".
+STALE_SECONDS = 6.0
+# Calidad de la proyección de la pantalla del profesor hacia los alumnos.
+BCAST_FPS = 8.0
+BCAST_SCALE = 0.7
+BCAST_QUALITY = 55
 
 
 def _jpeg_to_photo(data: bytes, max_w: int, max_h: int) -> Optional[ImageTk.PhotoImage]:
@@ -230,6 +243,10 @@ class Console:
         self._cells: Dict[int, dict] = {}
         self._details: Dict[int, DetailWindow] = {}
 
+        # Estado de la proyección de la pantalla del profesor.
+        self._bcasting = False
+        self._bcast_stop = threading.Event()
+
         self.server.start()
         self.root.after(REFRESH_MS, self._refresh)
 
@@ -243,8 +260,11 @@ class Console:
         ttk.Label(pad, text="🖥  Aula de medios", style="Title.TLabel").pack(side="left")
 
         # Acciones masivas, agrupadas por color de intención.
+        self.btn_bcast = ttk.Button(pad, text="📡  Proyectar pantalla", style="Accent.TButton",
+                                    command=self._toggle_broadcast)
+        self.btn_bcast.pack(side="left", padx=(20, 6))
         ttk.Button(pad, text="💬  Mensaje a todos", style="Accent.TButton",
-                   command=self._broadcast_message).pack(side="left", padx=(20, 6))
+                   command=self._broadcast_message).pack(side="left", padx=6)
         ttk.Button(pad, text="🔒  Bloquear todos", style="Warn.TButton",
                    command=lambda: self._broadcast_lock(True)).pack(side="left", padx=6)
         ttk.Button(pad, text="🔓  Liberar todos",
@@ -310,7 +330,6 @@ class Console:
             cell = self._cells[conn.id]
             r, c = divmod(index, cols)
             cell["frame"].grid(row=r, column=c, padx=6, pady=6)
-            cell["name"].configure(text=conn.label())
 
     def _update_thumb(self, conn: ClientConn) -> None:
         cell = self._cells.get(conn.id)
@@ -322,15 +341,22 @@ class Console:
                 cell["photo"] = photo  # mantener referencia (evita GC)
                 cell["img"].configure(image=photo)
                 cell["counter"] = conn.frame_counter
-        # Estado -> color del punto y del borde.
-        if conn.locked:
-            color = self.p["warn"]
-        elif conn.controlled:
-            color = self.p["danger"]
-        elif conn.focused:
-            color = self.p["accent"]
+
+        # ¿Fotograma reciente? Si no, el equipo está "sin señal".
+        stale = conn.frame_counter > 0 and (time.time() - conn.last_frame_at) > STALE_SECONDS
+        if stale:
+            color = self.p["muted"]
+            cell["name"].configure(text=conn.label() + "   ⚠ SIN SEÑAL", fg=self.p["warn"])
         else:
-            color = self.p["success"]
+            cell["name"].configure(text=conn.label(), fg=self.p["text"])
+            if conn.locked:
+                color = self.p["warn"]
+            elif conn.controlled:
+                color = self.p["danger"]
+            elif conn.focused:
+                color = self.p["accent"]
+            else:
+                color = self.p["success"]
         cell["dot"].configure(fg=color)
         cell["frame"].configure(highlightbackground=color, highlightcolor=color)
 
@@ -389,17 +415,69 @@ class Console:
                                icon="warning", parent=self.root):
             self.server.broadcast_power(action)
 
+    # --- Proyección de la pantalla del profesor ----------------------------
+    def _toggle_broadcast(self) -> None:
+        if not self._bcasting:
+            self._bcasting = True
+            self._bcast_stop.clear()
+            self.server.broadcast_show(True)
+            threading.Thread(target=self._broadcast_loop, daemon=True).start()
+            self.btn_bcast.configure(text="⏹  Detener proyección", style="Danger.TButton")
+            log.info("Proyección de pantalla del profesor: iniciada.")
+        else:
+            self._stop_broadcast()
+
+    def _stop_broadcast(self) -> None:
+        if self._bcasting:
+            self._bcasting = False
+            self._bcast_stop.set()
+            try:
+                self.server.broadcast_show(False)
+            except Exception:
+                pass
+            try:
+                self.btn_bcast.configure(text="📡  Proyectar pantalla", style="Accent.TButton")
+            except Exception:
+                pass
+            log.info("Proyección de pantalla del profesor: detenida.")
+
+    def _broadcast_loop(self) -> None:
+        # mss debe crearse y usarse en este mismo hilo.
+        grabber = ScreenGrabber()
+        try:
+            while not self._bcast_stop.is_set():
+                start = time.time()
+                try:
+                    jpeg, w, h = grabber.capture_jpeg(BCAST_SCALE, BCAST_QUALITY)
+                    self.server.broadcast_frame(jpeg, w, h)
+                except Exception as exc:  # noqa: BLE001
+                    log.warning("Error en la proyección: %s", exc)
+                    time.sleep(0.2)
+                    continue
+                time.sleep(max(0.0, (1.0 / BCAST_FPS) - (time.time() - start)))
+        finally:
+            grabber.close()
+
     # --- Ciclo de vida ------------------------------------------------------
     def run(self) -> None:
         try:
             self.root.mainloop()
         finally:
+            self._stop_broadcast()
             self.server.stop()
 
 
 def main(config_path: Optional[str] = None) -> None:
+    setup_logging("ClassroomAdmin")
+    install_excepthook(log, gui_title="ClassroomControl - Consola")
+    log.info("Iniciando consola del profesor.")
     cfg = load_admin_config(config_path)
-    Console(cfg).run()
+    console = Console(cfg)
+    # Las excepciones dentro de callbacks de Tkinter no llegan a sys.excepthook;
+    # las redirigimos al log para no perderlas.
+    console.root.report_callback_exception = lambda *a: log.error(
+        "Excepción en callback de Tkinter", exc_info=a)
+    console.run()
 
 
 if __name__ == "__main__":

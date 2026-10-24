@@ -19,10 +19,13 @@ la GUI. Si la conexión se pierde, el agente libera el bloqueo automáticamente
 from __future__ import annotations
 
 import ctypes
+import io
 import queue
 import sys
 import tkinter as tk
 from typing import Optional
+
+from PIL import Image, ImageTk
 
 # Paleta compartida con la consola para una estética coherente y moderna.
 BG_DARK = "#0b0d12"
@@ -54,6 +57,9 @@ class OverlayManager:
         self._message: Optional[tk.Toplevel] = None
         self._lock: Optional[tk.Toplevel] = None
         self._lock_active = False
+        self._bcast: Optional[tk.Toplevel] = None
+        self._bcast_label: Optional[tk.Label] = None
+        self._bcast_photo = None
 
         self._connected = False
         self._controlled = False
@@ -73,6 +79,15 @@ class OverlayManager:
 
     def unlock(self) -> None:
         self._cmds.put(("lock_off",))
+
+    def broadcast_start(self) -> None:
+        self._cmds.put(("bcast_on",))
+
+    def broadcast_frame(self, jpeg: bytes) -> None:
+        self._cmds.put(("bframe", jpeg))
+
+    def broadcast_stop(self) -> None:
+        self._cmds.put(("bcast_off",))
 
     def quit(self) -> None:
         self._cmds.put(("quit",))
@@ -106,7 +121,14 @@ class OverlayManager:
             self._render_lock(cmd[1])
         elif name == "lock_off":
             self._destroy_lock()
+        elif name == "bcast_on":
+            self._render_bcast()
+        elif name == "bframe":
+            self._update_bcast(cmd[1])
+        elif name == "bcast_off":
+            self._destroy_bcast()
         elif name == "quit":
+            self._destroy_bcast()
             self._destroy_lock()
             self._destroy_message()
             if self._indicator is not None:
@@ -217,3 +239,38 @@ class OverlayManager:
                 pass
             self._lock.destroy()
             self._lock = None
+
+    # --- Proyección de la pantalla del profesor ----------------------------
+    def _render_bcast(self) -> None:
+        if self._bcast is None:
+            self._bcast = tk.Toplevel(self.root)
+            self._bcast.attributes("-fullscreen", True)
+            self._bcast.attributes("-topmost", True)
+            self._bcast.configure(bg="black")
+            self._bcast.protocol("WM_DELETE_WINDOW", lambda: None)
+            self._bcast_label = tk.Label(self._bcast, bg="black",
+                                         text="Conectando con la pantalla del profesor…",
+                                         fg="white", font=("Segoe UI", 20))
+            self._bcast_label.pack(fill="both", expand=True)
+        self._bcast.deiconify()
+        self._bcast.lift()
+
+    def _update_bcast(self, jpeg: bytes) -> None:
+        if self._bcast is None:
+            self._render_bcast()
+        try:
+            img = Image.open(io.BytesIO(jpeg))
+            sw = self._bcast.winfo_screenwidth()
+            sh = self._bcast.winfo_screenheight()
+            img.thumbnail((sw, sh), Image.BILINEAR)
+            self._bcast_photo = ImageTk.PhotoImage(img)
+            self._bcast_label.configure(image=self._bcast_photo, text="")
+        except Exception:
+            pass
+
+    def _destroy_bcast(self) -> None:
+        if self._bcast is not None:
+            self._bcast.destroy()
+            self._bcast = None
+            self._bcast_label = None
+            self._bcast_photo = None

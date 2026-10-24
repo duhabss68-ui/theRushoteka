@@ -48,6 +48,8 @@ T_CONTROL = "control"      # activar/desactivar control remoto (y su indicador)
 T_MESSAGE = "message"      # mostrar/ocultar mensaje de atención
 T_LOCK = "lock"            # inmovilizar/liberar teclado y ratón del equipo
 T_POWER = "power"          # apagar / reiniciar / cerrar sesión
+T_BCAST = "bcast"          # iniciar/detener proyección de la pantalla del profesor
+T_BCAST_FRAME = "bframe"   # fotograma de la pantalla del profesor (+ blob JPEG)
 T_PING = "ping"
 
 
