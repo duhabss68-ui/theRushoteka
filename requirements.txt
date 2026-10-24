@@ -1,0 +1,8 @@
+# Dependencias de ClassroomControl.
+# Instalar con:  pip install -r requirements.txt
+#
+# Tkinter NO está aquí: viene incluido con Python en Windows (instalador oficial).
+
+mss>=9.0.1          # captura de pantalla rápida y multiplataforma
+Pillow>=10.0.0      # escalado y codificación/decodificación JPEG
+PyAutoGUI>=0.9.54   # inyección de ratón/teclado para el control remoto

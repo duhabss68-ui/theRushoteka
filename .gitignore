@@ -1,0 +1,18 @@
+# Configuración real con tokens (NO subir al repositorio).
+config/client.ini
+config/admin.ini
+client.ini
+admin.ini
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+build/
+dist/
+
+# Empaquetado
+*.spec
