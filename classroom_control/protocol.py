@@ -46,6 +46,7 @@ T_STREAM = "stream"        # ajustes de transmisión (fps, escala, calidad)
 T_INPUT = "input"          # evento de ratón/teclado a inyectar
 T_CONTROL = "control"      # activar/desactivar control remoto (y su indicador)
 T_MESSAGE = "message"      # mostrar/ocultar mensaje de atención
+T_LOCK = "lock"            # inmovilizar/liberar teclado y ratón del equipo
 T_POWER = "power"          # apagar / reiniciar / cerrar sesión
 T_PING = "ping"
 

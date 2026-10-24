@@ -33,8 +33,11 @@ institucionales** en un laboratorio, con autoridad del centro educativo y
   refrescan continuamente.
 - **Vista ampliada** al hacer clic en un equipo, con mayor resolución y FPS.
 - **Control remoto** de ratón y teclado del equipo seleccionado.
+- **Bloqueo total** (inmovilizar teclado y ratón) con mensaje a pantalla
+  completa, individual o masivo; se libera solo si cae la conexión.
 - **Mensaje de atención** a pantalla completa (a un equipo o a todos).
 - **Apagar / Reiniciar / Cerrar sesión** (individual o masivo).
+- **Interfaz moderna** (tema oscuro, tarjetas, indicadores de estado por color).
 - **Autenticación** por token precompartido (desafío-respuesta HMAC-SHA256):
   un equipo cualquiera de la red no puede conectarse a la consola.
 - Reconexión automática del cliente si la consola aún no está disponible.
@@ -207,7 +210,6 @@ python tests/test_core.py
 ## Hoja de ruta (ideas de ampliación)
 
 - Capa TLS opcional para cifrado de extremo a extremo.
-- Bloqueo total de pantalla/teclado (además del mensaje de atención).
 - Transferencia de archivos y lanzamiento remoto de aplicaciones.
 - Descubrimiento automático de la consola por difusión UDP.
 - Grabación/instantáneas de pantalla bajo política del centro.

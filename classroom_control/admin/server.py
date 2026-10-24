@@ -40,6 +40,7 @@ class ClientConn:
 
         self.controlled = False
         self.focused = False
+        self.locked = False
         self.alive = True
         self._send_lock = threading.Lock()
 
@@ -222,6 +223,12 @@ class AdminServer:
         if c:
             c.send({"t": proto.T_MESSAGE, "text": text, "show": show})
 
+    def set_lock(self, cid: int, on: bool, text: str = "") -> None:
+        c = self.get(cid)
+        if c:
+            c.locked = on
+            c.send({"t": proto.T_LOCK, "on": on, "text": text})
+
     def send_power(self, cid: int, action: str, delay: int = 5) -> None:
         c = self.get(cid)
         if c:
@@ -235,3 +242,8 @@ class AdminServer:
     def broadcast_power(self, action: str, delay: int = 5) -> None:
         for c in self.clients():
             c.send({"t": proto.T_POWER, "action": action, "delay": delay})
+
+    def broadcast_lock(self, on: bool, text: str = "") -> None:
+        for c in self.clients():
+            c.locked = on
+            c.send({"t": proto.T_LOCK, "on": on, "text": text})

@@ -71,6 +71,10 @@ class Agent:
             finally:
                 self._close_socket()
                 self._controlled = False
+                # Anti-cuelgue: si caemos conectados, liberamos cualquier
+                # bloqueo o mensaje para no dejar el equipo inutilizable.
+                self.overlay.unlock()
+                self.overlay.hide_message()
                 self.overlay.set_state(connected=False, controlled=False)
             if self._stop.is_set():
                 break
@@ -186,6 +190,12 @@ class Agent:
                 self.overlay.show_message(msg.get("text", ""))
             else:
                 self.overlay.hide_message()
+        elif t == proto.T_LOCK:
+            if self.cfg.allow_lock:
+                if msg.get("on", False):
+                    self.overlay.lock(msg.get("text", ""))
+                else:
+                    self.overlay.unlock()
         elif t == proto.T_POWER:
             if self.cfg.allow_power:
                 power_execute(msg.get("action", ""), int(msg.get("delay", 5)))

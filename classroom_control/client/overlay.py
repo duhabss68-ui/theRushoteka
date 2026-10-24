@@ -1,4 +1,5 @@
-"""Interfaz visible del cliente: indicador de supervisión y mensaje de atención.
+"""Interfaz visible del cliente: indicador de supervisión, mensaje de atención
+y BLOQUEO TOTAL de teclado/ratón.
 
 Tkinter exige vivir en el hilo principal, así que ``OverlayManager`` posee la
 raíz Tk y corre su bucle en el hilo principal del agente. Los hilos de red le
@@ -7,13 +8,37 @@ el hilo de la GUI. Esto mantiene la red y la interfaz desacopladas y seguras.
 
 El indicador es deliberadamente VISIBLE: comunica al alumno que el equipo está
 siendo supervisado o controlado. Es parte del diseño ético de la herramienta.
+
+Bloqueo total (Windows): además de una ventana opaca a pantalla completa, se
+usa la API ``BlockInput`` para congelar físicamente teclado y ratón. Debe
+invocarse desde el MISMO hilo que lo activó, por eso todo pasa por la cola de
+la GUI. Si la conexión se pierde, el agente libera el bloqueo automáticamente
+(protección anti-cuelgue). Ctrl+Alt+Supr no puede bloquearse (es del sistema).
 """
 
 from __future__ import annotations
 
+import ctypes
 import queue
+import sys
 import tkinter as tk
 from typing import Optional
+
+# Paleta compartida con la consola para una estética coherente y moderna.
+BG_DARK = "#0b0d12"
+ACCENT = "#3b82f6"
+DANGER = "#ef4444"
+SUCCESS = "#22c55e"
+TEXT = "#e5e7eb"
+
+
+def _block_input(flag: bool) -> None:
+    """Congela (True) o libera (False) teclado y ratón en Windows."""
+    if sys.platform.startswith("win"):
+        try:
+            ctypes.windll.user32.BlockInput(bool(flag))
+        except Exception:
+            pass
 
 
 class OverlayManager:
@@ -27,6 +52,8 @@ class OverlayManager:
         self._indicator: Optional[tk.Toplevel] = None
         self._indicator_label: Optional[tk.Label] = None
         self._message: Optional[tk.Toplevel] = None
+        self._lock: Optional[tk.Toplevel] = None
+        self._lock_active = False
 
         self._connected = False
         self._controlled = False
@@ -41,6 +68,12 @@ class OverlayManager:
     def hide_message(self) -> None:
         self._cmds.put(("msg_hide",))
 
+    def lock(self, text: str = "") -> None:
+        self._cmds.put(("lock_on", text))
+
+    def unlock(self) -> None:
+        self._cmds.put(("lock_off",))
+
     def quit(self) -> None:
         self._cmds.put(("quit",))
 
@@ -50,6 +83,8 @@ class OverlayManager:
         self.root.mainloop()
 
     def _pump(self) -> None:
+        # Los temporizadores 'after' siguen disparándose aunque BlockInput esté
+        # activo (no son eventos de entrada), así que la orden de liberar llega.
         try:
             while True:
                 cmd = self._cmds.get_nowait()
@@ -67,7 +102,12 @@ class OverlayManager:
             self._render_message(cmd[1])
         elif name == "msg_hide":
             self._destroy_message()
+        elif name == "lock_on":
+            self._render_lock(cmd[1])
+        elif name == "lock_off":
+            self._destroy_lock()
         elif name == "quit":
+            self._destroy_lock()
             self._destroy_message()
             if self._indicator is not None:
                 self._indicator.destroy()
@@ -82,29 +122,28 @@ class OverlayManager:
             return
 
         if self._controlled:
-            text = "  🔴  Control remoto activo — el profesor maneja este equipo  "
-            bg = "#b00020"
+            text = "   Control remoto activo — el profesor maneja este equipo   "
+            bg = DANGER
         else:
-            text = "  🟢  Equipo supervisado por el profesor  "
-            bg = "#1b5e20"
+            text = "   Equipo supervisado por el profesor   "
+            bg = SUCCESS
 
         if self._indicator is None:
             self._indicator = tk.Toplevel(self.root)
             self._indicator.overrideredirect(True)      # sin barra de título
             self._indicator.attributes("-topmost", True)
             try:
-                self._indicator.attributes("-alpha", 0.9)
+                self._indicator.attributes("-alpha", 0.92)
             except tk.TclError:
                 pass
             self._indicator_label = tk.Label(
-                self._indicator, font=("Segoe UI", 10, "bold"), fg="white", padx=10, pady=4
+                self._indicator, font=("Segoe UI Semibold", 10), fg="white", padx=14, pady=5
             )
             self._indicator_label.pack()
 
         assert self._indicator_label is not None
         self._indicator_label.configure(text=text, bg=bg)
         self._indicator.configure(bg=bg)
-        # Colocar arriba al centro de la pantalla.
         self._indicator.update_idletasks()
         sw = self._indicator.winfo_screenwidth()
         w = self._indicator.winfo_width()
@@ -117,18 +156,18 @@ class OverlayManager:
         self._message = tk.Toplevel(self.root)
         self._message.attributes("-fullscreen", True)
         self._message.attributes("-topmost", True)
-        self._message.configure(bg="#0d47a1")
+        self._message.configure(bg=BG_DARK)
         self._message.focus_force()
 
-        frame = tk.Frame(self._message, bg="#0d47a1")
+        frame = tk.Frame(self._message, bg=BG_DARK)
         frame.place(relx=0.5, rely=0.5, anchor="center")
         tk.Label(
-            frame, text="ATENCIÓN", font=("Segoe UI", 28, "bold"),
-            fg="#90caf9", bg="#0d47a1",
-        ).pack(pady=(0, 20))
+            frame, text="ATENCIÓN", font=("Segoe UI", 26, "bold"),
+            fg=ACCENT, bg=BG_DARK,
+        ).pack(pady=(0, 24))
         tk.Label(
-            frame, text=text, font=("Segoe UI", 40, "bold"), fg="white",
-            bg="#0d47a1", wraplength=self._message.winfo_screenwidth() - 160,
+            frame, text=text, font=("Segoe UI", 38, "bold"), fg=TEXT,
+            bg=BG_DARK, wraplength=self._message.winfo_screenwidth() - 200,
             justify="center",
         ).pack()
 
@@ -136,3 +175,45 @@ class OverlayManager:
         if self._message is not None:
             self._message.destroy()
             self._message = None
+
+    # --- Bloqueo total ------------------------------------------------------
+    def _render_lock(self, text: str) -> None:
+        if self._lock is None:
+            self._lock = tk.Toplevel(self.root)
+            self._lock.attributes("-fullscreen", True)
+            self._lock.attributes("-topmost", True)
+            self._lock.configure(bg=BG_DARK)
+            self._lock.protocol("WM_DELETE_WINDOW", lambda: None)
+
+            frame = tk.Frame(self._lock, bg=BG_DARK)
+            frame.place(relx=0.5, rely=0.5, anchor="center")
+            tk.Label(frame, text="🔒", font=("Segoe UI", 72), fg=ACCENT, bg=BG_DARK).pack(pady=(0, 16))
+            tk.Label(frame, text="Equipo bloqueado por el profesor",
+                     font=("Segoe UI", 30, "bold"), fg=TEXT, bg=BG_DARK).pack()
+            self._lock_detail = tk.Label(frame, text="", font=("Segoe UI", 18),
+                                         fg="#9aa4b2", bg=BG_DARK, wraplength=900, justify="center")
+            self._lock_detail.pack(pady=(14, 0))
+
+        self._lock_detail.configure(text=text or "")
+        self._lock.deiconify()
+        self._lock.lift()
+        self._lock.focus_force()
+        try:
+            self._lock.grab_set_global()  # captura eventos aunque falle BlockInput
+        except tk.TclError:
+            pass
+        if not self._lock_active:
+            _block_input(True)
+            self._lock_active = True
+
+    def _destroy_lock(self) -> None:
+        if self._lock_active:
+            _block_input(False)
+            self._lock_active = False
+        if self._lock is not None:
+            try:
+                self._lock.grab_release()
+            except tk.TclError:
+                pass
+            self._lock.destroy()
+            self._lock = None

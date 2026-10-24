@@ -24,6 +24,7 @@ class ClientConfig:
     grid_quality: int = 35          # calidad JPEG 1-95
     allow_remote_control: bool = True
     allow_power: bool = True
+    allow_lock: bool = True         # permitir inmovilizar teclado/ratón
     show_indicator: bool = True     # mostrar aviso visible de supervisión
 
 
@@ -69,6 +70,7 @@ def load_client_config(path: Optional[str] = None) -> ClientConfig:
         cfg.grid_quality = s.getint("grid_quality", cfg.grid_quality)
         cfg.allow_remote_control = s.getboolean("allow_remote_control", cfg.allow_remote_control)
         cfg.allow_power = s.getboolean("allow_power", cfg.allow_power)
+        cfg.allow_lock = s.getboolean("allow_lock", cfg.allow_lock)
         cfg.show_indicator = s.getboolean("show_indicator", cfg.show_indicator)
     return cfg
 
