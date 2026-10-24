@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import configparser
 import os
+import sys
 from dataclasses import dataclass
 from typing import Optional
 
@@ -44,8 +45,18 @@ def _find_config(filename: str, explicit: Optional[str]) -> Optional[str]:
     if explicit:
         return explicit
     here = os.path.dirname(os.path.abspath(__file__))
+    # Carpeta del ejecutable: con un .exe empaquetado (PyInstaller) es la del
+    # propio .exe; en código fuente, la del script lanzado. Así el .ini puede
+    # ir junto al .exe aunque se ejecute con otro directorio actual (p. ej.
+    # desde el Programador de tareas de Windows).
+    if getattr(sys, "frozen", False):
+        exe_dir = os.path.dirname(os.path.abspath(sys.executable))
+    else:
+        exe_dir = os.path.dirname(os.path.abspath(sys.argv[0] or "."))
     candidates = [
         os.path.join(os.getcwd(), filename),
+        os.path.join(exe_dir, filename),
+        os.path.join(exe_dir, "config", filename),
         os.path.join(here, "..", "config", filename),
     ]
     for path in candidates:

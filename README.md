@@ -169,15 +169,16 @@ Opciones, de menor a mayor automatización:
 2. **Arranque automático**: crea una tarea en el *Programador de tareas* de
    Windows que ejecute `pythonw run_client.py` al iniciar sesión (`pythonw`
    evita la ventana de consola negra).
-3. **Ejecutable**: empaqueta el cliente con PyInstaller para no depender de
-   Python en cada equipo:
+3. **Ejecutable (.exe) — lo más fácil**: en un equipo con Windows y Python,
+   haz **doble clic** en los scripts incluidos:
 
-   ```bat
-   pip install pyinstaller
-   pyinstaller --noconsole --onefile --name ClassroomClient run_client.py
-   ```
+   - `build_all.bat` → genera ambos (`dist\ClassroomAdmin.exe` y
+     `dist\ClassroomClient.exe`).
+   - `build_admin.bat` / `build_client.bat` → generan uno u otro.
 
-   Distribuye `dist\ClassroomClient.exe` junto a `client.ini`.
+   Instalan las dependencias y PyInstaller automáticamente. Luego distribuye
+   cada `.exe` junto a su `.ini` (`admin.ini` o `client.ini`) en la misma
+   carpeta. Guía detallada en `docs/Guia_Instalacion_Paso_a_Paso.docx`.
 
 **Cortafuegos**: permite el puerto TCP (47800 por defecto) en el equipo del
 profesor. Todos los equipos deben estar en la misma red/subred.
