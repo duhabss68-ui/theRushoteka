@@ -44,7 +44,9 @@ institucionales** en un laboratorio, con autoridad del centro educativo y
   "muere en silencio" aunque sea un `.exe` sin consola.
 - **Arranque automático con vigilante** (se reinicia solo si se cierra) e
   **instalador** para desplegar en 40 equipos.
-- **Interfaz moderna** (tema oscuro, tarjetas, indicadores de estado por color).
+- **Interfaz moderna con tema claro y oscuro** (sigue al sistema operativo y se
+  alterna en caliente), tarjetas e indicadores de estado por **forma y color**
+  (accesible a daltónicos).
 - **Autenticación** por token precompartido (desafío-respuesta HMAC-SHA256):
   un equipo cualquiera de la red no puede conectarse a la consola.
 - Reconexión automática del cliente si la consola aún no está disponible.
@@ -95,7 +97,7 @@ classroom_control/
 └── admin/
     ├── server.py      # Clientes, autenticación, fotogramas, latido, órdenes
     ├── console.py     # Interfaz: rejilla, vista ampliada, control, proyección
-    └── theme.py       # Tema visual oscuro moderno
+    └── theme.py       # Tema visual claro/oscuro (sigue al sistema) + estilos ttk
 ```
 
 ---

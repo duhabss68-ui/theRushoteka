@@ -46,6 +46,7 @@ class AdminConfig:
     focus_scale: float = 1.0
     focus_quality: int = 70
     columns: int = 8                # columnas de la rejilla (8x5 = 40)
+    theme: str = "system"           # system | dark | light
     # Cifrado TLS (opcional). Requiere certificado y clave del servidor.
     use_tls: bool = False
     certfile: str = "server.crt"
@@ -136,6 +137,7 @@ def load_admin_config(path: Optional[str] = None) -> AdminConfig:
         cfg.focus_scale = s.getfloat("focus_scale", cfg.focus_scale)
         cfg.focus_quality = s.getint("focus_quality", cfg.focus_quality)
         cfg.columns = s.getint("columns", cfg.columns)
+        cfg.theme = s.get("theme", cfg.theme)
         cfg.use_tls = s.getboolean("use_tls", cfg.use_tls)
         cfg.certfile = s.get("certfile", cfg.certfile)
         cfg.keyfile = s.get("keyfile", cfg.keyfile)

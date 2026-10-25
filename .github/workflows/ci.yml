@@ -25,6 +25,8 @@ jobs:
         run: python tests/test_config.py
       - name: Pruebas de acciones del cliente
         run: python tests/test_actions.py
+      - name: Pruebas del sistema de temas
+        run: python tests/test_theme.py
 
   build-check-windows:
     name: Dependencias y compilación (Windows)

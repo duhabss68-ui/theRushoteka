@@ -27,7 +27,7 @@ from ..config import AdminConfig, load_admin_config
 from ..client.screen import ScreenGrabber
 from ..logutil import install_excepthook, setup_logging
 from .server import AdminServer, ClientConn
-from .theme import apply_theme
+from .theme import apply_theme, resolve_mode
 
 log = logging.getLogger("classroomcontrol")
 
@@ -331,11 +331,13 @@ class Console:
         self.root = tk.Tk()
         self.root.title("ClassroomControl — Consola del profesor")
         self.root.geometry("1320x840")
-        self.p = apply_theme(self.root)
+        # Tema: por defecto sigue al sistema; se puede fijar o alternar en caliente.
+        self._mode = resolve_mode(cfg.theme)
+        self.p = apply_theme(self.root, self._mode)
 
-        # Imagen de marcador (gris) con el tamaño exacto de miniatura, para que
-        # las celdas ocupen píxeles desde el inicio y no "unidades de texto".
-        self._placeholder = ImageTk.PhotoImage(Image.new("RGB", (THUMB_W, THUMB_H), "#0a0c10"))
+        # Imagen de marcador con el tamaño exacto de miniatura, para que las
+        # celdas ocupen píxeles desde el inicio y no "unidades de texto".
+        self._placeholder = ImageTk.PhotoImage(Image.new("RGB", (THUMB_W, THUMB_H), self.p["panel2"]))
 
         self._build_toolbar()
         self._build_grid()
@@ -385,6 +387,24 @@ class Console:
 
         self.status = ttk.Label(pad, text="0 equipos conectados", style="Status.TLabel")
         self.status.pack(side="right")
+        self.btn_theme = ttk.Button(pad, text=self._theme_btn_text(), command=self._toggle_theme)
+        self.btn_theme.pack(side="right", padx=(0, 12))
+
+    def _theme_btn_text(self) -> str:
+        return "☀ Tema claro" if self._mode == "dark" else "🌙 Tema oscuro"
+
+    def _toggle_theme(self) -> None:
+        """Alterna claro/oscuro en caliente y repinta la interfaz."""
+        self._mode = "light" if self._mode == "dark" else "dark"
+        self.p = apply_theme(self.root, self._mode)  # re-estiliza todos los ttk
+        self.btn_theme.configure(text=self._theme_btn_text())
+        self._placeholder = ImageTk.PhotoImage(Image.new("RGB", (THUMB_W, THUMB_H), self.p["panel2"]))
+        self._canvas.configure(bg=self.p["bg"])
+        self._grid.configure(bg=self.p["bg"])
+        # Las celdas (widgets tk) se recrean con la nueva paleta en el próximo refresco.
+        for cell in self._cells.values():
+            cell["frame"].destroy()
+        self._cells.clear()
 
     def _build_grid(self) -> None:
         container = ttk.Frame(self.root, style="Bg.TFrame")
@@ -450,21 +470,22 @@ class Console:
                 cell["counter"] = conn.frame_counter
 
         # ¿Fotograma reciente? Si no, el equipo está "sin señal".
+        # El estado se distingue por FORMA además de color (accesible a daltónicos).
         stale = conn.frame_counter > 0 and (time.time() - conn.last_frame_at) > STALE_SECONDS
         if stale:
-            color = self.p["muted"]
+            color, glyph = self.p["muted"], "▲"
             cell["name"].configure(text=conn.label() + "   ⚠ SIN SEÑAL", fg=self.p["warn"])
         else:
             cell["name"].configure(text=conn.label(), fg=self.p["text"])
             if conn.locked:
-                color = self.p["warn"]
+                color, glyph = self.p["warn"], "■"       # bloqueado
             elif conn.controlled:
-                color = self.p["danger"]
+                color, glyph = self.p["danger"], "◆"     # bajo control
             elif conn.focused:
-                color = self.p["accent"]
+                color, glyph = self.p["accent"], "◉"     # enfocado
             else:
-                color = self.p["success"]
-        cell["dot"].configure(fg=color)
+                color, glyph = self.p["success"], "●"    # conectado
+        cell["dot"].configure(fg=color, text=glyph)
         cell["frame"].configure(highlightbackground=color, highlightcolor=color)
 
     def _refresh(self) -> None:
