@@ -1,0 +1,154 @@
+/* ==========================================================================
+   Edición especial «Silver & Black» · Para Valencia (MiAula 2.13.0)
+   Se aplica DESPUÉS de styles.css. Oscuro (negro) por omisión; claro = «Día plata».
+   Tipografía: Oswald (SIL Open Font License, incrustada).
+   ========================================================================== */
+@font-face{font-family:'Oswald V';font-style:normal;font-weight:500;font-display:swap;src:url(fonts/oswald-latin-500-normal.woff2) format('woff2')}
+@font-face{font-family:'Oswald V';font-style:normal;font-weight:700;font-display:swap;src:url(fonts/oswald-latin-700-normal.woff2) format('woff2')}
+
+:root{
+  --font-sport:'Oswald V','Oswald','Bebas Neue','Arial Narrow','Roboto Condensed',Impact,sans-serif;
+  --rd-silver:#A5ACAF;--rd-silver-hi:#F4F5F6;--rd-silver-lo:#6B7175;--rd-black:#0A0A0B;
+  --grad-main:linear-gradient(135deg,#F6F7F8 0%,#C3C8CB 28%,#A5ACAF 52%,#E1E4E6 74%,#7D8488 100%);
+  --grad-warm:var(--grad-main);--grad-fresh:var(--grad-main);--grad-sun:var(--grad-main);
+  --void:#0A0A0B;--surface-0:#0F0F11;--surface-1:#151517;--surface-2:#1C1C1F;--surface-3:#242428;--surface-4:#2F2F34;--surface-hover:#232327;
+  --card:#151517;--glass:rgba(21,21,23,.86);--glass-strong:rgba(21,21,23,.96);
+  --border:rgba(165,172,175,.20);--border-strong:rgba(165,172,175,.38);
+  --text:#ECEEEF;--text-strong:#FFFFFF;--text-2:#BCC1C4;--text-3:#8D9397;
+  --primary:#A5ACAF;--primary-hover:#C9CDD0;--primary-soft:rgba(165,172,175,.16);--accent-text:#DADDDF;--on-primary:#0A0A0B;
+  --success:#2FB67F;--success-bright:#3CCB8F;--success-soft:rgba(47,182,127,.16);--success-text:#86DDB8;
+  --warning:#E2AE45;--warning-soft:rgba(226,174,69,.16);--warning-text:#F1CF85;
+  --danger:#E5484D;--danger-soft:rgba(229,72,77,.16);--danger-text:#FF9EA1;
+  --info:#8FA6B8;--info-soft:rgba(143,166,184,.16);--info-text:#C3D2DD;
+  --scroll-thumb:#4A4F53;--scrim:rgba(0,0,0,.74);--chip-bg:rgba(10,10,11,.6);
+  --row-alt:#121214;--row-hover:#1E1E22;--topbar-bg:rgba(10,10,11,.88);
+  --shadow-soft:0 10px 26px rgba(0,0,0,.45);--shadow-float:0 22px 50px rgba(0,0,0,.6);
+  --tint-violet:#1D1D21;--tint-pink:#1D1D21;--tint-coral:#1D1D21;--tint-sun:#1D1D21;--tint-mint:#1D1D21;--tint-sky:#1D1D21;
+  --ic-violet:#D5D9DB;--ic-pink:#D5D9DB;--ic-coral:#D5D9DB;--ic-sun:#D5D9DB;--ic-mint:#D5D9DB;--ic-sky:#D5D9DB;
+  --fun-violet:#A5ACAF;--fun-pink:#A5ACAF;--fun-coral:#A5ACAF;--fun-sun:#E2AE45;--fun-mint:#A5ACAF;--fun-sky:#A5ACAF;
+  --mark-a:#F4F5F6;--mark-b:#6B7175;
+  --r-card:14px;--r-ctl:10px;
+}
+html[data-theme="light"]{
+  --grad-main:linear-gradient(135deg,#3A3B40 0%,#141416 55%,#000 100%);
+  --void:#E9EBEC;--surface-0:#DFE2E4;--surface-1:#FFFFFF;--surface-2:#F2F3F4;--surface-3:#E4E6E8;--surface-4:#D3D7DA;--surface-hover:#ECEEEF;
+  --card:#FFFFFF;--glass:rgba(255,255,255,.86);--glass-strong:rgba(255,255,255,.96);
+  --border:rgba(10,10,11,.14);--border-strong:rgba(10,10,11,.28);
+  --text:#151517;--text-strong:#0A0A0B;--text-2:#45494D;--text-3:#62676B;
+  --primary:#0A0A0B;--primary-hover:#2A2A2E;--primary-soft:rgba(10,10,11,.08);--accent-text:#202124;--on-primary:#FFFFFF;
+  --success:#16855C;--success-soft:rgba(22,133,92,.12);--success-text:#0E6A48;
+  --warning:#B57F12;--warning-soft:rgba(181,127,18,.14);--warning-text:#7A5300;
+  --danger:#C62F38;--danger-soft:rgba(198,47,56,.10);--danger-text:#A3232C;
+  --info:#4F6577;--info-soft:rgba(79,101,119,.12);--info-text:#33495A;
+  --scroll-thumb:#A5ACAF;--row-alt:#F6F7F8;--row-hover:#EDEFF0;--topbar-bg:rgba(233,235,236,.9);
+  --shadow-soft:0 8px 22px rgba(10,10,11,.10);--shadow-float:0 18px 44px rgba(10,10,11,.18);
+  --tint-violet:#ECEEEF;--tint-pink:#ECEEEF;--tint-coral:#ECEEEF;--tint-sun:#ECEEEF;--tint-mint:#ECEEEF;--tint-sky:#ECEEEF;
+  --ic-violet:#0A0A0B;--ic-pink:#0A0A0B;--ic-coral:#0A0A0B;--ic-sun:#0A0A0B;--ic-mint:#0A0A0B;--ic-sky:#0A0A0B;
+  --mark-a:#3A3B40;--mark-b:#000;
+}
+
+/* Fondo: negro con rayado diagonal fino y brillo plateado */
+body::before{background:
+  radial-gradient(60vw 36vw at 88% -12%,rgba(165,172,175,.18),transparent 62%),
+  repeating-linear-gradient(135deg,rgba(255,255,255,.022) 0 2px,transparent 2px 10px),
+  #0A0A0B!important}
+html[data-theme="light"] body::before{background:
+  radial-gradient(60vw 36vw at 88% -12%,rgba(10,10,11,.08),transparent 62%),
+  repeating-linear-gradient(135deg,rgba(10,10,11,.03) 0 2px,transparent 2px 10px),
+  #E9EBEC!important}
+
+/* Tipografía deportiva en títulos, botones y números */
+h1,h2,h3,.topbar-title h1,.topbar-title strong,.panel-head h3,.eyebrow,.btn,.app-tab b,.kpi strong,.kpi span,.version-badge,
+.term-average strong,.final-score,.scheme-total strong,.past-period-avg strong,.splash-inner b,.brand-word,.hero-author,
+th,.notebook-period-title h3,.period-badge,.attendance-monitor-kpi strong,.status-btn,.auto-backup-chip{font-family:var(--font-sport)!important}
+h1,h2,h3,.panel-head h3,.eyebrow,.btn,.app-tab b,th,.version-badge{text-transform:uppercase;letter-spacing:.045em}
+.btn{font-weight:500!important}
+h1,h2,.panel-head h3,.kpi strong{font-weight:700!important}
+.eyebrow{color:var(--rd-silver)!important;letter-spacing:.14em!important}
+html[data-theme="light"] .eyebrow{color:#45494D!important}
+
+/* Barra superior */
+.app-topbar::after{background:linear-gradient(90deg,#2B2D30,#A5ACAF 25%,#F4F5F6 50%,#A5ACAF 75%,#2B2D30)!important;opacity:1!important;height:3px}
+.version-badge{background:var(--grad-main)!important;color:#0A0A0B!important}
+html[data-theme="light"] .version-badge{color:#fff!important}
+.brand-icon,.brand-emblem-sm{object-fit:contain}
+
+/* Botones: plata metálica con letra negra (oscuro) · negro con letra blanca (claro) */
+.btn.primary,.hero-class-cta{background:var(--grad-main)!important;color:#0A0A0B!important;box-shadow:0 10px 24px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.7)!important;border:0!important}
+.btn.primary *,.hero-class-cta *{color:#0A0A0B!important}
+html[data-theme="light"] .btn.primary,html[data-theme="light"] .hero-class-cta,html[data-theme="light"] .btn.primary *,html[data-theme="light"] .hero-class-cta *{color:#FFFFFF!important}
+html[data-theme="light"] .btn.primary,html[data-theme="light"] .hero-class-cta{box-shadow:0 10px 22px rgba(10,10,11,.28)!important}
+.btn.subtle,.btn.ghost-light{background:transparent!important;border:1px solid var(--border-strong)!important;color:var(--text)!important}
+.segmented button.active,.principal-segmented button.active,.density-btn.active{background:var(--grad-main)!important;color:#0A0A0B!important}
+html[data-theme="light"] .segmented button.active,html[data-theme="light"] .principal-segmented button.active,html[data-theme="light"] .density-btn.active{color:#fff!important}
+input:focus,select:focus,textarea:focus{border-color:var(--rd-silver)!important;box-shadow:0 0 0 4px rgba(165,172,175,.22)!important}
+
+/* Inicio: héroe tipo campo de juego */
+#view-dashboard .hero{position:relative;overflow:hidden;border-radius:18px!important;border:1px solid var(--border-strong)!important;
+  background:repeating-linear-gradient(90deg,rgba(255,255,255,.07) 0 2px,transparent 2px 64px),linear-gradient(135deg,#1A1B1E,#0A0A0B 70%)!important;
+  padding:24px 30px!important;box-shadow:var(--shadow-float)!important}
+html[data-theme="light"] #view-dashboard .hero{background:repeating-linear-gradient(90deg,rgba(255,255,255,.08) 0 2px,transparent 2px 64px),linear-gradient(135deg,#2B2D30,#0A0A0B 70%)!important}
+#view-dashboard .hero::after{content:"";position:absolute;left:0;right:0;bottom:0;height:4px;background:linear-gradient(90deg,#2B2D30,#A5ACAF,#F4F5F6,#A5ACAF,#2B2D30)}
+#view-dashboard .hero h2{background:linear-gradient(180deg,#FFFFFF 0%,#D5D9DB 45%,#8D9397 100%);-webkit-background-clip:text;background-clip:text;color:transparent!important;
+  font-size:clamp(34px,5vw,58px)!important;line-height:1!important;letter-spacing:.06em!important;text-shadow:none}
+#view-dashboard .hero .hero-author{color:#BCC1C4!important;text-transform:uppercase;letter-spacing:.12em;font-size:13px!important}
+#view-dashboard .hero .btn.ghost-light{color:#ECEEEF!important;border-color:rgba(165,172,175,.45)!important}
+#view-dashboard .hero .btn.primary,#view-dashboard .hero .btn.primary *{color:#0A0A0B!important}
+html[data-theme="light"] #view-dashboard .hero .btn.primary{background:linear-gradient(135deg,#F6F7F8 0%,#C3C8CB 28%,#A5ACAF 52%,#E1E4E6 74%,#7D8488 100%)!important}
+.edition-emblem{display:flex;align-items:center;gap:14px}
+.edition-emblem img{width:88px;height:auto;filter:drop-shadow(0 8px 18px rgba(0,0,0,.6))}
+.edition-emblem b{display:block;font-family:var(--font-sport);font-weight:700;font-size:30px;letter-spacing:.08em;color:#F4F5F6;line-height:1}
+.edition-emblem small{display:block;font-family:var(--font-sport);font-weight:500;font-size:12px;letter-spacing:.22em;color:#A5ACAF;margin-top:6px}
+@media(max-width:760px){.edition-emblem img{width:64px}.edition-emblem b{font-size:22px}}
+
+/* Tarjetas */
+.panel,.class-snapshot,.group-card,.quick-card,.admin-primary-card,.more-nav-card,.export-panel,.admin-current{background:var(--surface-1)!important}
+.class-snapshot::before{background:var(--grad-main)!important}
+#view-dashboard .kpi,.class-snapshot .kpi{background:var(--surface-2)!important;border:1px solid var(--border)!important}
+#view-dashboard .kpis .kpi{border-top:3px solid var(--rd-silver)!important}
+.quick-card .quick-icon,.admin-card-icon{background:var(--surface-3)!important;color:var(--accent-text)!important;border:1px solid var(--border)}
+.quick-card:hover{border-color:var(--rd-silver)!important}
+
+/* Barra inferior */
+.bottom-app-nav{background:rgba(10,10,11,.94)!important;border:1px solid var(--border-strong)!important;border-radius:16px!important}
+html[data-theme="light"] .bottom-app-nav{background:rgba(255,255,255,.96)!important}
+.bottom-app-nav .app-tab:not(.active) span{color:var(--accent-text)!important}
+.app-tab.active{background:var(--grad-main)!important;border-radius:12px!important;box-shadow:0 8px 20px rgba(0,0,0,.5)!important}
+.app-tab.active,.app-tab.active *,.app-tab.active span{color:#0A0A0B!important}
+html[data-theme="light"] .app-tab.active,html[data-theme="light"] .app-tab.active *,html[data-theme="light"] .app-tab.active span{color:#fff!important}
+.new-activity-tab span{background:var(--grad-main)!important;color:#0A0A0B!important;box-shadow:0 6px 14px rgba(0,0,0,.45)!important}
+html[data-theme="light"] .new-activity-tab span{color:#fff!important}
+
+/* Tablas y calificaciones */
+.table-wrap thead th,.notebook-table thead th{background:var(--surface-3)!important;color:var(--accent-text)!important}
+.final-score{background:var(--grad-main)!important;color:#0A0A0B!important;font-weight:700!important}
+html[data-theme="light"] .final-score{color:#fff!important}
+.auto-score{background:var(--surface-3)!important;color:var(--accent-text)!important}
+.scheme-item.variable,.scheme-item.fixed,.custom-rubro-row{box-shadow:inset 4px 0 0 var(--rd-silver)!important}
+html[data-theme="light"] .scheme-item.variable,html[data-theme="light"] .scheme-item.fixed,html[data-theme="light"] .custom-rubro-row{box-shadow:inset 4px 0 0 #0A0A0B!important}
+
+/* Chip de copia: plata cuando está desactivada */
+.auto-backup-chip.off{background:var(--surface-3);color:var(--accent-text)}
+.ab-status.off .ab-dot{background:var(--rd-silver)}
+.ab-versions summary{color:var(--accent-text)}
+
+/* Pantalla de inicio */
+.splash{background:#0A0A0B!important}
+.splash-inner img{width:120px;height:auto;filter:drop-shadow(0 10px 24px rgba(0,0,0,.7))}
+.splash-inner b{color:#F4F5F6!important;letter-spacing:.1em;text-transform:uppercase}
+.splash-inner b strong{background:none!important;-webkit-background-clip:initial;background-clip:initial;color:#A5ACAF!important}
+
+/* Ajustes: escudo del héroe, «+» de Actividad y ruleta en plata */
+#view-dashboard .hero{grid-template-columns:minmax(0,1fr) auto!important}
+#view-dashboard .hero-brand{opacity:1!important;max-width:none!important}
+.edition-emblem{justify-content:center}
+#view-dashboard .hero-brand .edition-emblem img{width:112px!important;height:auto!important;max-width:none!important;max-height:none!important;opacity:1!important}
+@media(max-width:760px){#view-dashboard .hero-brand .edition-emblem img{width:72px!important}}
+.bottom-app-nav .app-tab.new-activity-tab span{color:#0A0A0B!important}
+html[data-theme="light"] .bottom-app-nav .app-tab.new-activity-tab span{color:#FFFFFF!important}
+.wheel-pointer{border-top-color:#D5D9DB!important;filter:drop-shadow(0 3px 6px rgba(0,0,0,.6))!important}
+html[data-theme="light"] .wheel-pointer{border-top-color:#0A0A0B!important}
+.result-number,.result-number:empty::before{background:linear-gradient(180deg,#FFFFFF,#A5ACAF 60%,#6B7175)!important;-webkit-background-clip:text!important;background-clip:text!important;color:transparent!important;font-family:var(--font-sport)!important}
+html[data-theme="light"] .result-number,html[data-theme="light"] .result-number:empty::before{background:linear-gradient(180deg,#3A3B40,#0A0A0B)!important;-webkit-background-clip:text!important;background-clip:text!important}
+.result-number:empty::before{opacity:.5!important}
+.result-name{font-family:var(--font-sport)!important;text-transform:uppercase;letter-spacing:.04em}

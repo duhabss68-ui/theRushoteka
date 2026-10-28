@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 140" role="img" aria-label="Escudo Valencia">
+  <defs>
+    <linearGradient id="vSilver" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#F6F7F8"/><stop offset=".45" stop-color="#A5ACAF"/><stop offset=".7" stop-color="#D9DDDF"/><stop offset="1" stop-color="#6B7175"/>
+    </linearGradient>
+    <linearGradient id="vBlade" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#8E959A"/>
+    </linearGradient>
+    <linearGradient id="vBlack" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#232427"/><stop offset="1" stop-color="#050506"/>
+    </linearGradient>
+  </defs>
+  <!-- Escudo -->
+  <path d="M60 4 112 17v46c0 35-21 59-52 73C29 122 8 98 8 63V17Z" fill="url(#vBlack)" stroke="url(#vSilver)" stroke-width="5" stroke-linejoin="round"/>
+  <path d="M60 13 103 24v39c0 29-17 50-43 62-26-12-43-33-43-62V24Z" fill="none" stroke="#A5ACAF" stroke-opacity=".45" stroke-width="1.5"/>
+  <!-- Espadas cruzadas -->
+  <g stroke="#050506" stroke-width="1.2" stroke-linejoin="round">
+    <g transform="rotate(-38 60 70)">
+      <path d="M57 22h6l1 64h-8Z" fill="url(#vBlade)"/>
+      <rect x="47" y="86" width="26" height="6" rx="3" fill="url(#vSilver)"/>
+      <rect x="57" y="92" width="6" height="16" rx="2" fill="#2B2D30"/>
+      <circle cx="60" cy="112" r="5" fill="url(#vSilver)"/>
+    </g>
+    <g transform="rotate(38 60 70)">
+      <path d="M57 22h6l1 64h-8Z" fill="url(#vBlade)"/>
+      <rect x="47" y="86" width="26" height="6" rx="3" fill="url(#vSilver)"/>
+      <rect x="57" y="92" width="6" height="16" rx="2" fill="#2B2D30"/>
+      <circle cx="60" cy="112" r="5" fill="url(#vSilver)"/>
+    </g>
+  </g>
+  <!-- V de Valencia -->
+  <path d="M33 36h19l8 33 8-33h19L70 98H50Z" fill="#050506" stroke="url(#vSilver)" stroke-width="4" stroke-linejoin="round"/>
+  <path d="M41 41h7l12 46 12-46h7L66 93H54Z" fill="url(#vSilver)"/>
+</svg>

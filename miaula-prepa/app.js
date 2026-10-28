@@ -878,8 +878,11 @@ const WHEEL_PALETTE=[
   {fill:'#15B8A6',text:'#073B3A'}
 ];
 function wheelStyle(i,used){
-  if(used)return {fill:i%2?'#B7C0CD':'#D1D7E0',text:'#5D6878'};
-  return WHEEL_PALETTE[i%WHEEL_PALETTE.length];
+  // 2.13.0: una edición especial (window.MIAULA_EDITION) puede traer su propia paleta.
+  const ed=window.MIAULA_EDITION||{};
+  if(used)return ed.wheelUsed?ed.wheelUsed[i%ed.wheelUsed.length]:{fill:i%2?'#B7C0CD':'#D1D7E0',text:'#5D6878'};
+  const pal=ed.wheelPalette||WHEEL_PALETTE;
+  return pal[i%pal.length];
 }
 
 function updateFullscreenButton(){
@@ -3170,7 +3173,7 @@ function launchConfetti(){
   const dpr=Math.min(window.devicePixelRatio||1,2),W=innerWidth,H=innerHeight;
   canvas.width=W*dpr;canvas.height=H*dpr;
   const ctx=canvas.getContext('2d');ctx.scale(dpr,dpr);
-  const colors=['#FF3B30','#FF9500','#FFD60A','#30D158','#00C7BE','#0A84FF','#5E5CE6','#BF5AF2','#FF2D55'];
+  const colors=window.MIAULA_EDITION?.confettiColors||['#FF3B30','#FF9500','#FFD60A','#30D158','#00C7BE','#0A84FF','#5E5CE6','#BF5AF2','#FF2D55'];
   const target=$('#rouletteName')?.getBoundingClientRect();
   const ox=target?target.left+target.width/2:W/2,oy=target?target.top+target.height/2:H/3;
   const parts=[];
