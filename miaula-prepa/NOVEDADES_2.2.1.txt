@@ -1,0 +1,12 @@
+MiAula 2.2.1 CETIS · Dark Glass
+
+Rediseño visual sin cambios funcionales:
+- Fondo general oscuro tipo Midnight.
+- Superficies de trabajo claras con letras oscuras.
+- Cuaderno digital corregido para máxima legibilidad.
+- Vista Alumno completamente clara para captura rápida.
+- Encabezados de tabla azul marino con texto blanco.
+- Botones estilo liquid glass con contraste alto.
+- Barra inferior oscura tipo glass.
+- Presentación conserva scroll y usa libreta clara dentro de marco oscuro.
+- No cambia IndexedDB ni la lógica de MiAula.

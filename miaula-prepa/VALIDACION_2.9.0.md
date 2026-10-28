@@ -1,0 +1,21 @@
+# Validación MiAula 2.9.0
+
+- Lógica: 17/17.
+- Rúbricas y equipos (con datos de 2.7.0): 35/35.
+- Regresión de funciones existentes: 35/35.
+- Banco de rúbricas en Proyecto (tests/e2e/proyecto.e2e.js): 19/19.
+  - Evaluación antigua se cuenta igual (8.75).
+  - Los 4 botones.
+  - Elegir del banco y evaluar con equipo guardado.
+  - Incompleta no se guarda.
+  - Nota ponderada 8.6 en vivo y guardada.
+  - Promedio antiguo + nuevo.
+  - Modificar copia del banco y queda elegida.
+  - Modificar no cambia lo ya evaluado.
+  - Crear lista de cotejo.
+  - Subir archivo.
+  - Instrumento antiguo sigue evaluando (7.5).
+  - Excel.
+  - Respaldo y restauración.
+  - Sin errores de JavaScript.
+- db.js idéntico a 2.4.9. Ningún ID eliminado.

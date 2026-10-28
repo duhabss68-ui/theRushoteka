@@ -1,0 +1,14 @@
+MiAula Slate 2.4.2 · Control de Asistencia CETIS
+
+- La pantalla Asistencia queda enfocada únicamente en el pase de lista.
+- Historial de asistencia pasa a un apartado independiente.
+- Al cargar una lista nueva, todos los alumnos inician con F (Falta).
+- P, R y J se marcan manualmente por el docente.
+- Nuevo estado persistente: Pendiente Secretaría.
+- Los registros Pendiente Secretaría se guardan como S y NO cuentan como asistencia ni como falta en el porcentaje acumulado.
+- Desde Historial se pueden resolver alumnos pendientes: Sigue en el grupo o Dar de baja conservando historial.
+- Si sigue en el grupo, los días S permanecen disponibles para corregir manualmente desde el historial.
+- Si se da de baja, se conservan asistencias, calificaciones y evaluaciones anteriores.
+- Ruleta/equipos excluyen alumnos que siguen Pendiente Secretaría.
+- Excel incluye horas Pendiente Secretaría por separado.
+- No se cambia la versión ni el esquema de IndexedDB.

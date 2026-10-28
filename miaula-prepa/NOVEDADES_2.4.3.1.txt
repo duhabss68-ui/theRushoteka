@@ -1,0 +1,7 @@
+MiAula 2.4.3.1 · Corrección de Equipos
+
+- Corrige la creación automática de equipos cuando está activo “Solo alumnos presentes hoy”.
+- Si hay menos de 2 presentes registrados, MiAula ofrece usar todo el grupo activo sin modificar asistencia.
+- Añade manejo visible de errores durante la creación/guardado de equipos.
+- Mantiene persistencia de equipos por grupo y Libreta por equipos.
+- No cambia IndexedDB ni db.js.

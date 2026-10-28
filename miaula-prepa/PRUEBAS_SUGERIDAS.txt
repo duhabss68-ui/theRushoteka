@@ -1,0 +1,31 @@
+PRUEBAS SUGERIDAS · MIAULA 2.0 CETIS CONFIGURABLE
+
+PRUEBA 1 · CONSERVACIÓN DE DATOS
+1. Antes de actualizar, anota el número de grupos y una asistencia ya registrada.
+2. Descarga respaldo JSON.
+3. Actualiza los archivos de GitHub.
+4. Abre MiAula.
+5. Verifica que sigan tus grupos, alumnos y asistencia anterior.
+
+PRUEBA 2 · PARCIALES CONFIGURABLES
+1. En Grupos > Editar, abre un grupo existente.
+2. Verifica que aparezcan 3 parciales por defecto.
+3. Cámbialo temporalmente a 4.
+4. Guarda y verifica que el indicador muestre P1/4.
+5. Puedes regresarlo a 3 mientras no hayas utilizado el Parcial 4.
+
+PRUEBA 3 · PROTECCIÓN DE HISTORIAL
+1. En un grupo que ya esté en Parcial 2, intenta poner 1 parcial.
+2. MiAula debe impedirlo para proteger los registros existentes.
+
+PRUEBA 4 · CIERRE
+1. Configura un grupo con 4 parciales.
+2. Cierra Parcial 1.
+3. Debe iniciar Parcial 2 de 4.
+4. Las actividades previas dejan de mostrarse como activas.
+5. Las rúbricas/listas siguen en el banco.
+
+PRUEBA 5 · EXCEL
+1. Exporta un grupo configurado con 4 parciales.
+2. El Concentrado debe incluir P1, P2, P3 y P4.
+3. Resumen y Esquemas deben contemplar los cuatro periodos.

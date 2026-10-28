@@ -1,0 +1,10 @@
+MiAula Slate 2.4.1 · Seguimiento de asistencia CETIS
+
+- Panel de asistencia acumulada por alumno.
+- Conteo por horas de P, F, R y J.
+- Porcentaje de faltas calculado sobre horas registradas.
+- Alerta preventiva desde 15% y alerta crítica desde 20%.
+- Historial por alumno editable sin borrar registros previos.
+- Acceso para abrir una fecha histórica y corregir la lista completa.
+- Exportación Excel incluye Faltas %, alerta y conteos de alumnos en riesgo.
+- Sin cambios en db.js ni en la estructura IndexedDB.

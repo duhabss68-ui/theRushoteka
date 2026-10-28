@@ -1,0 +1,12 @@
+MiAula 2.1.4 CETIS
+
+NUEVO
+- Botón “Editar fecha” en cada actividad del parcial.
+- La fecha se modifica sobre la misma actividad: NO se crea una nueva ni se elimina la existente.
+- Se conservan calificaciones, alumnos, notas y referencias de puntos extra.
+- El indicador rojo “Máx.” se recalcula automáticamente usando la nueva fecha.
+- La fecha ahora se muestra directamente en la tarjeta de cada actividad.
+- Caché PWA actualizado a 2.1.4.
+
+IMPORTANTE
+La estructura de IndexedDB no cambia respecto a 2.1.3.

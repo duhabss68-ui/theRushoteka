@@ -1,0 +1,18 @@
+VALIDACIÓN MIAULA 2.0.5 CETIS
+
+- Sintaxis app.js: OK (node --check).
+- Sintaxis db.js: OK (node --check).
+- Sintaxis xlsx-lite.js: OK (node --check).
+- Sintaxis sw.js: OK (node --check).
+- IndexedDB: migración de versión 2 a 3, aditiva.
+- Store nuevo: extraPoints. Los stores anteriores no se eliminan ni se renombran.
+- Respaldo actualizado para incluir extraPoints y seguir aceptando respaldos anteriores sin ese store.
+- Cache PWA actualizado a 2.0.5.
+- Cuaderno: columna Puntos extra agregada.
+- Aplicación de puntos buenos a actividad: validaciones de saldo, calificación previa y puntaje máximo incluidas.
+- Puntos malos: registro separado, sin efecto automático sobre promedio/final.
+- Presentación: overflow y scroll táctil corregidos para recorrer todos los alumnos.
+- Excel del Cuaderno: columnas de extras + hoja Historial extras.
+
+LIMITACIÓN DE VALIDACIÓN AUTOMATIZADA
+El navegador headless del entorno bloquea la navegación local por política administrativa, por lo que no fue posible ejecutar la prueba end-to-end dentro de Chromium. Se realizaron comprobaciones estáticas y de sintaxis. Ejecuta PRUEBAS_EXTRAS_2.0.5.txt en la MatePad antes de utilizarla con todos los grupos.

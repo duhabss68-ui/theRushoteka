@@ -1,0 +1,21 @@
+PRUEBA RÁPIDA · MiAula 2.1.0 CETIS
+
+Antes de actualizar:
+1. En MiAula actual: Más → Descargar respaldo MiAula.
+2. NO borrar datos del sitio de Chrome.
+
+Después de actualizar en GitHub Pages:
+1. Abrir MiAula en la MatePad horizontal.
+2. Confirmar barra inferior: Inicio, Asistencia, Cuaderno, Ruleta, Equipos, Más.
+3. Elegir un grupo en “Grupo activo”.
+4. Abrir Cuaderno y confirmar que conserva actividades y calificaciones.
+5. Probar Buscar alumno y los filtros.
+6. Tocar el nombre de un alumno y probar Vista Alumno.
+7. Cambiar una calificación y esperar el indicador “Todo guardado”.
+8. Probar “Deshacer”.
+9. Abrir Presentación y comprobar scroll vertical hasta el último alumno y horizontal entre actividades.
+10. Revisar Ruleta, Equipos y Puntos extra.
+11. Ir a Más y confirmar acceso a Grupos, Calificaciones, Parcial, Proyecto/Examen, Excel y respaldo.
+12. Generar Excel del Cuaderno.
+
+Si el navegador todavía muestra el diseño anterior, cerrar y volver a abrir la PWA. El caché de esta versión es miaula-mobile-2.1.0.

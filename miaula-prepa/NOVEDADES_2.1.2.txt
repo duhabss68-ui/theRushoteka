@@ -1,0 +1,8 @@
+MiAula 2.1.2 CETIS
+
+Cambio solicitado:
+- Nuevo botón “Respaldo” visible directamente en la barra inferior de la app.
+- Al tocarlo descarga inmediatamente un respaldo JSON completo de MiAula.
+- Se conserva también la sección Respaldo dentro de “Más”, incluida la opción Restaurar respaldo.
+- No se modifica el esquema de IndexedDB ni la lógica académica.
+- Caché PWA actualizado a 2.1.2.

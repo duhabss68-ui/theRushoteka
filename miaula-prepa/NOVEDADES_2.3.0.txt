@@ -1,0 +1,9 @@
+MiAula Dark 2.3.0 CETIS
+- Rediseño visual completo inspirado en Dala / Refero.
+- Canvas negro, superficies oscuras y acento violeta #8052FF.
+- Iconografía SVG consistente en navegación y acciones principales.
+- Liquid Glass moderado en navegación, contexto y modales.
+- Cuaderno y Vista Alumno completamente oscuros y de alto contraste.
+- Administración, porcentajes, Proyecto/Examen, Excel y respaldo conservados.
+- db.js y estructura IndexedDB sin cambios.
+- Service Worker mejorado para actualizaciones PWA.

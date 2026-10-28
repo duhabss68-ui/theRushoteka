@@ -1,0 +1,9 @@
+MiAula 2.2.2 CETIS · Centro de Administración
+
+- Administración visible desde la pantalla principal y la barra inferior.
+- Porcentajes del parcial accesibles en un toque.
+- Indicador visible de Proyecto o Examen y su porcentaje.
+- Exportación completa a Excel del grupo activo.
+- Respaldo completo con acceso directo.
+- Administración permanece accesible en Modo Clase.
+- No se modifica la estructura de IndexedDB ni se eliminan funciones previas.

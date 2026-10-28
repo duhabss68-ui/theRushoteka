@@ -1,0 +1,12 @@
+ACTUALIZAR EN GITHUB PAGES
+
+1. Descarga primero un respaldo desde la versión que ya usas.
+2. Descomprime este paquete.
+3. Sustituye en el repositorio miaula-mobile los archivos por los de esta carpeta.
+4. Conserva la misma estructura de carpetas, especialmente assets/ y tools/.
+5. Haz Commit changes.
+6. Espera a que GitHub Pages publique los cambios.
+7. Abre la PWA instalada y verifica que indique MiAula 2.1.
+
+IMPORTANTE
+No borres “datos del sitio”, almacenamiento de Chrome ni IndexedDB. Esta versión usa la misma base MiAulaMobileDB y no modifica su esquema.

@@ -1,0 +1,19 @@
+MiAula 2.1.3 CETIS
+
+1. Vista Alumno: minibuscador por nombre, apellido o número de lista.
+   - Tocar una coincidencia salta directamente al alumno.
+   - Si había cambios en el alumno actual, se guardan antes de cambiar.
+   - Anterior / Siguiente se conservan.
+
+2. Indicador de calificación máxima disponible.
+   - Parte del puntaje máximo definido en la actividad (normalmente 10).
+   - Resta 1 punto por cada día hábil transcurrido después de la fecha de la actividad.
+   - Sábados y domingos NO cuentan.
+   - Nunca baja de 0.
+   - Es SOLO un indicador visual: el docente puede capturar la calificación que considere.
+   - Se muestra en rojo debajo del nombre de la actividad en Actividades, Cuaderno y Vista Alumno.
+
+3. Datos
+   - db.js no fue modificado.
+   - No hay migración ni cambio de esquema de IndexedDB.
+   - Caché PWA actualizado a 2.1.3.

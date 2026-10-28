@@ -1,0 +1,18 @@
+MIAULA 2.0.5 CETIS - PUNTOS EXTRA Y PRESENTACION
+
+Novedades:
+- Corrige el scroll vertical y horizontal del Cuaderno Digital en modo Presentacion/pantalla completa.
+- Ruleta: al seleccionar un alumno aparecen Extra + y Extra -.
+- Extra + de la ruleta: +1 por participacion y maximo +2 por alumno al dia desde la ruleta.
+- Extra - de la ruleta: -1 por participacion, sin limite acumulado.
+- Cuaderno Digital: nueva columna Puntos extra, con positivos en verde y negativos en rojo.
+- Desde el Cuaderno se pueden agregar manualmente puntos buenos y malos.
+- Los puntos buenos disponibles pueden aplicarse a una actividad que ya tenga calificacion.
+- Al aplicar puntos buenos, se descuentan del saldo y sube la actividad sin superar su puntaje maximo.
+- El Excel del Cuaderno incluye saldos y una hoja Historial extras.
+- Los puntos malos NO modifican automaticamente el promedio ni la calificacion final.
+- Migracion IndexedDB aditiva: conserva grupos, alumnos, asistencias, calificaciones, parciales, rubricas y listas de cotejo existentes.
+
+IMPORTANTE:
+Antes de actualizar, descarga un respaldo desde Mas > Descargar respaldo MiAula.
+No borres los datos del sitio del navegador.

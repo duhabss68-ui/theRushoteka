@@ -1,0 +1,11 @@
+MiAula 2.1.1 CETIS · Ajuste solicitado
+
+1. Se agregó un botón visible “Menú principal” en la barra superior de las pantallas internas.
+   - Regresa directamente a Inicio.
+   - Se oculta cuando ya estás en Inicio.
+
+2. La portada principal muestra como texto destacado:
+   Control de bitacora
+   by Ing. Niccolás C.M.
+
+No se modificó la base de datos ni la funcionalidad existente.

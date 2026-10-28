@@ -1,0 +1,6 @@
+MiAula Slate 2.4.0 CETIS
+- Rediseño visual azul pizarra + grafito + azul acero.
+- Elimina negro puro y violeta de la interfaz principal.
+- Menor cantidad de colores decorativos.
+- Conserva verde, ámbar y rojo únicamente para estados funcionales.
+- Mantiene lógica y almacenamiento del proyecto anterior.

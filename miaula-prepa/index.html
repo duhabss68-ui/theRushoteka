@@ -1,0 +1,546 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#111827">
+  <script>try{if(localStorage.getItem('miaula:theme')==='light')document.documentElement.setAttribute('data-theme','light');}catch(e){}</script>
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="MiAula">
+  <title>MiAula Slate 2.12.0 · Prepa</title>
+  <link rel="manifest" href="manifest.webmanifest?v=2.12.0">
+  <link rel="icon" type="image/png" sizes="192x192" href="assets/icon-books-192.png?v=2.12.0">
+  <link rel="apple-touch-icon" href="assets/icon-books-192.png?v=2.12.0">
+  <link rel="stylesheet" href="styles.css?v=2.12.0">
+</head>
+<body>
+<svg class="icon-sprite" aria-hidden="true" focusable="false">
+  <symbol id="i-home" viewBox="0 0 24 24"><path class="d" d="M6 10.4 12 5.6l6 4.8V20H6z"/><path d="M3.5 11 12 4l8.5 7"/><path d="M6 9.6V20h12V9.6"/><path d="M10 20v-4.2a2 2 0 0 1 4 0V20"/></symbol>
+  <symbol id="i-groups" viewBox="0 0 24 24"><circle class="d" cx="9" cy="8" r="3.6"/><circle cx="9" cy="8" r="3.6"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M15.5 4.6a3.6 3.6 0 0 1 0 6.8"/><path d="M18 14.3A6.5 6.5 0 0 1 21.5 20"/></symbol>
+  <symbol id="i-attendance" viewBox="0 0 24 24"><rect class="d" x="4.5" y="4.5" width="15" height="17" rx="2.6"/><rect x="4.5" y="4.5" width="15" height="17" rx="2.6"/><path d="M9 4.5v-.6c0-.8.6-1.4 1.4-1.4h3.2c.8 0 1.4.6 1.4 1.4v.6"/><path d="m8.6 13.2 2.3 2.3 4.6-4.8"/></symbol>
+  <symbol id="i-roulette" viewBox="0 0 24 24"><path class="d" d="M12 13V5a8 8 0 0 1 8 8z"/><circle cx="12" cy="13" r="8"/><circle cx="12" cy="13" r="1.8"/><path d="M12 5v6.2M12 14.8V21M4 13h6.2M13.8 13H20"/><path class="f" d="M10.2 1.8h3.6L12 4.6z"/></symbol>
+  <symbol id="i-notebook" viewBox="0 0 24 24"><path class="d" d="M4 8.5h16V3.5H6.5A2.5 2.5 0 0 0 4 6z"/><rect x="4" y="3.5" width="16" height="17" rx="2.5"/><path d="M4 8.5h16M4 14.2h16M9.5 3.5v17"/></symbol>
+  <symbol id="i-activity" viewBox="0 0 24 24"><path class="d" d="M6 3h8l4 4v14H6z"/><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/><path d="M9 12h6M9 16h4"/></symbol>
+  <symbol id="i-percent" viewBox="0 0 24 24"><circle class="d" cx="7" cy="7" r="2.7"/><circle class="d" cx="17" cy="17" r="2.7"/><path d="M19 5 5 19"/><circle cx="7" cy="7" r="2.7"/><circle cx="17" cy="17" r="2.7"/></symbol>
+  <symbol id="i-eval" viewBox="0 0 24 24"><rect class="d" x="4" y="3.5" width="16" height="17" rx="2.5"/><rect x="4" y="3.5" width="16" height="17" rx="2.5"/><path d="m7.5 8.6 1.3 1.3 2.4-2.5M7.5 14.6l1.3 1.3 2.4-2.5M13.8 9h3M13.8 15h3"/></symbol>
+  <symbol id="i-data" viewBox="0 0 24 24"><rect class="d" x="13.5" y="4" width="6.5" height="6.5" rx="1.8"/><rect x="4" y="4" width="6.5" height="6.5" rx="1.8"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.8"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.8"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.8"/></symbol>
+  <symbol id="i-class" viewBox="0 0 24 24"><path class="d" d="m3 9.8 9-4.8 9 4.8-9 4.8z"/><path d="m3 9.8 9-4.8 9 4.8-9 4.8z"/><path d="M7 12v4.6c2.8 2.1 7.2 2.1 10 0V12"/><path d="M21 9.8v5.7"/></symbol>
+  <symbol id="i-teams" viewBox="0 0 24 24"><circle class="d" cx="12" cy="7" r="2.8"/><circle cx="12" cy="7" r="2.8"/><circle cx="5.5" cy="10" r="2.2"/><circle cx="18.5" cy="10" r="2.2"/><path d="M7.2 20a4.8 4.8 0 0 1 9.6 0"/><path d="M2 19a3.6 3.6 0 0 1 4.6-3.4M22 19a3.6 3.6 0 0 0-4.6-3.4"/></symbol>
+  <symbol id="i-backup" viewBox="0 0 24 24"><path class="d" d="M12 3 4.5 6v5.6c0 4.5 3.1 8.1 7.5 9.4 4.4-1.3 7.5-4.9 7.5-9.4V6z"/><path d="M12 3 4.5 6v5.6c0 4.5 3.1 8.1 7.5 9.4 4.4-1.3 7.5-4.9 7.5-9.4V6z"/><path d="M12 8v6.5M9.2 11.8 12 14.6l2.8-2.8"/></symbol>
+  <symbol id="i-excel" viewBox="0 0 24 24"><path class="d" d="M6 3h8l4 4v14H6z"/><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/><path d="m9.3 11.3 5.4 5.4M14.7 11.3l-5.4 5.4"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle class="d" cx="11" cy="11" r="6.5"/><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/></symbol>
+  <symbol id="i-screen" viewBox="0 0 24 24"><rect class="d" x="3" y="4" width="18" height="12.5" rx="2"/><rect x="3" y="4" width="18" height="12.5" rx="2"/><path d="M8 21h8M12 16.5V21"/></symbol>
+  <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 7v5h-5"/><path d="M4 17v-5h5"/><path d="M18.5 9A7 7 0 0 0 6.3 6.3L4 9M5.5 15a7 7 0 0 0 12.2 2.7L20 15"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-print" viewBox="0 0 24 24"><rect class="d" x="6" y="13" width="12" height="8" rx="1.5"/><path d="M7 8V3h10v5"/><rect x="3" y="8" width="18" height="9" rx="2.2"/><rect x="6.5" y="13.5" width="11" height="7.5" rx="1.2"/><path d="M17 11h.01"/></symbol>
+  <symbol id="i-keypad" viewBox="0 0 24 24"><rect class="d" x="3" y="5" width="18" height="14" rx="2.5"/><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M7 9.5h.01M10.5 9.5h.01M14 9.5h.01M17.5 9.5h.01M7 13h.01M10.5 13h.01M14 13h.01M17.5 13h.01M8 16.2h8"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><path class="d" d="M10.3 4.3 2.7 17.6A2 2 0 0 0 4.4 20.6h15.2a2 2 0 0 0 1.7-3L13.7 4.3a2 2 0 0 0-3.4 0z"/><path d="M10.3 4.3 2.7 17.6A2 2 0 0 0 4.4 20.6h15.2a2 2 0 0 0 1.7-3L13.7 4.3a2 2 0 0 0-3.4 0z"/><path d="M12 9.5v4.5M12 17.2h.01"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24"><circle class="d" cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M4.6 4.6l1.4 1.4M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4 6 18M18 6l1.4-1.4"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24"><path class="d" d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></symbol>
+</svg>
+
+<div id="splash" class="splash" aria-hidden="true"><div class="splash-inner"><svg viewBox="0 0 64 64"><rect x="2" y="2" width="60" height="60" rx="16" fill="#3F6E9E"/><path d="M14 20.5c6-2.6 12-2.2 18 1.6v24c-6-3.8-12-4.2-18-1.6z" fill="#fff" opacity=".96"/><path d="M50 20.5c-6-2.6-12-2.2-18 1.6v24c6-3.8 12-4.2 18-1.6z" fill="#fff" opacity=".72"/><path d="m36.5 33.2 3.6 3.6 6.4-7" fill="none" stroke="#2F5B88" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg><b>Mi<strong>Aula</strong></b></div></div>
+<div id="tabletOnly" class="tablet-only hidden">
+  <div class="tablet-only-card">
+    <img src="assets/icon-books-192.png?v=2.12.0" alt="MiAula">
+    <h1>MiAula Slate 2.12.0</h1>
+    <p>Esta versión está diseñada para trabajar en tu tablet. Abre MiAula desde la Huawei MatePad 12X.</p>
+  </div>
+</div>
+<div id="fatalBanner" class="fatal-banner hidden"></div>
+
+<div class="app-shell" id="appShell">
+  <aside class="sidebar">
+    <div class="brand">
+      <img src="assets/icon-books-192.png?v=2.12.0" alt="MiAula" class="brand-icon">
+      <div><strong>MiAula Slate</strong><span>2.12.0 · Prepa</span></div>
+    </div>
+    <nav>
+      <button class="nav-item active" data-view="dashboard"><span class="nav-icon"><svg class="ui-icon" aria-hidden="true"><use href="#i-home"></use></svg></span><span>Inicio</span></button>
+      <button class="nav-item" data-view="groups"><span class="nav-icon"><svg class="ui-icon" aria-hidden="true"><use href="#i-groups"></use></svg></span><span>Grupos</span></button>
+      <button class="nav-item" data-view="attendance"><span class="nav-icon"><svg class="ui-icon" aria-hidden="true"><use href="#i-attendance"></use></svg></span><span>Asistencia</span></button>
+      <button class="nav-item" data-view="dynamics"><span class="nav-icon"><svg class="ui-icon" aria-hidden="true"><use href="#i-roulette"></use></svg></span><span>Ruleta y equipos</span></button>
+      <button class="nav-item" data-view="activities"><span class="nav-icon"><svg class="ui-icon" aria-hidden="true"><use href="#i-activity"></use></svg></span><span>Calificaciones</span></button>
+      <button class="nav-item" data-view="notebook"><span class="nav-icon"><svg class="ui-icon" aria-hidden="true"><use href="#i-notebook"></use></svg></span><span>Cuaderno</span></button>
+      <button class="nav-item" data-view="grading"><span class="nav-icon"><svg class="ui-icon" aria-hidden="true"><use href="#i-percent"></use></svg></span><span>Parcial</span></button>
+      <button class="nav-item" data-view="evaluation"><span class="nav-icon"><svg class="ui-icon" aria-hidden="true"><use href="#i-eval"></use></svg></span><span id="evaluationNavLabel">Proyecto</span></button>
+      <button class="nav-item" data-view="more"><span class="nav-icon"><svg class="ui-icon" aria-hidden="true"><use href="#i-data"></use></svg></span><span>Más</span></button>
+    </nav>
+    <div class="sidebar-foot"><span class="status-dot"></span><small id="systemStatus">Preparando almacenamiento…</small></div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar app-topbar">
+      <div class="topbar-left">
+        <button class="menu-home-btn hidden" id="mainMenuBtn" type="button" aria-label="Volver al menú principal"><span><svg class="ui-icon" aria-hidden="true"><use href="#i-home"></use></svg></span><b>Menú principal</b></button>
+        <div class="topbar-title"><div class="eyebrow" id="todayLabel"></div><h1 id="viewTitle">Inicio</h1></div>
+      </div>
+      <div class="context-bar" id="contextBar">
+        <div class="context-brand"><span class="context-icon"><svg class="ui-icon" aria-hidden="true"><use href="#i-groups"></use></svg></span><div><small>Grupo activo</small><select id="contextGroup"><option value="">Seleccionar…</option></select></div></div>
+        <div class="context-period"><small>Periodo</small><strong id="contextPeriod">Sin grupo</strong></div>
+        <div class="context-spacer"></div>
+        <button class="context-action" id="contextNotebook"><svg class="ui-icon" aria-hidden="true"><use href="#i-notebook"></use></svg><span>Cuaderno</span></button>
+        <button class="context-action" id="contextAttendance"><svg class="ui-icon" aria-hidden="true"><use href="#i-attendance"></use></svg><span>Asistencia</span></button>
+      </div>
+      <div class="top-actions">
+        <div class="save-state saved" id="saveStateWrap"><span class="save-state-dot"></span><span id="saveState">Todo guardado</span></div>
+        <span class="version-badge">MiAula Slate · 2.12.0 Prepa</span>
+        <button class="btn icon-btn theme-toggle" id="themeToggle" type="button" aria-label="Cambiar a modo claro" title="Cambiar a modo claro"><svg class="ui-icon" aria-hidden="true"><use href="#i-sun"></use></svg></button>
+        <button class="btn class-mode-btn" id="classModeTop">Modo clase</button>
+        <button class="btn primary" id="quickAttendance">+ Asistencia</button>
+      </div>
+    </header>
+
+    <section id="view-dashboard" class="view active">
+      <div class="hero">
+        <div class="hero-copy">
+          <h2>Control de bitácora</h2>
+          <p class="hero-author">by Ing. Niccolás C.M.</p>
+          <div class="hero-actions"><button class="btn primary hero-class-cta" id="startClassMode"><svg class="ui-icon" aria-hidden="true"><use href="#i-class"></use></svg><span>Iniciar clase</span></button><button class="btn ghost-light" onclick="goView('attendance')">Tomar asistencia</button><button class="btn ghost-light" onclick="openDynamicsMode('roulette')">Abrir ruleta</button></div>
+        </div>
+        <div class="hero-brand"><div class="brand-mark" role="img" aria-label="MiAula"><svg viewBox="0 0 64 64" aria-hidden="true"><defs><linearGradient id="miaulaMarkGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" style="stop-color:var(--mark-a)"/><stop offset="1" style="stop-color:var(--mark-b)"/></linearGradient></defs><rect x="2" y="2" width="60" height="60" rx="16" fill="url(#miaulaMarkGrad)"/><path d="M14 20.5c6-2.6 12-2.2 18 1.6v24c-6-3.8-12-4.2-18-1.6z" fill="#fff" opacity=".96"/><path d="M50 20.5c-6-2.6-12-2.2-18 1.6v24c6-3.8 12-4.2 18-1.6z" fill="#fff" opacity=".72"/><path d="m36.5 33.2 3.6 3.6 6.4-7" fill="none" style="stroke:var(--mark-b)" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="brand-word"><b>Mi<strong>Aula</strong></b><small>Slate · Prepa</small></span></div></div>
+      </div>
+      <div class="kpis" id="kpis"></div>
+      <div class="quick-actions app-quick-actions">
+        <button class="quick-card tone-green" onclick="goView('attendance')"><span class="quick-icon"><svg class="ui-icon" aria-hidden="true"><use href="#i-attendance"></use></svg></span><div><strong>Asistencia</strong><small>Una captura, varias horas</small></div></button>
+        <button class="quick-card tone-blue" onclick="openNotebook()"><span class="quick-icon"><svg class="ui-icon" aria-hidden="true"><use href="#i-notebook"></use></svg></span><div><strong>Cuaderno digital</strong><small>Revisar alumno por alumno</small></div></button>
+        <button class="quick-card tone-orange" onclick="openDynamicsMode('roulette')"><span class="quick-icon"><svg class="ui-icon" aria-hidden="true"><use href="#i-roulette"></use></svg></span><div><strong>Ruleta</strong><small>Participación y extras</small></div></button>
+        <button class="quick-card tone-purple" onclick="openDynamicsMode('teams')"><span class="quick-icon"><svg class="ui-icon" aria-hidden="true"><use href="#i-teams"></use></svg></span><div><strong>Equipos</strong><small>2 o 3 integrantes</small></div></button>
+        <button class="quick-card tone-slate" onclick="goView('activities')"><span class="quick-icon"><svg class="ui-icon" aria-hidden="true"><use href="#i-activity"></use></svg></span><div><strong>Nueva actividad</strong><small>Crear trabajo o práctica</small></div></button>
+        <button class="quick-card tone-admin" onclick="goView('more')"><span class="quick-icon"><svg class="ui-icon" aria-hidden="true"><use href="#i-data"></use></svg></span><div><strong>Administración</strong><small>Porcentajes, Excel y respaldo</small></div></button>
+      </div>
+      <div id="classSnapshot" class="class-snapshot panel">
+        <div class="snapshot-empty">Selecciona un grupo activo para ver el estado de la clase.</div>
+      </div>
+      <div class="dash-status-row">
+        <div id="attentionPanel" class="panel attention-panel"><div class="attention-empty">Selecciona un grupo para ver lo que requiere atención.</div></div>
+        <div id="backupReminder" class="panel backup-reminder"></div>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><div><h3>Mis grupos activos</h3><p>Abre el cuaderno de un grupo o usa la barra inferior.</p></div><button class="btn subtle" onclick="goView('groups')">Administrar</button></div>
+        <div id="dashboardGroups" class="group-grid"></div>
+      </div>
+    </section>
+
+    <section id="view-groups" class="view">
+      <div class="grid-2">
+        <div class="panel">
+          <div class="panel-head"><div><h3>Crear grupo</h3><p>Para preparatoria o bachillerato.</p></div></div>
+          <form id="groupForm" class="form-grid">
+            <label>Grado / semestre<input name="grade" placeholder="Ej. 1° / 2° semestre" required></label>
+            <label>Grupo<input name="name" placeholder="Ej. 1J" required></label>
+            <label class="span-2">Disciplina / asignatura<input name="discipline" placeholder="Ej. Cultura Digital" required></label>
+            <label>Ciclo escolar<input name="school_year" value="2026-2027"></label>
+            <label>Número de parciales<select name="total_periods"><option value="1">1</option><option value="2">2</option><option value="3" selected>3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option></select></label>
+            <button class="btn primary span-2" type="submit">Crear grupo</button>
+          </form>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><div><h3>Importar lista desde Excel</h3><p>Preferencia: Apellido paterno · Apellido materno · Nombre(s).</p></div></div>
+          <label>Grupo destino<select id="importGroup"></select></label>
+          <label class="upload-box">⇧ <strong>Seleccionar archivo Excel</strong><span>.xlsx desde la tablet</span><input id="excelFile" type="file" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" hidden></label>
+          <div id="excelWizard" class="wizard hidden"></div>
+        </div>
+      </div>
+      <div class="panel"><div class="panel-head"><div><h3>Grupos registrados</h3><p>Altas, bajas, edición y orden A–Z por apellido paterno.</p></div></div><div id="groupsTable"></div></div>
+    </section>
+
+    <section id="view-attendance" class="view">
+      <div class="attendance-page-head">
+        <div><span class="eyebrow">Pase de lista</span><h2>Asistencia</h2><p>Todos inician con <strong>Falta</strong>. Marca manualmente P, R o J para evitar asistencias accidentales.</p></div>
+        <button class="btn subtle attendance-history-open" id="openAttendanceHistorySection" type="button">Historial de asistencia</button>
+      </div>
+      <div class="toolbar attendance-toolbar">
+        <label>Grupo<select id="attendanceGroup"></select></label>
+        <label>Fecha<input id="attendanceDate" type="date"></label>
+        <label>Horas con el grupo<select id="attendanceHours"><option value="1">1 hora</option><option value="2">2 horas</option><option value="3">3 horas</option><option value="4">4 horas</option><option value="5">5 horas</option><option value="6">6 horas</option><option value="7">7 horas</option><option value="8">8 horas</option></select></label>
+        <button class="btn primary" id="loadAttendance">Cargar lista</button>
+      </div>
+      <div id="attendanceStats" class="attendance-stats hidden"></div>
+      <div class="panel">
+        <div class="panel-head"><div><h3>Asistencia del día</h3><p>Los alumnos sin cambio quedan como falta. Los marcados <strong>Pendiente Secretaría</strong> no cuentan en el porcentaje hasta resolver su situación.</p></div><div class="legend attendance-legend"><span class="status-key present"><i></i><b>P</b> Presente</span><span class="status-key absent"><i></i><b>F</b> Falta</span><span class="status-key late"><i></i><b>R</b> Retardo</span><span class="status-key justified"><i></i><b>J</b> Justificada</span></div></div>
+        <div id="attendanceList" class="student-list empty-state">Selecciona grupo, fecha y horas.</div>
+        <button id="saveAttendance" class="btn primary wide hidden">Guardar asistencia</button>
+      </div>
+    </section>
+
+    <section id="view-attendanceHistory" class="view">
+      <div class="attendance-page-head">
+        <div><span class="eyebrow">Seguimiento</span><h2>Historial de asistencia</h2><p>Consulta faltas acumuladas, corrige registros anteriores y resuelve alumnos pendientes con Secretaría.</p></div>
+        <button class="btn subtle" id="backToAttendance" type="button">Volver al pase de lista</button>
+      </div>
+      <div class="toolbar attendance-history-toolbar">
+        <label>Grupo<select id="attendanceHistoryGroup"></select></label>
+        <label>Parcial<select id="attendanceHistoryPeriod"></select></label>
+        <button class="btn primary" id="refreshAttendanceMonitor" type="button">Actualizar historial</button>
+        <button class="btn subtle" id="printAttendanceReport" type="button"><svg class="ui-icon" aria-hidden="true"><use href="#i-print"></use></svg><span>Reporte para Secretaría (PDF)</span></button>
+        <button class="btn subtle" id="exportAttendanceList" type="button"><svg class="ui-icon" aria-hidden="true"><use href="#i-excel"></use></svg><span>Lista de asistencia (Excel)</span></button>
+      </div>
+      <div class="panel secretary-pending-panel">
+        <div class="panel-head"><div><h3>Pendientes con Secretaría</h3><p>Estos alumnos siguen guardados en MiAula, pero sus registros pendientes no cuentan como asistencia ni falta.</p></div></div>
+        <div id="secretaryPendingList"><div class="empty-state">Selecciona un grupo para revisar pendientes.</div></div>
+      </div>
+      <div class="panel attendance-monitor-panel">
+        <div class="panel-head attendance-monitor-head"><div><h3 id="attendanceMonitorTitle">Asistencia del parcial</h3><p>Cada parcial empieza en 0. Elige un parcial cerrado para consultarlo o «Todo el semestre» para verlo completo.</p></div></div>
+        <div id="attendanceMonitorSummary" class="attendance-monitor-summary"><div class="empty-state">Selecciona un grupo para ver el seguimiento acumulado.</div></div>
+        <div id="attendanceMonitorTable" class="attendance-monitor-table"></div>
+        <p class="attendance-monitor-note"><strong>Asist. 0-10</strong> = clases con asistencia ÷ clases del parcial × 10 (P, R y J cuentan como asistencia; solo F resta). El porcentaje de faltas usa únicamente horas con P, F, R o J. <strong>Pendiente Secretaría</strong> queda fuera del cálculo hasta que confirmes la situación.</p>
+      </div>
+    </section>
+
+    <section id="view-dynamics" class="view">
+      <div class="panel dynamics-head">
+        <div class="dynamics-controls">
+          <label>Grupo<select id="dynamicsGroup"></select></label>
+          <div class="segmented" id="dynamicsTabs"><button class="active" data-mode="roulette"><svg class="ui-icon" aria-hidden="true"><use href="#i-roulette"></use></svg><span>Participación</span></button><button data-mode="teams"><svg class="ui-icon" aria-hidden="true"><use href="#i-teams"></use></svg><span>Formar equipos</span></button></div>
+          <label class="toggle-line" id="presentOnlyWrap"><input type="checkbox" id="dynamicsPresentOnly" checked><span>Solo alumnos presentes hoy</span></label>
+        </div>
+        <div id="dynamicsSourceInfo" class="source-info">Selecciona un grupo.</div>
+      </div>
+
+      <div id="rouletteMode" class="dynamics-mode">
+        <div class="roulette-layout">
+          <div class="panel wheel-panel">
+            <div class="wheel-wrap"><div class="wheel-pointer"></div><canvas id="rouletteCanvas" width="720" height="720"></canvas><button id="spinWheel" class="spin-center">GIRAR</button></div>
+            <div class="wheel-actions">
+              <button class="btn vivid-action" id="fullscreenWheel" title="Mostrar la ruleta en pantalla completa">⛶ Pantalla completa</button>
+              <button class="btn subtle" id="resetWheel">Reiniciar ruleta</button>
+              <span id="rouletteCounter">0 disponibles</span>
+            </div>
+          </div>
+          <div class="panel result-panel" id="rouletteResultPanel">
+            <span class="result-label">Alumno seleccionado</span>
+            <div id="rouletteNumber" class="result-number"></div>
+            <div id="rouletteName" class="result-name">Gira la ruleta</div>
+            <p>La ruleta muestra únicamente números. Al detenerse, MiAula revela el nombre enlazado a la lista activa.</p>
+            <div id="rouletteExtraActions" class="roulette-extra-actions hidden">
+              <span class="result-label">Registrar participación</span>
+              <div class="roulette-extra-buttons"><button type="button" id="rouletteGood" class="btn extra-good-btn">Extra +</button><button type="button" id="rouletteBad" class="btn extra-bad-btn">Extra −</button></div>
+              <small id="rouletteExtraStatus">Cada participación registra un punto.</small>
+            </div>
+            <div><h4>Ya participaron</h4><div id="usedStudents" class="used-grid"><span class="muted-text">Nadie todavía.</span></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="teamsMode" class="dynamics-mode hidden">
+        <div class="panel teams-control-panel">
+          <div class="teams-toolbar"><label>Integrantes preferidos<select id="teamSize"><option value="3">3 por equipo</option><option value="2">2 por equipo</option></select></label><button class="btn primary large" id="manualTeams">Crear equipos</button><button class="btn subtle large" id="generateTeams">Crear automáticamente</button><button class="btn subtle" id="openTeamNotebook">Libreta por equipos</button><button class="btn subtle" id="copyTeams">Copiar equipos</button><button class="btn danger" id="clearTeams">Limpiar equipos</button></div>
+          <div class="team-saved-status"><strong id="teamsSavedInfo">Sin equipos guardados</strong><span>Los equipos permanecen guardados hasta que tú los limpies. Las calificaciones no se borran.</span></div>
+          <p class="muted-text"><strong>Equipos usa siempre la lista completa del grupo.</strong> La asistencia del día no limita quién puede integrarse. Solo se excluyen alumnos dados de baja o pendientes de confirmación con Secretaría.</p>
+          <div id="manualTeamsPanel" class="manual-teams-panel hidden">
+            <div class="manual-teams-head">
+              <div><span class="eyebrow">Equipos del grupo</span><h3>Selecciona alumnos y arma cada equipo</h3><p>Crea un equipo y toca alumnos de la lista. Cada cambio se guarda automáticamente. Puedes cerrar y continuar otro día sin perder lo capturado.</p></div>
+              <div class="manual-team-actions"><button type="button" class="btn small primary" id="addManualTeam">+ Crear equipo</button><button type="button" class="btn small subtle" id="removeManualTeam">Quitar último</button><button type="button" class="btn small" id="cancelManualTeams">Cerrar y continuar después</button><button type="button" class="btn small primary" id="saveManualTeams">Guardar y salir</button></div>
+            </div>
+            <div id="manualTeamSummary" class="manual-team-summary"></div>
+            <div id="manualTeamRoster" class="manual-team-roster"></div>
+          </div>
+        </div>
+        <div id="teamsResult" class="teams-grid"><div class="empty-state">Selecciona un grupo y crea los equipos.</div></div>
+      </div>
+    </section>
+
+    <section id="view-activities" class="view">
+      <div class="section-status-row">
+        <span class="period-badge" id="activityPeriodBadge">Selecciona un grupo</span>
+        <div class="segmented activities-tabs" id="activitiesTabs" role="tablist" aria-label="Secciones de Calificaciones">
+          <button type="button" class="active" data-tab="activities" role="tab" aria-selected="true"><svg class="ui-icon" aria-hidden="true"><use href="#i-activity"></use></svg><span>Actividades</span></button>
+          <button type="button" data-tab="rubrics" role="tab" aria-selected="false"><svg class="ui-icon" aria-hidden="true"><use href="#i-eval"></use></svg><span>Rúbricas y listas de cotejo</span></button>
+        </div>
+      </div>
+      <div id="rubricLibrary" class="rubric-library hidden" role="tabpanel" aria-label="Rúbricas y listas de cotejo"></div>
+      <div id="activitiesTabMain">
+      <div class="grid-2">
+        <div class="panel"><div class="panel-head"><div><h3>Nueva actividad</h3><p>Trabajos, prácticas y exposiciones del parcial activo.</p></div></div>
+          <form id="activityForm" class="form-grid">
+            <label class="span-2">Grupo<select name="group_id" id="activityGroup"></select></label>
+            <label class="span-2">Nombre<input name="title" placeholder="Ej. Actividad de funciones" required></label>
+            <label>Tipo<select name="activity_type"><option>Trabajo</option><option>Práctica</option><option>Exposición</option></select></label>
+            <label class="hidden" id="activityRubroLabel">Cuenta en<select name="component_id" id="activityRubro"><option value="">Trabajos</option></select></label>
+            <fieldset class="span-2 grading-mode-field">
+              <legend>Cómo se califica</legend>
+              <div class="grading-mode-options">
+                <label class="grading-mode-option"><input type="radio" name="grading_mode" value="number" checked><span><b>Número</b><small>Escribes la calificación (0 al máximo o NP)</small></span></label>
+                <label class="grading-mode-option"><input type="radio" name="grading_mode" value="rubric"><span><b>Rúbrica o lista de cotejo</b><small>Tocas el nivel de cada criterio y MiAula calcula la nota</small></span></label>
+              </div>
+            </fieldset>
+            <label class="span-2 hidden" id="activityRubricLabel">Rúbrica o lista de cotejo<select name="rubric_ref" id="activityRubricSelect"></select><small class="field-help">Se guarda una copia dentro de la actividad: si después editas la plantilla, las notas ya puestas no cambian.</small></label>
+            <label id="activityMaxLabel">Puntaje máximo<input type="number" name="max_score" value="10" min="1" step="0.1"></label>
+            <label>Peso<input type="number" name="weight" value="1" min="0" step="0.1"></label>
+            <label>Fecha<input type="date" name="activity_date" id="activityDate"></label>
+            <button class="btn primary span-2" type="submit">Crear actividad</button>
+          </form>
+        </div>
+        <div class="panel"><div class="panel-head"><div><h3>Actividades del parcial</h3><p>Al cerrar el parcial, esta área inicia limpia; el historial se conserva.</p></div></div><label>Ver grupo<select id="activityFilter"></select></label><div id="activityCards" class="stack"></div></div>
+      </div>
+      </div>
+      <div id="gradePanel" class="panel hidden"><div class="panel-head"><div><h3 id="gradeTitle">Captura</h3><p>Usa botones rápidos o escribe la calificación.</p></div><button class="btn subtle" id="fillMax">Máximo a todos</button></div><div id="gradeList"></div><button id="saveGrades" class="btn primary wide">Guardar calificaciones</button></div>
+    </section>
+
+    <section id="view-notebook" class="view">
+      <div class="notebook-header panel">
+        <div class="notebook-title-copy">
+          <span class="eyebrow">Libreta digital</span>
+          <h2>Cuaderno de calificaciones</h2>
+          <p>Captura y consulta como una hoja de cálculo. El encabezado y los datos del alumno permanecen visibles.</p>
+        </div>
+        <div class="notebook-header-actions notebook-primary-actions">
+        </div>
+      </div>
+      <div class="notebook-workbar" aria-label="Controles del cuaderno">
+        <div class="notebook-workbar-main">
+          <label class="notebook-field"><span>Grupo</span><select id="notebookGroup"></select></label>
+          <label class="notebook-field notebook-period-field"><span>Parcial</span><select id="notebookPeriod"></select></label>
+          <label class="notebook-search"><svg class="ui-icon" aria-hidden="true"><use href="#i-search"></use></svg><input id="notebookSearch" type="search" placeholder="Buscar alumno…" autocomplete="off"></label>
+          <select id="notebookFilter" aria-label="Filtrar cuaderno"><option value="all">Todos los alumnos</option><option value="pending">Con pendientes</option><option value="np">Con NP</option><option value="low">Con calificación menor a 6</option></select>
+        </div>
+        <div class="notebook-workbar-actions">
+          <button class="btn student-view-btn" id="notebookStudentView"><svg class="ui-icon" aria-hidden="true"><use href="#i-groups"></use></svg><span>Por alumno</span></button>
+          <button class="btn student-view-btn" id="notebookTeamView"><svg class="ui-icon" aria-hidden="true"><use href="#i-teams"></use></svg><span>Por equipos</span></button>
+          <div class="notebook-density" role="group" aria-label="Densidad del cuaderno">
+            <button type="button" id="notebookDensityCompact" class="density-btn active" aria-pressed="true">Compacta</button>
+            <button type="button" id="notebookDensityComfort" class="density-btn" aria-pressed="false">Cómoda</button>
+          </div>
+          <button type="button" class="btn student-view-btn" id="notebookKeypadToggle" aria-pressed="true"><svg class="ui-icon" aria-hidden="true"><use href="#i-keypad"></use></svg><span>Teclado MiAula</span></button>
+          <span id="notebookFilterCount" class="filter-count"></span>
+          <div class="notebook-workbar-end">
+            <button class="btn subtle" id="notebookReload"><svg class="ui-icon" aria-hidden="true"><use href="#i-refresh"></use></svg><span>Recargar</span></button>
+            <button class="btn primary" id="notebookSave">Guardar correcciones</button>
+            <button class="btn vivid-action" id="notebookPresentation"><svg class="ui-icon" aria-hidden="true"><use href="#i-screen"></use></svg><span>Presentación</span></button>
+            <button class="btn primary" id="notebookExcel"><svg class="ui-icon" aria-hidden="true"><use href="#i-excel"></use></svg><span>Generar Excel</span></button>
+          </div>
+        </div>
+      </div>
+      <div id="notebookTeamToolbar" class="team-notebook-toolbar hidden">
+        <div class="team-notebook-top">
+          <div class="team-notebook-title"><span class="eyebrow">Calificación por equipo</span><strong id="notebookTeamCounter">Equipo 1</strong><small id="notebookTeamMembers"></small></div>
+          <div class="team-notebook-nav"><button class="btn small subtle" id="teamPrev">← Anterior</button><select id="notebookTeamFilter" aria-label="Equipo"></select><button class="btn small subtle" id="teamNext">Siguiente →</button><button class="btn small" id="exitTeamNotebook">Todos los alumnos</button></div>
+        </div>
+        <div class="team-grade-strip">
+          <label>Actividad<select id="teamActivitySelect"></select></label>
+          <label>Calificación<input id="teamActivityScore" inputmode="decimal" placeholder="10 o NP"></label>
+          <button class="btn primary" id="applyTeamActivity">Aplicar al equipo</button>
+          <button class="btn subtle" id="openTeamProjectFromNotebook">Evaluar proyecto del equipo</button>
+        </div>
+      </div>
+      <div class="notebook-toolbar">
+        <div class="notebook-legend">
+          <span><b class="legend-dot captured"></b> Capturada</span>
+          <span><b class="legend-dot pending"></b> Pendiente</span>
+          <span><b class="legend-dot np"></b> NP</span>
+          <span id="notebookModeLabel" class="period-badge">Selecciona un grupo</span>
+        </div>
+        <div class="action-row">
+        </div>
+      </div>
+      <div id="notebookSummary" class="notebook-summary hidden"></div>
+      <div id="notebookTable" class="panel empty-state">Selecciona un grupo para abrir su cuaderno digital.</div>
+      <p class="notebook-help">Puedes escribir una calificación o <strong>NP</strong> en las actividades. La columna <strong>Puntos extra</strong> permite agregar puntos buenos o malos y usar los buenos disponibles en una actividad ya calificada. En Proyecto, la calificación continúa calculándose desde las rúbricas/listas de cotejo; en Examen puedes corregir directamente de 0 a 10.</p>
+    </section>
+
+    <section id="view-grading" class="view">
+      <div class="partial-header panel">
+        <div>
+          <span class="eyebrow">Periodo activo</span>
+          <h2>Parcial <span id="currentPartialNumber">1</span></h2>
+          <span class="period-badge" id="gradingPeriodBadge">Selecciona un grupo</span>
+        </div>
+        <div class="partial-header-actions">
+          <label>Grupo<select id="gradingGroup"></select></label>
+          <button class="btn subtle" id="consultPastPeriodsBtn" type="button">Consultar parciales pasados</button>
+          <button class="btn danger-outline" id="closePeriodBtn">Cerrar parcial e iniciar siguiente</button>
+        </div>
+      </div>
+
+      <div class="grid-2 grading-top">
+        <div class="panel"><div class="panel-head"><div><h3>Esquema de evaluación</h3><p>Define los porcentajes, elige si el componente principal será Proyecto o Examen y agrega los rubros que uses.</p></div></div>
+          <form id="schemeForm" class="scheme-grid">
+            <div class="principal-choice span-2">
+              <span class="field-label">Componente principal del parcial</span>
+              <div class="segmented principal-segmented">
+                <button type="button" id="principalProjectBtn" class="active">Proyecto</button>
+                <button type="button" id="principalExamBtn">Examen</button>
+              </div>
+              <small id="principalModeNote">Elige Proyecto o Examen antes de guardar el esquema del parcial.</small>
+            </div>
+            <label class="scheme-item variable"><span>Trabajos <small>grupo</small></span><div class="percent-input"><input id="workPct" type="number" min="0" max="100" step="1" value="40"><b>%</b></div></label>
+            <label class="scheme-item variable"><span><span id="principalPctLabel">Proyecto</span> <small>grupo</small></span><div class="percent-input"><input id="projectPct" type="number" min="0" max="100" step="1" value="40"><b>%</b></div></label>
+            <label class="scheme-item fixed" id="valuesSchemeItem"><span>Valores <small>docente</small></span><div class="percent-input"><input id="valuesPct" type="number" min="0" max="100" step="1" value="10"><b>%</b></div></label>
+            <label class="scheme-item fixed" id="attitudesSchemeItem"><span>Actitudes <small>docente</small></span><div class="percent-input"><input id="attitudesPct" type="number" min="0" max="100" step="1" value="10"><b>%</b></div></label>
+            <label class="scheme-item fixed attendance-scheme-item hidden" id="attendanceSchemeItem"><span>Asistencia <small>automática · 0% = no cuenta</small></span><div class="percent-input"><input id="attendancePct" type="number" min="0" max="100" step="1" value="10"><b>%</b></div></label>
+            <div class="custom-rubros span-2" id="customRubrosBox">
+              <div class="custom-rubros-head"><div><span class="field-label">Rubros adicionales</span><small>Crea los que necesites. «Captura directa»: escribes 0–10 por alumno. «Promedio de actividades»: eliges el rubro al crear la actividad.</small></div><button type="button" class="btn small subtle" id="addCustomRubro"><svg class="ui-icon" aria-hidden="true"><use href="#i-plus"></use></svg><span>Agregar rubro</span></button></div>
+              <div id="customRubrosList" class="custom-rubros-list"></div>
+            </div>
+            <div class="scheme-total span-2"><span>Total</span><strong id="schemeTotal">100%</strong></div>
+            <button class="btn primary span-2" type="submit">Guardar esquema del parcial</button>
+          </form>
+        </div>
+        <div class="panel"><div class="panel-head"><div><h3>Promedio del grupo</h3><p>El final aparece cuando todos los rubros con porcentaje tienen información.</p></div></div><div class="term-average"><span>Parcial actual</span><strong id="gradingGroupAverage">—</strong></div><p class="muted-text"><span id="gradingPrincipalLabel">Proyecto</span> utiliza el mismo porcentaje definido como componente principal. Al cerrar el parcial, el siguiente inicia limpio.</p></div>
+      </div>
+
+      <div class="panel"><div class="panel-head"><div><h3 id="componentsPanelTitle">Valores, actitudes y final</h3><p id="componentsPanelNote">Trabajos y el componente principal se calculan automáticamente.</p></div><div class="action-row"><button class="btn small subtle" id="fillValues10">Valores 10</button><button class="btn small subtle" id="fillAttitudes10">Actitudes 10</button></div></div><div id="gradingTable" class="empty-state">Selecciona un grupo.</div><button id="saveComponents" class="btn primary wide hidden">Guardar rubros</button></div>
+    </section>
+
+    <section id="view-evaluation" class="view">
+      <div class="section-status-row">
+        <div>
+          <h2 id="evaluationTitle">Proyecto</h2>
+          <span class="period-badge" id="evaluationPeriodBadge">Selecciona un grupo</span>
+        </div>
+        <label class="inline-select">Grupo<select id="evalGroup"></select></label>
+      </div>
+
+      <div id="closedPrincipalNotice" class="notice-card hidden"></div>
+
+      <div class="grid-2">
+        <div class="panel project-bank-panel"><div class="panel-head"><div><h3>Banco de rúbricas</h3><p>Elige con qué vas a evaluar el proyecto. Tus rúbricas se quedan guardadas para los siguientes parciales.</p></div></div>
+          <div class="bank-actions" role="group" aria-label="Opciones del banco de rúbricas">
+            <button type="button" class="bank-action" id="bankPick"><span class="bank-action-icon"><svg class="ui-icon" aria-hidden="true"><use href="#i-eval"></use></svg></span><span><b>Elegir una ya hecha</b><small>Del banco de MiAula o de las tuyas</small></span></button>
+            <button type="button" class="bank-action" id="bankModify"><span class="bank-action-icon"><svg class="ui-icon" aria-hidden="true"><use href="#i-activity"></use></svg></span><span><b>Modificar una</b><small>Cambia criterios, pesos o niveles</small></span></button>
+            <button type="button" class="bank-action" id="bankCreate"><span class="bank-action-icon"><svg class="ui-icon" aria-hidden="true"><use href="#i-plus"></use></svg></span><span><b>Crear una nueva</b><small>Rúbrica o lista de cotejo</small></span></button>
+            <button type="button" class="bank-action" id="bankUpload"><span class="bank-action-icon"><svg class="ui-icon" aria-hidden="true"><use href="#i-backup"></use></svg></span><span><b>Subir un archivo</b><small>La que te compartió otro docente</small></span></button>
+          </div>
+          <div id="projectBankSelected" class="bank-selected"></div>
+          <div class="bank-mine-head"><h4>Mis rúbricas</h4><small id="projectBankCount"></small></div>
+          <div id="projectMyRubrics" class="bank-mini-list"></div>
+          <details class="legacy-instruments"><summary>Instrumentos del formato anterior</summary>
+          <p class="muted-text">Aquí siguen tus rúbricas y listas de cotejo de versiones anteriores, con sus evaluaciones. También puedes crear una en ese formato.</p>
+          <form id="instrumentForm">
+            <label>Nombre<input id="instrumentName" placeholder="Ej. Rúbrica de proyecto" required></label>
+            <label>Tipo<select id="instrumentType"><option value="rubric">Rúbrica</option><option value="checklist">Lista de cotejo</option></select></label>
+            <label class="check-line"><input type="checkbox" id="convertGrade" checked> Convertir resultado a calificación 0–10</label>
+            <div class="criteria-editor"><div class="criteria-head"><strong>Criterios</strong><button type="button" class="btn small subtle" id="addCriterion">+ Agregar</button></div><div id="criteriaRows"></div></div>
+            <button class="btn primary wide" type="submit">Guardar en banco</button>
+          </form>
+          <div id="instrumentCards" class="stack instruments-stack"></div>
+          </details>
+        </div>
+
+        <div id="projectWorkspace" class="panel">
+          <div class="panel-head"><div><h3>Evaluar proyecto</h3><p>1) Elige la rúbrica · 2) Escribe el nombre del proyecto · 3) Marca a los alumnos (o elige un equipo guardado) · 4) Toca el nivel de cada criterio · 5) Guardar.</p></div></div>
+          <div class="form-grid eval-top">
+            <label class="span-2">Rúbrica o lista de cotejo<select id="evalInstrument"></select></label>
+            <label class="span-2">Nombre del proyecto<input id="evalTitle" placeholder="Ej. Proyecto Arduino"></label>
+            <label class="span-2">Equipo guardado<select id="evalSavedTeam"><option value="">Seleccionar equipo guardado…</option></select></label>
+            <label>Equipo<input id="evalTeam" placeholder="Opcional"></label>
+            <label>Fecha<input id="evalDate" type="date"></label>
+          </div>
+          <h4>Alumnos activos</h4><div id="evalStudents" class="student-picker empty-state">Selecciona un grupo.</div>
+          <h4>Evaluación</h4><div id="evalCriteria" class="empty-state">Elige una rúbrica en el banco.</div>
+          <label>Observaciones<textarea id="evalNotes" rows="3"></textarea></label>
+          <button id="saveEvaluation" class="btn primary wide">Guardar proyecto</button>
+        </div>
+
+        <div id="examWorkspace" class="panel hidden">
+          <div class="panel-head"><div><h3>Calificación del examen</h3><p>Captura directamente de 0 a 10. Este valor ocupa el porcentaje asignado al componente principal.</p></div><button class="btn subtle" id="fillExam10">10 a todos</button></div>
+          <div id="examGradeList" class="empty-state">Selecciona un grupo.</div>
+          <button id="saveExamScores" class="btn primary wide">Guardar examen</button>
+        </div>
+      </div>
+
+      <div class="panel" id="projectHistoryPanel"><div class="panel-head"><div><h3>Proyectos del parcial activo</h3><p>Al cerrar el parcial dejan de mostrarse aquí, pero permanecen en el historial y Excel.</p></div></div><div id="evalHistory"></div></div>
+    </section>
+
+    <section id="view-more" class="view">
+      <div class="admin-hero panel">
+        <div class="admin-hero-copy"><span class="eyebrow">Centro de administración</span><h2>Configuración y seguridad</h2><p>Accesos directos a las funciones que no deben perderse de vista.</p></div>
+        <div class="admin-current" id="adminCurrentGroup"><span>Grupo activo</span><strong>Selecciona un grupo</strong><small>—</small></div>
+      </div>
+      <div class="admin-primary-grid">
+        <button class="admin-primary-card tone-percent" onclick="goView('grading')"><span class="admin-card-icon"><svg class="ui-icon" aria-hidden="true"><use href="#i-percent"></use></svg></span><div><small>Evaluación</small><strong>Porcentajes del parcial</strong><p id="adminSchemeSummary">Trabajos · Principal · Asistencia</p></div><b>→</b></button>
+        <button class="admin-primary-card tone-principal" onclick="goView('evaluation')"><span class="admin-card-icon"><svg class="ui-icon" aria-hidden="true"><use href="#i-eval"></use></svg></span><div><small>Componente principal</small><strong id="adminPrincipalTitle">Proyecto / Examen</strong><p id="adminPrincipalSummary">Configura el componente del parcial activo</p></div><b>→</b></button>
+        <button class="admin-primary-card tone-excel" id="adminExportBtn" type="button"><span class="admin-card-icon"><svg class="ui-icon" aria-hidden="true"><use href="#i-excel"></use></svg></span><div><small>Concentrado completo</small><strong>Exportar todo a Excel</strong><p>Asistencia, actividades, parciales, extras e instrumentos</p></div><b>↓</b></button>
+        <button class="admin-primary-card tone-backup" id="adminBackupBtn" type="button"><span class="admin-card-icon"><svg class="ui-icon" aria-hidden="true"><use href="#i-backup"></use></svg></span><div><small>Seguridad</small><strong>Crear respaldo</strong><p>Copia completa de los datos de esta tablet</p></div><b>↓</b></button>
+      </div>
+      <div class="panel more-nav-panel">
+        <div class="panel-head"><div><h3>Gestión</h3><p>Herramientas complementarias de MiAula.</p></div></div>
+        <div class="more-nav-grid compact-admin-grid">
+          <button class="more-nav-card" onclick="goView('groups')"><span><svg class="ui-icon" aria-hidden="true"><use href="#i-groups"></use></svg></span><strong>Grupos y alumnos</strong><small>Altas, bajas y listas</small></button>
+          <button class="more-nav-card" onclick="goView('activities')"><span><svg class="ui-icon" aria-hidden="true"><use href="#i-activity"></use></svg></span><strong>Calificaciones</strong><small>Crear y revisar actividades</small></button>
+          <button class="more-nav-card" onclick="goView('grading')"><span><svg class="ui-icon" aria-hidden="true"><use href="#i-percent"></use></svg></span><strong>Parcial</strong><small>Esquema, porcentajes y cierre</small></button>
+          <button class="more-nav-card" onclick="goView('evaluation')"><span><svg class="ui-icon" aria-hidden="true"><use href="#i-eval"></use></svg></span><strong id="moreEvaluationLabel">Proyecto</strong><small>Proyecto, rúbricas o examen</small></button>
+          <button class="more-nav-card" onclick="openPastPeriodsConsult(+$('#contextGroup')?.value||0)"><span><svg class="ui-icon" aria-hidden="true"><use href="#i-notebook"></use></svg></span><strong>Parciales pasados</strong><small>Consulta en solo lectura</small></button>
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="panel export-panel"><div class="excel-icon">X</div><h2>Exportar a Excel</h2><p>Incluye estadísticas de asistencia por hora, concentrado, parciales, actividades, proyecto/examen, puntos extra, instrumentos y bajas.</p><label>Grupo<select id="exportGroup"></select></label><button class="btn primary large" id="exportBtn">Generar Excel</button><button class="btn subtle large" id="exportAttendanceListAdmin" type="button">Lista de asistencia tradicional</button></div>
+        <div class="panel" id="backupPanel"><div class="panel-head"><div><h3>Respaldo</h3><p>Haz una copia antes de limpiar datos o actualizar MiAula.</p></div></div>
+          <p class="backup-last-info" id="backupLastInfo"></p>
+          <button class="btn primary wide" id="backupBtn">Descargar respaldo MiAula</button>
+          <label class="upload-box compact">↥ <strong>Restaurar respaldo</strong><span>Archivo .json de MiAula</span><input id="restoreFile" type="file" accept=".json,application/json" hidden></label>
+          <div class="danger-zone"><strong>Importante</strong><p>Restaurar reemplaza los datos actuales de la tablet.</p></div>
+        </div>
+      </div>
+      <div class="panel"><div class="panel-head"><div><h3>MiAula Slate 2.12.0 · Prepa</h3><p>Edición general para preparatoria: rubros de evaluación personalizables, equipos persistentes y libreta por equipos.</p></div></div><div class="about-grid"><div><strong>Dispositivo</strong><span>Tablet, PC o celular</span></div><div><strong>Datos</strong><span>IndexedDB local</span></div><div><strong>Internet</strong><span>No requerido después de instalar</span></div><div><strong>Sincronización</strong><span>No incluida en esta versión</span></div></div></div>
+    </section>
+  </main>
+</div>
+
+<nav class="bottom-app-nav" id="bottomAppNav" aria-label="Navegación principal">
+  <button class="app-tab active" data-app-view="dashboard"><span><svg class="ui-icon" aria-hidden="true"><use href="#i-home"></use></svg></span><b>Inicio</b></button>
+  <button class="app-tab" data-app-view="attendance"><span><svg class="ui-icon" aria-hidden="true"><use href="#i-attendance"></use></svg></span><b>Asistencia</b></button>
+  <button class="app-tab" data-app-view="notebook"><span><svg class="ui-icon" aria-hidden="true"><use href="#i-notebook"></use></svg></span><b>Cuaderno</b></button>
+  <button class="app-tab new-activity-tab" data-app-view="activities" data-focus="new-activity" aria-label="Nueva actividad"><span><svg class="ui-icon" aria-hidden="true"><use href="#i-plus"></use></svg></span><b>Actividad</b></button>
+  <button class="app-tab" data-app-view="dynamics" data-mode="roulette"><span><svg class="ui-icon" aria-hidden="true"><use href="#i-roulette"></use></svg></span><b>Ruleta</b></button>
+  <button class="app-tab" data-app-view="dynamics" data-mode="teams"><span><svg class="ui-icon" aria-hidden="true"><use href="#i-teams"></use></svg></span><b>Equipos</b></button>
+  <button class="app-tab" data-app-view="more"><span><svg class="ui-icon" aria-hidden="true"><use href="#i-data"></use></svg></span><b>Más</b></button>
+</nav>
+
+<div id="gradeKeypad" class="grade-keypad hidden" role="group" aria-label="Teclado de calificaciones">
+  <div class="kp-head">
+    <div class="kp-target"><small id="kpTargetLabel">Actividad</small><strong id="kpTargetName">Alumno</strong></div>
+    <output class="kp-value" id="kpValue">—</output>
+    <button type="button" class="kp-link" data-kp="system">Teclado del sistema</button>
+    <button type="button" class="kp-close" data-kp="close" aria-label="Cerrar teclado">✕</button>
+  </div>
+  <div class="kp-body">
+    <div class="kp-quick">
+      <button type="button" data-kp-quick="10">10</button><button type="button" data-kp-quick="9">9</button><button type="button" data-kp-quick="8">8</button><button type="button" data-kp-quick="7">7</button>
+      <button type="button" data-kp-quick="6">6</button><button type="button" data-kp-quick="5">5</button><button type="button" class="kp-np" data-kp-quick="NP">NP</button><button type="button" class="kp-clear" data-kp="clear">Borrar</button>
+    </div>
+    <div class="kp-digits">
+      <button type="button" data-kp-digit="7">7</button><button type="button" data-kp-digit="8">8</button><button type="button" data-kp-digit="9">9</button>
+      <button type="button" data-kp-digit="4">4</button><button type="button" data-kp-digit="5">5</button><button type="button" data-kp-digit="6">6</button>
+      <button type="button" data-kp-digit="1">1</button><button type="button" data-kp-digit="2">2</button><button type="button" data-kp-digit="3">3</button>
+      <button type="button" data-kp-digit=".">.</button><button type="button" data-kp-digit="0">0</button><button type="button" data-kp="back" aria-label="Borrar un dígito">⌫</button>
+    </div>
+    <div class="kp-nav">
+      <button type="button" class="kp-up" data-kp-move="up" aria-label="Arriba">↑</button>
+      <button type="button" class="kp-left" data-kp-move="left" aria-label="Izquierda">←</button>
+      <button type="button" class="kp-right" data-kp-move="right" aria-label="Derecha">→</button>
+      <button type="button" class="kp-down" data-kp-move="down">↓ Siguiente</button>
+    </div>
+  </div>
+</div>
+
+<div id="updateBanner" class="update-banner hidden" role="status"><svg class="ui-icon" aria-hidden="true"><use href="#i-refresh"></use></svg><span>Hay una versión nueva de MiAula lista.</span><button type="button" class="btn primary" id="updateNow">Actualizar ahora</button></div>
+<div id="printArea" class="print-area" aria-hidden="true"></div>
+
+<div id="rubricEditor" class="rubric-sheet hidden" role="dialog" aria-modal="true" aria-labelledby="rubricEditorTitle"></div>
+<div id="rubricEval" class="rubric-sheet rubric-eval hidden" role="dialog" aria-modal="true" aria-labelledby="rubricEvalTitle"></div>
+<div id="actionUndo" class="action-undo hidden" role="status"><span id="actionUndoMessage"></span><button type="button" id="actionUndoBtn">Deshacer</button></div>
+
+<div id="undoBar" class="undo-bar hidden"><span id="undoMessage">Cambio guardado</span><button type="button" id="undoNotebook">Deshacer</button></div>
+
+<div id="studentDrawer" class="student-drawer hidden" aria-hidden="true">
+  <div class="student-drawer-backdrop" id="studentDrawerBackdrop"></div>
+  <aside class="student-drawer-panel" role="dialog" aria-modal="true" aria-labelledby="studentDrawerTitle">
+    <div class="student-drawer-head"><div><span class="eyebrow">Vista alumno</span><h2 id="studentDrawerTitle">Alumno</h2><p id="studentDrawerMeta"></p></div><div class="drawer-head-actions"><button class="btn subtle" id="printStudentReport" type="button"><svg class="ui-icon" aria-hidden="true"><use href="#i-print"></use></svg><span>Boleta PDF</span></button><button class="icon-btn large-close" id="studentDrawerClose" aria-label="Cerrar">×</button></div></div>
+    <div class="student-drawer-searchbox"><label for="studentDrawerSearch"><svg class="ui-icon" aria-hidden="true"><use href="#i-search"></use></svg><input id="studentDrawerSearch" type="search" autocomplete="off" placeholder="Buscar por nombre, apellido o No. de lista" aria-label="Buscar alumno"></label><div id="studentDrawerSearchResults" class="student-search-results hidden"></div></div>
+    <div id="studentDrawerBody"></div>
+    <div class="student-drawer-foot"><button class="btn subtle" id="studentPrev">← Anterior</button><button class="btn primary" id="studentSaveNext">Guardar y siguiente →</button><button class="btn subtle" id="studentNext">Siguiente →</button></div>
+  </aside>
+</div>
+
+<div id="modal" class="modal hidden"><div class="modal-card"><div class="modal-head"><h3 id="modalTitle">Editar</h3><button class="icon-btn" id="modalClose">×</button></div><div id="modalBody"></div></div></div>
+<div id="toast" class="toast"></div>
+<script src="db.js?v=2.12.0"></script>
+<script src="xlsx-lite.js?v=2.12.0"></script>
+<script src="rubricas.js?v=2.12.0"></script>
+<script src="app.js?v=2.12.0"></script>
+</body>
+</html>

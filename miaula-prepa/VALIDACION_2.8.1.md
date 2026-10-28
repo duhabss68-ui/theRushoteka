@@ -1,0 +1,24 @@
+# Validación MiAula 2.8.1
+
+- Lógica (node --test tests/rubricas.test.js): 17/17.
+- Funciones nuevas con datos de 2.7.0 (tests/e2e/miaula.e2e.js): 35/35.
+- Regresión de funciones existentes (tests/e2e/regresion.e2e.js): 35/35.
+  - Grupos y alumnos A–Z.
+  - Asistencia por horas, todos en F, corrección sin duplicar, % de faltas.
+  - Secretaría (marcar y resolver).
+  - Porcentajes = 100.
+  - Actividad con número, autoguardado, Máx., editar fecha.
+  - Vista alumno.
+  - Puntos extra (agregar, usar, no exceder, limpiar).
+  - Valores y actitudes.
+  - Proyecto con rúbrica clásica.
+  - Equipos automáticos y limpiar.
+  - Ruleta (1 punto por giro, máximo +2 por día).
+  - Excel completo y del cuaderno (.xlsx válido).
+  - Cerrar parcial.
+  - Baja y reactivar.
+  - Presentación.
+  - Modo claro.
+  - Respaldo → restaurar en otro navegador con los mismos registros y promedios.
+- Examen (prueba aparte): captura 8.5 y 6, el vacío queda pendiente, y el cambio a Proyecto en el mismo parcial queda bloqueado.
+- db.js idéntico a 2.4.9.

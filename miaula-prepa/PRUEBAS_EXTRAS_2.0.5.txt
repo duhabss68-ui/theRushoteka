@@ -1,0 +1,35 @@
+PRUEBAS RAPIDAS - MIAULA 2.0.5 CETIS
+
+1. CUADERNO EN PRESENTACION
+- Abre Cuaderno > Presentacion.
+- Desliza verticalmente hasta el ultimo alumno.
+- Desliza horizontalmente para ver todas las actividades.
+- Verifica que No., Alumno y Puntos extra queden visibles al desplazarte horizontalmente.
+
+2. RULETA Y PUNTO BUENO
+- Selecciona un grupo y gira la ruleta.
+- Al aparecer el alumno, pulsa Extra +.
+- Comprueba que solo se registre una vez para esa participacion.
+- Reinicia la ruleta y repite con el mismo alumno hasta llegar a +2; un tercer Extra + del mismo dia debe bloquearse.
+
+3. RULETA Y PUNTO MALO
+- Gira la ruleta y pulsa Extra -.
+- Verifica que se guarde -1. Los puntos malos no tienen limite acumulado.
+
+4. CUADERNO / EDICION MANUAL
+- Abre Cuaderno y toca la celda Puntos extra de un alumno.
+- Agrega +2 manualmente y luego -2 manualmente.
+- Verifica verde para positivos y rojo para negativos.
+
+5. APLICAR PUNTO BUENO
+- Usa un alumno con saldo positivo y una actividad con calificacion 7/10.
+- Aplica 2 puntos a esa actividad.
+- Debe quedar 9/10 y el saldo positivo bajar en 2.
+- No debe permitir superar el maximo de la actividad ni usar mas puntos de los disponibles.
+
+6. EXCEL
+- Genera el Excel del Cuaderno.
+- Verifica columnas de puntos extra y hoja Historial extras.
+
+7. DATOS PREVIOS
+- Confirma que los grupos, asistencias y calificaciones anteriores sigan presentes.

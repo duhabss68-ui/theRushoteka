@@ -1,0 +1,13 @@
+MiAula Slate 2.4.3 · Libreta por equipos
+
+NOVEDADES
+- Los equipos creados quedan guardados por grupo hasta usar "Limpiar equipos".
+- La distribución se conserva al cerrar y volver a abrir MiAula y también dentro del respaldo JSON.
+- Cada tarjeta de equipo permite abrir directamente su Libreta o evaluar su Proyecto.
+- El Cuaderno incluye "Libreta por equipos" y filtro Equipo 1, Equipo 2, etc.
+- Se puede aplicar una misma calificación de actividad a todos los integrantes activos de un equipo y luego ajustar individualmente.
+- En Proyecto se añadió selector de equipo guardado; selecciona automáticamente a sus integrantes para usar una rúbrica/lista una sola vez.
+- Alumnos Pendiente Secretaría no reciben calificaciones masivas por equipo.
+- "Limpiar equipos" solo elimina la distribución; NO borra calificaciones, proyectos ni historial.
+- El Excel completo incorpora una hoja "Equipos".
+- No cambia el esquema IndexedDB. db.js permanece idéntico a 2.4.2.

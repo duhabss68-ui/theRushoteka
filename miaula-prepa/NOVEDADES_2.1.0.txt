@@ -1,0 +1,41 @@
+MiAula 2.1.0 CETIS · Renovación UI/UX para Huawei MatePad 12X
+
+OBJETIVO
+Mejorar la experiencia de uso sin eliminar ni cambiar las funciones académicas existentes.
+La base IndexedDB conserva el mismo esquema de MiAula 2.0.5.1.
+
+NUEVO EN 2.1
+1. Navegación inferior tipo app, optimizada para uso horizontal:
+   Inicio · Asistencia · Cuaderno · Ruleta · Equipos · Más.
+2. Barra de contexto permanente:
+   grupo activo + parcial actual + accesos rápidos a Cuaderno y Asistencia.
+3. Inicio renovado con tarjetas táctiles y resumen de la clase activa.
+4. Modo Clase para reducir ruido visual durante la sesión.
+5. Cuaderno Digital mejorado:
+   - búsqueda por alumno;
+   - filtros: pendientes, NP y calificaciones menores a 6;
+   - contador de alumnos visibles;
+   - nombres de alumno táctiles.
+6. Nueva Vista Alumno lateral:
+   - revisión alumno por alumno;
+   - botones rápidos 10, 9, 8, 7, 6, 5 y NP;
+   - Valores y Actitudes;
+   - Examen directo o Proyecto calculado como antes;
+   - acceso a Puntos extra;
+   - Anterior / Guardar y siguiente / Siguiente.
+7. Guardado automático del Cuaderno con indicador:
+   Cambios sin guardar → Guardando… → Todo guardado.
+8. Acción Deshacer disponible después del autoguardado de una celda.
+9. Se mantiene el scroll vertical/horizontal del Cuaderno en Presentación.
+10. Todas las herramientas administrativas anteriores permanecen en Más:
+    grupos, actividades, parcial, proyecto/examen, Excel, respaldos, etc.
+
+NO CAMBIA
+- Grupos ni alumnos existentes.
+- Asistencia por horas.
+- Parciales y cierre de parcial.
+- Proyecto/Examen.
+- Rúbricas y listas de cotejo.
+- Ruleta, equipos y puntos extra.
+- Cálculo de calificaciones.
+- Exportación Excel y respaldos.

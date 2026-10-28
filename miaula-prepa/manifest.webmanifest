@@ -1,0 +1,32 @@
+{
+  "name": "MiAula Slate 2.12.0 Prepa",
+  "short_name": "MiAula Prepa",
+  "description": "Control docente offline para preparatoria: asistencia, actividades, Proyecto o Examen por parcial, rubros de evaluación personalizables, rúbricas, equipos, ruleta, cuaderno digital, puntos extra y Excel.",
+  "id": "./",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#111827",
+  "theme_color": "#111827",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "assets/icon-books-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/icon-books-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/icon-books-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

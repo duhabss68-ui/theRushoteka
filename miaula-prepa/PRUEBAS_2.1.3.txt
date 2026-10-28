@@ -1,0 +1,13 @@
+PRUEBA RÁPIDA · MiAula 2.1.3
+
+A. BUSCADOR
+1. Abre Cuaderno > Vista Alumno.
+2. Escribe un apellido, nombre o número de lista en el buscador.
+3. Toca una coincidencia y confirma que abre ese alumno directamente.
+
+B. INDICADOR DE MÁXIMO
+1. Crea una actividad con fecha de hoy: debe mostrar Máx. 10 si su puntaje máximo es 10.
+2. Para comprobar días anteriores, crea una actividad con fecha de un día hábil anterior: debe mostrar Máx. 9.
+3. Una actividad del viernes debe mostrar Máx. 9 el lunes (sábado y domingo no cuentan).
+4. La cifra llega como mínimo a Máx. 0.
+5. Verifica que puedas capturar manualmente cualquier calificación válida hasta el puntaje original de la actividad: el indicador NO bloquea la captura.

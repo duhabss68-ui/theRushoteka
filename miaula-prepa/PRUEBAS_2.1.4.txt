@@ -1,0 +1,9 @@
+PRUEBA RÁPIDA · MiAula 2.1.4
+
+1. Abre Calificaciones y selecciona un grupo con actividades ya calificadas.
+2. Anota la calificación de uno o dos alumnos en una actividad existente.
+3. Pulsa “Editar fecha” en esa actividad.
+4. Cambia la fecha y guarda.
+5. Confirma que la actividad sigue teniendo las mismas calificaciones.
+6. Comprueba que el indicador rojo “Máx.” cambió de acuerdo con la nueva fecha.
+7. Abre Cuaderno / Vista alumno y confirma que los valores anteriores siguen intactos.

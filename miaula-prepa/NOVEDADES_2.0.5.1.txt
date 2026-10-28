@@ -1,0 +1,8 @@
+MiAula 2.1.0 CETIS
+
+Ajuste puntual:
+- Se agregó el botón “Limpiar puntos · dejar en 0” dentro del panel de Puntos extra de cada alumno.
+- El botón reinicia a 0 los puntos buenos y malos del alumno en el parcial activo.
+- Pide confirmación antes de borrar.
+- No revierte calificaciones de actividades que ya recibieron puntos extra.
+- No modifica grupos, alumnos, asistencias, actividades, rúbricas ni listas de cotejo.
