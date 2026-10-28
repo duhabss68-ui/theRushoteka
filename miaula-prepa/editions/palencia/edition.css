@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Edición especial «Silver & Black» · Para Valencia (MiAula 2.13.0)
+   Edición especial «Silver & Black» · Para Palencia (MiAula 2.13.0)
    Se aplica DESPUÉS de styles.css. Oscuro (negro) por omisión; claro = «Día plata».
    Tipografía: Oswald (SIL Open Font License, incrustada).
    ========================================================================== */
@@ -152,3 +152,13 @@ html[data-theme="light"] .wheel-pointer{border-top-color:#0A0A0B!important}
 html[data-theme="light"] .result-number,html[data-theme="light"] .result-number:empty::before{background:linear-gradient(180deg,#3A3B40,#0A0A0B)!important;-webkit-background-clip:text!important;background-clip:text!important}
 .result-number:empty::before{opacity:.5!important}
 .result-name{font-family:var(--font-sport)!important;text-transform:uppercase;letter-spacing:.04em}
+
+/* Logo propio («Cambiar logo») */
+.edition-emblem[role="button"]{cursor:pointer;border-radius:16px;transition:transform .15s ease}
+.edition-emblem[role="button"]:hover{transform:scale(1.04)}
+.edition-emblem[role="button"]:focus-visible{outline:3px solid var(--rd-silver);outline-offset:4px}
+#view-dashboard .hero-brand .edition-emblem img{max-height:140px!important;object-fit:contain}
+.brand-icon{object-fit:contain}
+.edition-logo-box{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding:14px 16px;margin-bottom:14px;border-radius:14px;background:var(--surface-2);border:1px solid var(--border)}
+.edition-logo-box strong{display:block;font-family:var(--font-sport);text-transform:uppercase;letter-spacing:.045em;color:var(--text-strong)}
+.edition-logo-box small{display:block;color:var(--text-3);font-size:13px;margin-top:2px}

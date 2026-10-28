@@ -64,6 +64,11 @@ def main():
         pat = r'<script src="' + re.escape(name) + r'\?v=[\d.]+"></script>'
         html, n = re.subn(pat, lambda _: '<script>\n' + code + '\n</script>', html)
         assert n == 1, f'no se encontró <script src="{name}">'
+    if edition and edition.get('JS'):
+        ed_js = read(os.path.join(ed_dir, edition['JS']))
+        assert '</script' not in ed_js.lower()
+        assert html.count('</body>') == 1
+        html = html.replace('</body>', '<script>\n' + ed_js + '\n</script>\n</body>')
     # Marca de archivo único: sin service worker.
     flags = 'window.MIAULA_SINGLE_FILE=true;'
     if edition:
