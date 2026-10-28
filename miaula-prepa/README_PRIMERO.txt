@@ -1,27 +1,34 @@
-MIAULA SLATE 2.12.0 · PREPA (edición general para preparatoria)
+MIAULA SLATE 2.13.0 · PREPA (edición general para preparatoria)
 
-QUÉ ES
-Versión general de MiAula para preparatoria/bachillerato, basada en MiAula 2.11.0 CETIS.
-Conserva todas las funciones y agrega RUBROS ADICIONALES al calificar (Más -> Parcial -> Rubros adicionales).
+DOS FORMAS DE USARLA
+A) UN SOLO ARCHIVO HTML (lo más fácil)
+   1. Copia dist/MiAula_Prepa_2.13.0.html a tu computadora (o a una USB).
+   2. Ábrelo con doble clic en Chrome o Edge. No necesita internet.
+   3. Ve a Más -> Respaldo -> «Elegir carpeta de copias» y elige una carpeta
+      (Documentos, OneDrive, USB…). Desde ese momento CADA CAMBIO se guarda solo en
+      MiAula_Prepa_ultima_copia.json, y queda una copia por día.
+   IMPORTANTE: usa siempre el mismo navegador y el mismo archivo. Si cambias de computadora,
+   abre el HTML allá y usa «Restaurar respaldo» con MiAula_Prepa_ultima_copia.json.
 
-INSTALACIÓN NUEVA (recomendada: repositorio propio, p. ej. «miaula-prepa»)
-1. Crea un repositorio en GitHub y activa GitHub Pages.
-2. Sube los archivos del ZIP SOLO_GITHUB y la carpeta assets/.
-3. Abre https://TU-USUARIO.github.io/miaula-prepa/index.html y, si quieres, instálala como app.
+B) APP INSTALABLE (GitHub Pages, tablet y celular)
+   1. Crea un repositorio y activa GitHub Pages.
+   2. Sube el contenido del ZIP SOLO_GITHUB (incluye assets/).
+   3. Abre …/index.html y, si quieres, instálala.
+   En tablet/celular usa «Descargas automáticas» (esos navegadores no dejan elegir carpeta).
 
 SEGURIDAD DE DATOS
-- La edición Prepa usa su PROPIA base de datos (MiAulaPrepaDB) y su propia caché (miaula-prepa-*).
-  Aunque esté en el mismo sitio que MiAula CETIS, no lee, no cambia y no borra los datos de CETIS.
-- Para pasar datos de CETIS a Prepa: en CETIS, Más -> Crear respaldo; en Prepa, Más -> Respaldo -> Restaurar.
-  El formato de respaldo es el mismo.
-- No borres «Datos del sitio» ni IndexedDB.
+- Base de datos propia (MiAulaPrepaDB): no se mezcla con MiAula CETIS.
+- La copia automática nunca sobrescribe el archivo si de golpe se borraron muchos datos («Copia en pausa»).
+- Versiones internas: Más -> Respaldo -> Versiones internas (las últimas 20).
+- No borres «Datos del sitio» del navegador.
 
-ACTUALIZAR UNA INSTALACIÓN PREPA EXISTENTE
-1. Más -> Crear respaldo.
-2. Sube los archivos del ZIP SOLO_GITHUB.
-3. Abre …/index.html?actualizar=2.12.0, recarga, cierra la app y vuelve a abrirla.
+ACTUALIZAR
+- HTML: reemplaza el archivo por el nuevo CON EL MISMO NOMBRE Y EN LA MISMA CARPETA
+  (los datos dependen del navegador y del lugar del archivo). Antes, deja que se haga la copia automática.
+- GitHub: Más -> Crear respaldo, sube el ZIP SOLO_GITHUB y abre …/index.html?actualizar=2.13.0.
 
 DOCUMENTOS
-- NOVEDADES_2.12.0.md   qué cambió y cómo se usan los rubros.
-- VALIDACION_2.12.0.md  pruebas ejecutadas.
-- PROMPT_MAESTRO_MiAula_Prepa_2.12.0.md  para continuar el desarrollo en otra conversación.
+- NOVEDADES_2.13.0.md, NOVEDADES_2.12.0.md   qué cambió.
+- VALIDACION_2.13.0.md                       pruebas ejecutadas.
+- PROMPT_MAESTRO_MiAula_Prepa_2.13.0.md      para seguir el desarrollo en otra conversación.
+- tools/build_single.py                      genera el HTML de un solo archivo.

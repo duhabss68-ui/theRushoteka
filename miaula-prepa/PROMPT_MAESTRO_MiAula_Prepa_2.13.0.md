@@ -1,6 +1,6 @@
-# PROMPT MAESTRO — MIAULA SLATE 2.12.0 · PREPA
+# PROMPT MAESTRO — MIAULA SLATE 2.13.0 · PREPA
 
-> Copia este documento completo al iniciar una conversación nueva y adjunta el ZIP más reciente (`MiAula_2.12.0_Prepa.zip`).
+> Copia este documento completo al iniciar una conversación nueva y adjunta el ZIP más reciente (`MiAula_2.13.0_Prepa.zip`).
 > **Los archivos del ZIP son la fuente de verdad técnica.** Este documento describe el comportamiento esperado. No sobrescribas código que funciona basándote solo en este texto: primero compara.
 
 ---
@@ -16,9 +16,9 @@ MiAula Slate · Prepa es la **edición general para preparatoria/bachillerato** 
 
 ## 2. Estado actual
 
-- **Versión vigente: MiAula Slate 2.12.0 · Prepa.**
+- **Versión vigente: MiAula Slate 2.13.0 · Prepa.** Se entrega como PWA (GitHub Pages) y como **un solo archivo HTML** (`dist/MiAula_Prepa_2.13.0.html`, generado con `python3 tools/build_single.py`).
 - No reconstruir desde cero. Trabajar siempre sobre los archivos de la última versión.
-- La siguiente versión es 2.12.1 si es una corrección, o 2.13.0 si trae funciones nuevas. Nunca una versión menor.
+- La siguiente versión es 2.13.1 si es una corrección, o 2.14.0 si trae funciones nuevas. Nunca una versión menor.
 
 ## 3. Reglas absolutas
 
@@ -67,6 +67,8 @@ Nunca sacrificar del 1 al 6 por el 8 o el 9.
   - `sw.js`
   - `manifest.webmanifest`
   - `rubricas.js`: módulo `MiAulaRubricas`.
+  - `autobackup.js` (2.13.0): módulo `MiAulaAutoBackup`, copia automática. Envuelve los métodos que escriben en `MiAulaDB` (es `const` global, no está en `window`). Base aparte `MiAulaPrepaAutoCopias` (almacenes `kv` y `versions`).
+  - `tools/build_single.py`: genera el HTML de un solo archivo (incrusta `styles-legacy.css`, `styles.css`, los 5 scripts y el icono; define `window.MIAULA_SINGLE_FILE` para no registrar service worker).
   - `xlsx-lite.js`
   - `db.js` está en el proyecto pero normalmente no cambia; `styles-legacy.css` y `assets/` tampoco.
 - **Almacenes de IndexedDB:**
@@ -109,11 +111,11 @@ Para actualizar la tablet:
 3. Abrir `…/index.html?actualizar=VERSION`.
 4. Recargar, cerrar MiAula y volver a abrirla.
 
-## 6. Diseño «MiAula Slate»
+## 6. Diseño «MiAula Alegre» (2.13.0)
 
-- Debe sentirse profesional, sobrio, educativo y legible: ni infantil, ni gamer, ni gubernamental anticuado. **Una libreta docente profesional digital.**
-- Modo oscuro (Slate) y **modo claro**, con un botón de sol/luna que guarda la preferencia en `miaula:theme`.
-- Paleta oscura:
+- **Tema «Alegre» (2.13.0, a petición del usuario):** vistoso y alegre pero legible. Claro por omisión (crema cálido, morado `#6A4DF4`, degradado morado→rosa en botones principales, acentos coral/menta/cielo/sol/rosa); oscuro «Noche alegre» (índigo `#140F26`). Tokens en la última capa de `styles.css`: `--grad-main`, `--tint-*`, `--ic-*`, `--fun-*`.
+- Modo claro (por omisión) y oscuro, con un botón de sol/luna que guarda la preferencia en `miaula:theme` (`'dark'` = oscuro; cualquier otro valor = claro).
+- Paleta anterior (Slate, referencia histórica; ya no es la vigente):
 
   | Elemento | Color |
   |---|---|
@@ -305,6 +307,7 @@ Para actualizar la tablet:
 ### Respaldo
 - Descargar el `.json` completo y restaurarlo (la restauración reemplaza los datos, con aviso).
 - Recordatorio de días desde el último respaldo.
+- **Copia automática (2.13.0):** Más → Respaldo y chip del escudo en el encabezado. Destinos: carpeta (`MiAula_Prepa_ultima_copia.json` + una copia por día), archivo, o descargas automáticas con intervalo (5–60 min). Espera 2.5 s tras el último cambio y no escribe si nada cambió (hash). **Pausa de seguridad** si un tipo de dato (alumnos, asistencia, calificaciones, actividades, grupos) pierde más de la mitad (con ≥10 antes): no sobrescribe y ofrece «Guardar de todos modos». **Versiones internas:** últimas 20 (máx. una cada 10 min), descargables y restaurables. Mismo formato que el respaldo manual.
 
 ## 9. Pruebas (obligatorias antes de cada entrega)
 
@@ -318,7 +321,7 @@ Suites, con un servidor local (`python3 -m http.server`) y `APP_URL=http://local
 | Suite | Resultado en 2.11.0 |
 |---|---|
 | `node --test tests/rubricas.test.js` (lógica) | 17/17 |
-| `regresion.e2e.js` | 36/36 (la Asistencia ahora es editable) |
+| `regresion.e2e.js` | 36/36 (Asistencia editable; el tema inicia en claro) |
 | `miaula.e2e.js` (rúbricas y equipos) | 33/33 |
 | `proyecto.e2e.js` | 19/19 |
 | `cierre.e2e.js` | 13/13 |
@@ -326,6 +329,7 @@ Suites, con un servidor local (`python3 -m http.server`) y `APP_URL=http://local
 | `cambio-parcial.e2e.js` | 11/11 |
 | `asistencia-parcial.e2e.js` (2.11.0) | 41/41 |
 | `rubros.e2e.js` (2.12.0 Prepa) | 31/31 |
+| `autocopia.e2e.js` (2.13.0; con `SINGLE=dist/MiAula_Prepa_2.13.0.html`) | 25/25 |
 
 - Al cambiar una regla de forma intencional, se ajustan las pruebas afectadas y se explica por qué.
 - Revisar capturas de pantalla en los dos temas antes de entregar.
@@ -337,6 +341,7 @@ Suites, con un servidor local (`python3 -m http.server`) y `APP_URL=http://local
 3. Agregar `NOVEDADES_X.md` y `VALIDACION_X.md`, actualizar `README_PRIMERO.txt` y regenerar `SHA256.txt`.
 4. Entregar dos ZIP:
    - Completo: `MiAula_X_Prepa.zip`, con código, pruebas, herramientas y notas.
+   - `MiAula_Prepa_X.html`: la versión de un solo archivo.
    - `MiAula_X_Prepa_SOLO_GITHUB.zip`: los 7 archivos `index.html`, `app.js`, `styles.css`, `sw.js`, `manifest.webmanifest`, `rubricas.js` y `xlsx-lite.js` (más `db.js` o `assets/` solo si cambiaron).
 5. Explicar en español sencillo qué cambió, qué se decidió por el usuario y cómo actualizar.
 
@@ -367,7 +372,8 @@ Suites, con un servidor local (`python3 -m http.server`) y `APP_URL=http://local
 | 2.10.0 | Lista de asistencia tradicional en Excel con calificaciones. |
 | 2.10.1 | El cuaderno abre el parcial nuevo tras cerrar; un parcial nuevo copia los porcentajes del anterior. |
 | 2.11.0 | Asistencia por parcial, Asistencia 10% automática en lugar de Valores y Actitudes, modo consulta de parciales pasados, barra sin «Respaldo». |
-| **2.12.0 · Prepa** | Edición general para preparatoria: rubros adicionales al calificar (captura directa o promedio de actividades), Asistencia con % editable, base de datos y caché propias, sin textos de CETIS. |
+| 2.12.0 · Prepa | Edición general para preparatoria: rubros adicionales al calificar (captura directa o promedio de actividades), Asistencia con % editable, base de datos y caché propias, sin textos de CETIS. |
+| **2.13.0 · Prepa** | Versión de un solo archivo HTML, copia automática en cada cambio (carpeta/archivo/descargas, pausa de seguridad, versiones internas) y tema «Alegre». |
 
 ## 13. Situación actual
 
@@ -375,5 +381,5 @@ Suites, con un servidor local (`python3 -m http.server`) y `APP_URL=http://local
 - Preferencias del autor:
   - Respuestas claras en español.
   - Implementar cuando dice «adelante» o «hazlo».
-  - Entregar los dos ZIP.
+  - Entregar los dos ZIP y el HTML de un solo archivo.
   - Nunca arriesgar los datos.

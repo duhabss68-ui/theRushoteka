@@ -194,8 +194,11 @@ const wait=(p,ms)=>p.waitForTimeout(ms);
   const pres=await p.evaluate(()=>document.body.classList.contains('notebook-focus'));
   await p.click('#notebookPresentation');await wait(p,300);
   check('Modo Presentación del cuaderno entra y sale',pres&&!(await p.evaluate(()=>document.body.classList.contains('notebook-focus'))));
+  // 2.13.0: el tema Alegre claro es el de inicio; el botón pasa a «Noche alegre» y regresa.
+  const th0=await p.evaluate(()=>document.documentElement.dataset.theme);
   await p.click('#themeToggle');const th=await p.evaluate(()=>document.documentElement.dataset.theme);await p.click('#themeToggle');
-  check('Botón de modo claro/oscuro',th==='light');
+  const th2=await p.evaluate(()=>document.documentElement.dataset.theme);
+  check('Botón de modo claro/oscuro (inicia en claro)',th0==='light'&&th===undefined&&th2==='light',`${th0}/${th}/${th2}`);
 
   // ---------- Respaldo y restauración ----------
   await p.evaluate(()=>goView('more'));await wait(p,500);

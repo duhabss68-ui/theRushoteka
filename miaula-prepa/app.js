@@ -228,9 +228,10 @@ $('#attendanceDate').value=today;
 $('#activityDate').value=today;
 $('#evalDate').value=today;
 
-if('serviceWorker' in navigator && location.protocol.startsWith('http')){
+// 2.13.0: la versión de un solo archivo HTML (doble clic) no usa service worker.
+if('serviceWorker' in navigator && location.protocol.startsWith('http') && !window.MIAULA_SINGLE_FILE){
   let swControllerChanged=false;
-  navigator.serviceWorker.register('sw.js?v=2.12.0',{updateViaCache:'none'}).then(reg=>{
+  navigator.serviceWorker.register('sw.js?v=2.13.0',{updateViaCache:'none'}).then(reg=>{
     reg.update().catch(()=>{});
     document.addEventListener('visibilitychange',()=>{
       if(document.visibilityState==='visible')reg.update().catch(()=>{});
@@ -2728,7 +2729,7 @@ async function downloadMiAulaBackup(){
   try{
     const data=await MiAulaDB.exportBackup();
     const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
-    downloadBlob(blob,`MiAula_Prepa_2.12.0_Respaldo_${new Date().toISOString().replace(/[:.]/g,'-')}.json`);
+    downloadBlob(blob,`MiAula_Prepa_2.13.0_Respaldo_${new Date().toISOString().replace(/[:.]/g,'-')}.json`);
     toast('Respaldo generado');
     try{localStorage.setItem('miaula:lastBackupAt',new Date().toISOString());}catch{}
     if(typeof renderBackupReminder==='function')renderBackupReminder();
@@ -3074,7 +3075,7 @@ const THEME_KEY='miaula:theme';
 function applyTheme(theme){
   const light=theme==='light';
   if(light)document.documentElement.setAttribute('data-theme','light');else document.documentElement.removeAttribute('data-theme');
-  const meta=document.querySelector('meta[name="theme-color"]');if(meta)meta.setAttribute('content',light?'#EDF1F5':'#111827');
+  const meta=document.querySelector('meta[name="theme-color"]');if(meta)meta.setAttribute('content',light?'#FFF7EF':'#140F26');
   const btn=$('#themeToggle');
   if(btn){const label=light?'Cambiar a modo oscuro':'Cambiar a modo claro';btn.setAttribute('aria-label',label);btn.title=label;btn.innerHTML=`<svg class="ui-icon" aria-hidden="true"><use href="#${light?'i-moon':'i-sun'}"></use></svg>`;}
   if(typeof drawWheel==='function'){try{drawWheel();}catch{}}
