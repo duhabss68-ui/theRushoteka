@@ -4,8 +4,8 @@
 const fs=require('fs'),path=require('path'),os=require('os');
 let chromium;
 try{({chromium}=require('playwright'));}catch{({chromium}=require(process.env.PLAYWRIGHT_PATH||'/opt/node-tools/node_modules/playwright'));}
-const VAL=path.resolve(process.env.PALENCIA||'dist/MiAula_Palencia_SilverBlack_2.13.0.html');
-const PRE=path.resolve(process.env.PREPA||'dist/MiAula_Prepa_2.13.0.html');
+const VAL=path.resolve(process.env.PALENCIA||'dist/MiAula_Palencia_SilverBlack_2.14.0.html');
+const PRE=path.resolve(process.env.PREPA||'dist/MiAula_Prepa_2.14.0.html');
 const OUT=process.env.OUT||fs.mkdtempSync(path.join(os.tmpdir(),'miaula-palencia-'));
 const EXE=process.env.CHROME_PATH||'/opt/pw-browsers/chromium-1194/chrome-linux/chrome';
 const results=[];
@@ -42,10 +42,10 @@ const wait=(p,ms)=>p.waitForTimeout(ms);
   const files=await p.evaluate(()=>Object.keys(window.__abFiles));
   check('Copias automáticas con nombre de Palencia',files.includes('MiAula_Palencia_ultima_copia.json')&&files.some(f=>/^MiAula_Palencia_copia_\d{4}-\d{2}-\d{2}\.json$/.test(f)),files.join(', '));
   const cp=await p.evaluate(()=>JSON.parse(window.__abFiles['MiAula_Palencia_ultima_copia.json']));
-  check('La copia es un respaldo normal de MiAula (se restaura en cualquier edición)',cp.format==='MiAulaMobileBackup'&&cp.appVersion==='2.13.0-Palencia'&&cp.stores.students.length===4);
+  check('La copia es un respaldo normal de MiAula (se restaura en cualquier edición)',cp.format==='MiAulaMobileBackup'&&/^[\d.]+-Palencia$/.test(cp.appVersion)&&cp.stores.students.length===4);
   const dl=p.waitForEvent('download',{timeout:6000}).catch(()=>null);
   await p.evaluate(()=>downloadMiAulaBackup());const d=await dl;
-  check('Respaldo manual con nombre de Palencia',!!d&&d.suggestedFilename().startsWith('MiAula_Palencia_2.13.0_Respaldo_'),d?.suggestedFilename());
+  check('Respaldo manual con nombre de Palencia',!!d&&/^MiAula_Palencia_[\d.]+_Respaldo_/.test(d.suggestedFilename()),d?.suggestedFilename());
 
   // Logo propio del maestro («Cambiar logo»)
   await p.reload();await wait(p,1600);

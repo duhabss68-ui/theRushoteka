@@ -8,7 +8,7 @@ Se abre con doble clic (file://), funciona sin internet y sin servidor. No usa s
 import base64, json, os, re, runpy, sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-SCRIPTS = ['db.js', 'xlsx-lite.js', 'rubricas.js', 'app.js', 'autobackup.js']
+SCRIPTS = ['theme.js', 'db.js', 'xlsx-lite.js', 'rubricas.js', 'app.js', 'autobackup.js']
 
 def read(name):
     with open(os.path.join(ROOT, name), encoding='utf-8') as f:

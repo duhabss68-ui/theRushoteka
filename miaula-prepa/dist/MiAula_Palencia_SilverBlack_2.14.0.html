@@ -1,11 +1,132 @@
 <!doctype html>
 <html lang="es">
 <head>
-  <script>window.MIAULA_SINGLE_FILE=true;window.MIAULA_EDITION={"id": "palencia", "name": "Edición Silver & Black · Para Palencia", "wheelPalette": [{"fill": "#0A0A0B", "text": "#F4F5F6"}, {"fill": "#A5ACAF", "text": "#0A0A0B"}, {"fill": "#2B2D30", "text": "#F4F5F6"}, {"fill": "#D5D9DB", "text": "#0A0A0B"}, {"fill": "#4A4F53", "text": "#FFFFFF"}, {"fill": "#7D8488", "text": "#0A0A0B"}], "wheelUsed": [{"fill": "#3A3D40", "text": "#8D9397"}, {"fill": "#46494C", "text": "#8D9397"}], "confettiColors": ["#FFFFFF", "#A5ACAF", "#D5D9DB", "#0A0A0B", "#6B7175", "#F4F5F6", "#2B2D30"]};</script>
+  <script>window.MIAULA_SINGLE_FILE=true;window.MIAULA_EDITION={"id": "palencia", "themeKey": "miaula-palencia:theme", "defaultMode": "dark", "name": "Edición Silver & Black · Para Palencia", "wheelPalette": [{"fill": "#0A0A0B", "text": "#F4F5F6"}, {"fill": "#A5ACAF", "text": "#0A0A0B"}, {"fill": "#2B2D30", "text": "#F4F5F6"}, {"fill": "#D5D9DB", "text": "#0A0A0B"}, {"fill": "#4A4F53", "text": "#FFFFFF"}, {"fill": "#7D8488", "text": "#0A0A0B"}], "wheelUsed": [{"fill": "#3A3D40", "text": "#8D9397"}, {"fill": "#46494C", "text": "#8D9397"}], "confettiColors": ["#FFFFFF", "#A5ACAF", "#D5D9DB", "#0A0A0B", "#6B7175", "#F4F5F6", "#2B2D30"]};</script>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#0A0A0B">
-  <script>try{if(localStorage.getItem('miaula-palencia:theme')==='light')document.documentElement.setAttribute('data-theme','light');}catch(e){}</script>
+  <script>
+'use strict';
+// 2.14.0 · Apariencia: paleta (Alegre, Guinda o Personalizada) + modo claro/oscuro.
+// Se carga en <head> para aplicar la paleta antes de pintar (sin parpadeo).
+// Solo son preferencias de interfaz: viven en localStorage, nunca en la base de datos.
+const MiAulaTheme=(()=>{
+  const ed=window.MIAULA_EDITION||null;
+  const MODE_KEY=ed?.themeKey||'miaula:theme',PALETTE_KEY='miaula:palette',COLOR_KEY='miaula:customColor';
+  const DEFAULT_COLOR='#2563EB';
+  const PALETTES=[
+    {id:'alegre',name:'Alegre',desc:'Morado y rosa con acentos de colores.',sw:['#6A4DF4','#FF5FA2','#FF8A65','#34D6A8']},
+    {id:'guinda',name:'Guinda / Vino',desc:'Vino con dorado, elegante e institucional.',sw:['#8E2449','#C9557A','#D4A752','#FAF5F1']},
+    {id:'custom',name:'Personalizado',desc:'Elige tu color principal; MiAula ajusta los tonos.',sw:[]}
+  ];
+  const QUICK=['#2563EB','#0F766E','#15803D','#B45309','#DC2626','#7C3AED','#DB2777','#334155'];
+  const get=(k,d)=>{try{return localStorage.getItem(k)??d;}catch{return d;}};
+  const set=(k,v)=>{try{localStorage.setItem(k,v);}catch{}};
+  const validHex=v=>/^#[0-9a-f]{6}$/i.test(String(v||''));
+  const palette=()=>{const p=get(PALETTE_KEY,'alegre');return PALETTES.some(x=>x.id===p)?p:'alegre';};
+  const customColor=()=>{const c=get(COLOR_KEY,DEFAULT_COLOR);return validHex(c)?c:DEFAULT_COLOR;};
+
+  // ---------- Color personalizado → tokens para claro y oscuro ----------
+  function hexToHsl(hex){
+    const n=parseInt(hex.slice(1),16),r=(n>>16&255)/255,g=(n>>8&255)/255,b=(n&255)/255;
+    const mx=Math.max(r,g,b),mn=Math.min(r,g,b),l=(mx+mn)/2;let h=0,s=0;
+    if(mx!==mn){const d=mx-mn;s=l>.5?d/(2-mx-mn):d/(mx+mn);h=mx===r?(g-b)/d+(g<b?6:0):mx===g?(b-r)/d+2:(r-g)/d+4;h*=60;}
+    return [Math.round(h),Math.round(s*100),Math.round(l*100)];
+  }
+  function customCss(hex){
+    const [h,s0]=hexToHsl(hex),s=Math.min(85,s0),sl=Math.min(s,60),H=d=>((h+d)%360+360)%360;
+    const c=(dh,ss,l,a)=>a==null?`hsl(${H(dh)} ${ss}% ${l}%)`:`hsl(${H(dh)} ${ss}% ${l}% / ${a})`;
+    const fam=[0,28,-28,52,150,190];
+    const dark=`html[data-palette="custom"]{
+  --grad-main:linear-gradient(135deg,${c(8,s,55)} 0%,${c(-8,s,42)} 100%);--grad-fresh:var(--grad-main);
+  --grad-warm:linear-gradient(135deg,${c(28,s,58)} 0%,${c(0,s,45)} 100%);--grad-sun:var(--grad-warm);
+  --void:${c(0,Math.min(s,25),8)};--surface-0:${c(0,Math.min(s,22),10)};--surface-1:${c(0,Math.min(s,20),13)};--surface-2:${c(0,Math.min(s,20),16)};--surface-3:${c(0,Math.min(s,18),20)};--surface-4:${c(0,Math.min(s,16),25)};--surface-hover:${c(0,Math.min(s,18),21)};
+  --card:${c(0,Math.min(s,20),13)};--glass:${c(0,Math.min(s,20),13,.84)};--glass-strong:${c(0,Math.min(s,20),13,.96)};
+  --border:${c(0,40,85,.14)};--border-strong:${c(0,40,85,.26)};
+  --text:${c(0,30,95)};--text-strong:#FFFFFF;--text-2:${c(0,15,80)};--text-3:${c(0,10,62)};
+  --primary:${c(0,s,62)};--primary-hover:${c(0,s,70)};--primary-soft:${c(0,s,62,.2)};--accent-text:${c(0,s,80)};--on-primary:#FFFFFF;
+  --row-alt:${c(0,Math.min(s,20),15)};--row-hover:${c(0,Math.min(s,20),19)};--topbar-bg:${c(0,Math.min(s,25),8,.86)};--scroll-thumb:${c(0,20,35)};
+  ${fam.map((d,i)=>`--tint-${['violet','pink','coral','sun','mint','sky'][i]}:${c(d,sl,60,.16)};--ic-${['violet','pink','coral','sun','mint','sky'][i]}:${c(d,sl+15,78)};`).join('')}
+  --mark-a:${c(28,s,62)};--mark-b:${c(0,s,45)};
+  --blob-1:${c(28,70,60,.12)};--blob-2:${c(0,70,55,.2)};--blob-3:${c(-28,70,55,.1)};
+  --line-grad:linear-gradient(90deg,${c(-20,s,50)},${c(0,s,58)},${c(20,s,62)});
+  --primary-shadow:0 10px 22px ${c(0,s,30,.45)};--tab-shadow:0 8px 20px ${c(0,s,30,.5)};--fab-shadow:0 6px 14px ${c(28,s,35,.4)};
+  --eyebrow:${c(0,s,72)};--badge-text:#FFFFFF;--btn-text:#FFFFFF;
+}`;
+    const light=`html[data-palette="custom"][data-theme="light"]{
+  --grad-main:linear-gradient(135deg,${c(8,s,44)} 0%,${c(-8,s,32)} 100%);--grad-fresh:var(--grad-main);
+  --grad-warm:linear-gradient(135deg,${c(28,s,46)} 0%,${c(0,s,36)} 100%);--grad-sun:var(--grad-warm);
+  --void:${c(0,Math.min(s,30),97)};--surface-0:${c(0,Math.min(s,22),93)};--surface-1:#FFFFFF;--surface-2:${c(0,Math.min(s,30),97.5)};--surface-3:${c(0,Math.min(s,20),92)};--surface-4:${c(0,Math.min(s,16),86)};--surface-hover:${c(0,Math.min(s,25),95)};
+  --card:#FFFFFF;--glass:rgba(255,255,255,.84);--glass-strong:rgba(255,255,255,.96);
+  --border:${c(0,40,25,.13)};--border-strong:${c(0,40,25,.24)};
+  --text:${c(0,20,15)};--text-strong:${c(0,25,10)};--text-2:${c(0,10,33)};--text-3:${c(0,8,45)};
+  --primary:${c(0,s,38)};--primary-hover:${c(0,s,31)};--primary-soft:${c(0,s,38,.1)};--accent-text:${c(0,s,30)};--on-primary:#FFFFFF;
+  --row-alt:${c(0,Math.min(s,30),98.5)};--row-hover:${c(0,Math.min(s,40),96)};--topbar-bg:${c(0,Math.min(s,30),97,.88)};--scroll-thumb:${c(0,20,78)};
+  ${fam.map((d,i)=>`--tint-${['violet','pink','coral','sun','mint','sky'][i]}:${c(d,sl+10,95)};--ic-${['violet','pink','coral','sun','mint','sky'][i]}:${c(d,sl,36)};`).join('')}
+  --mark-a:${c(28,s,50)};--mark-b:${c(0,s,35)};
+  --blob-1:${c(28,70,60,.12)};--blob-2:${c(0,70,55,.1)};--blob-3:${c(-28,70,55,.08)};
+  --primary-shadow:0 10px 22px ${c(0,s,30,.25)};--tab-shadow:0 8px 20px ${c(0,s,30,.28)};
+  --eyebrow:${c(0,s,35)};
+}`;
+    return dark+'\n'+light;
+  }
+
+  // ---------- Aplicar ----------
+  function syncMeta(){
+    const meta=document.querySelector('meta[name="theme-color"]');if(!meta)return;
+    const v=getComputedStyle(document.documentElement).getPropertyValue('--void').trim();if(v)meta.setAttribute('content',v);
+  }
+  function applyPalette(){
+    if(ed)return;
+    const root=document.documentElement,p=palette();
+    if(p==='alegre')root.removeAttribute('data-palette');else root.setAttribute('data-palette',p);
+    let st=document.getElementById('miaulaCustomPalette');
+    if(p==='custom'){if(!st){st=document.createElement('style');st.id='miaulaCustomPalette';document.head.appendChild(st);}st.textContent=customCss(customColor());}
+    else st?.remove();
+    syncMeta();
+  }
+  function applyMode(){
+    const mode=get(MODE_KEY,null);
+    const light=ed?.defaultMode==='dark'?mode==='light':mode!=='dark';
+    if(light)document.documentElement.setAttribute('data-theme','light');else document.documentElement.removeAttribute('data-theme');
+  }
+  applyMode();applyPalette();
+
+  // ---------- Panel Más → Apariencia ----------
+  const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  function currentMode(){return document.documentElement.getAttribute('data-theme')==='light'?'light':'dark';}
+  function setMode(mode){
+    if(typeof window.applyTheme==='function')window.applyTheme(mode);
+    else{if(mode==='light')document.documentElement.setAttribute('data-theme','light');else document.documentElement.removeAttribute('data-theme');}
+    set(MODE_KEY,mode);syncMeta();render();
+  }
+  function setPalette(p){set(PALETTE_KEY,p);applyPalette();render();try{if(typeof drawWheel==='function')drawWheel();}catch{}}
+  function setColor(hex){if(!validHex(hex))return;set(COLOR_KEY,hex);if(palette()!=='custom')set(PALETTE_KEY,'custom');applyPalette();render();}
+  function render(){
+    const box=document.getElementById('appearancePanelBody');if(!box)return;
+    const p=palette(),col=customColor(),mode=currentMode();
+    box.innerHTML=`<div class="appearance-grid">${PALETTES.map(x=>`<button type="button" class="palette-card${x.id===p?' active':''}" data-palette-pick="${x.id}" aria-pressed="${x.id===p}">
+        <span class="palette-swatches">${(x.id==='custom'?[col]:x.sw).map(c=>`<i style="background:${esc(c)}"></i>`).join('')}</span>
+        <span><strong>${esc(x.name)}</strong><small>${esc(x.desc)}</small></span></button>`).join('')}</div>
+      ${p==='custom'?`<div class="custom-color-row" style="margin-top:14px"><label class="custom-color-row">Color principal <input type="color" id="customColorInput" value="${esc(col)}" aria-label="Color principal"></label>
+        <div class="quick-colors">${QUICK.map(c=>`<button type="button" data-quick-color="${c}" style="background:${c}" aria-label="Usar ${c}" title="${c}"></button>`).join('')}</div></div>`:''}
+      <div class="appearance-mode"><span>Modo</span><div class="segmented"><button type="button" data-mode-pick="light" class="${mode==='light'?'active':''}">Claro</button><button type="button" data-mode-pick="dark" class="${mode==='dark'?'active':''}">Oscuro</button></div></div>`;
+    box.querySelectorAll('[data-palette-pick]').forEach(b=>b.onclick=()=>setPalette(b.dataset.palettePick));
+    box.querySelectorAll('[data-quick-color]').forEach(b=>b.onclick=()=>setColor(b.dataset.quickColor));
+    box.querySelectorAll('[data-mode-pick]').forEach(b=>b.onclick=()=>setMode(b.dataset.modePick));
+    const inp=box.querySelector('#customColorInput');
+    if(inp){inp.oninput=()=>{set(COLOR_KEY,inp.value);applyPalette();};inp.onchange=()=>setColor(inp.value);}
+  }
+  function init(){
+    if(ed){document.getElementById('appearancePanel')?.remove();return;}
+    render();
+    document.getElementById('themeToggle')?.addEventListener('click',()=>setTimeout(()=>{syncMeta();render();},0));
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
+  return {palette,customColor,setPalette,setColor,setMode,syncMeta,customCss,PALETTES};
+})();
+
+</script>
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -2067,6 +2188,10 @@ th .rubro-fill{display:block;margin:4px auto 0;font-size:11px;padding:2px 8px;mi
   --ic-violet:#B9A8FF;--ic-pink:#FF9CC8;--ic-coral:#FFAE92;--ic-sun:#FFD675;--ic-mint:#73E7C4;--ic-sky:#8FD3FF;
   --mark-a:#FF8A65;--mark-b:#7B5CFF;
   --r-card:20px;--r-ctl:14px;
+  --blob-1:rgba(255,138,101,.20);--blob-2:rgba(140,112,255,.22);--blob-3:rgba(52,214,168,.14);
+  --line-grad:linear-gradient(90deg,#FF8A65,#FF5FA2,#8C70FF,#4DB8FF,#34D6A8);
+  --primary-shadow:0 10px 22px rgba(123,92,255,.30);--tab-shadow:0 8px 20px rgba(123,92,255,.35);--fab-shadow:0 6px 14px rgba(255,95,162,.35);
+  --eyebrow:#FF6FAE;--badge-text:#FFFFFF;--btn-text:#FFFFFF;
 }
 html[data-theme="light"]{
   --void:#FFF7EF;--surface-0:#FFEFE3;--surface-1:#FFFFFF;--surface-2:#FFF6EE;--surface-3:#FCEADC;--surface-4:#F5DCCB;--surface-hover:#FFF0E4;
@@ -2084,17 +2209,14 @@ html[data-theme="light"]{
   --tint-violet:#F0EBFF;--tint-pink:#FFEAF3;--tint-coral:#FFEEE7;--tint-sun:#FFF5DA;--tint-mint:#E3F9F1;--tint-sky:#E4F3FF;
   --ic-violet:#6A4DF4;--ic-pink:#E0428A;--ic-coral:#E8603A;--ic-sun:#C98500;--ic-mint:#0E9A72;--ic-sky:#1B84D8;
   --mark-a:#FF8A65;--mark-b:#6A4DF4;
+  --blob-1:rgba(255,138,101,.16);--blob-2:rgba(140,112,255,.14);--blob-3:rgba(52,214,168,.12);
+  --eyebrow:#D93D83;
 }
 /* Fondo con manchas de color suaves */
-body::before{background:
-  radial-gradient(42vw 42vw at 4% -6%,rgba(255,138,101,.20),transparent 60%),
-  radial-gradient(40vw 40vw at 100% 0%,rgba(140,112,255,.22),transparent 60%),
-  radial-gradient(46vw 46vw at 60% 110%,rgba(52,214,168,.14),transparent 60%),
-  var(--void)!important}
-html[data-theme="light"] body::before{background:
-  radial-gradient(42vw 42vw at 4% -6%,rgba(255,138,101,.16),transparent 60%),
-  radial-gradient(40vw 40vw at 100% 0%,rgba(140,112,255,.14),transparent 60%),
-  radial-gradient(46vw 46vw at 60% 110%,rgba(52,214,168,.12),transparent 60%),
+body::before,html[data-theme="light"] body::before{background:
+  radial-gradient(42vw 42vw at 4% -6%,var(--blob-1),transparent 60%),
+  radial-gradient(40vw 40vw at 100% 0%,var(--blob-2),transparent 60%),
+  radial-gradient(46vw 46vw at 60% 110%,var(--blob-3),transparent 60%),
   var(--void)!important}
 html,body{background:var(--void)!important}
 .splash{background:var(--void)!important}
@@ -2102,18 +2224,17 @@ html,body{background:var(--void)!important}
 
 /* Barra superior: línea de color abajo */
 .app-topbar{box-shadow:0 1px 0 var(--border)!important;border-bottom:0!important;position:sticky}
-.app-topbar::after{content:"";position:absolute;left:0;right:0;bottom:-3px;height:3px;background:linear-gradient(90deg,#FF8A65,#FF5FA2,#8C70FF,#4DB8FF,#34D6A8);opacity:.85;pointer-events:none}
-.version-badge{background:var(--grad-main)!important;color:#fff!important;border:0!important;font-weight:700!important}
+.app-topbar::after{content:"";position:absolute;left:0;right:0;bottom:-3px;height:3px;background:var(--line-grad);opacity:.85;pointer-events:none}
+.version-badge{background:var(--grad-main)!important;color:var(--badge-text)!important;border:0!important;font-weight:700!important}
 .save-state.saved{background:var(--success-soft)!important;color:var(--success-text)!important;border-color:transparent!important}
 
 /* Tarjetas y paneles */
 .panel,.class-snapshot,.group-card,.quick-card,.admin-primary-card,.more-nav-card,.export-panel,.admin-current{border-radius:var(--r-card)!important;box-shadow:var(--shadow-soft)!important;border-color:var(--border)!important}
 .panel-head h3,.panel h3{color:var(--text-strong)}
-.eyebrow{color:var(--fun-pink)!important;letter-spacing:.08em}
-html[data-theme="light"] .eyebrow{color:#D93D83!important}
+.eyebrow{color:var(--eyebrow)!important;letter-spacing:.08em}
 
 /* Botones */
-.btn.primary,.hero-class-cta{background:var(--grad-main)!important;border:0!important;color:#fff!important;box-shadow:0 10px 22px rgba(123,92,255,.30)!important}
+.btn.primary,.hero-class-cta{background:var(--grad-main)!important;border:0!important;color:var(--btn-text)!important;box-shadow:var(--primary-shadow)!important}
 .btn.primary:hover{filter:brightness(1.06) saturate(1.05);transform:translateY(-1px)}
 .btn.primary:active{transform:translateY(0) scale(.99)}
 .btn.subtle,.btn.ghost-light{border-color:var(--border-strong)!important}
@@ -2151,9 +2272,9 @@ input:focus,select:focus,textarea:focus{outline:none!important;border-color:var(
 .bottom-app-nav{border:1px solid var(--border)!important;box-shadow:var(--shadow-float)!important;border-radius:24px!important}
 .bottom-app-nav .app-tab:nth-child(1):not(.active) span{color:var(--ic-violet)!important}.bottom-app-nav .app-tab:nth-child(2):not(.active) span{color:var(--ic-mint)!important}.bottom-app-nav .app-tab:nth-child(3):not(.active) span{color:var(--ic-sky)!important}
 .bottom-app-nav .app-tab:nth-child(5):not(.active) span{color:var(--ic-coral)!important}.bottom-app-nav .app-tab:nth-child(6):not(.active) span{color:var(--ic-pink)!important}.bottom-app-nav .app-tab:nth-child(7):not(.active) span{color:var(--ic-sun)!important}
-.app-tab.active{background:var(--grad-main)!important;box-shadow:0 8px 20px rgba(123,92,255,.35)!important;border-radius:18px!important}
-.app-tab.active,.app-tab.active *,.app-tab.active span{color:#fff!important}
-.new-activity-tab span{background:var(--grad-warm)!important;color:#fff!important;border-radius:999px!important;box-shadow:0 6px 14px rgba(255,95,162,.35)}
+.app-tab.active{background:var(--grad-main)!important;box-shadow:var(--tab-shadow)!important;border-radius:18px!important}
+.app-tab.active,.app-tab.active *,.app-tab.active span{color:var(--btn-text)!important}
+.new-activity-tab span{background:var(--grad-warm)!important;color:var(--btn-text)!important;border-radius:999px!important;box-shadow:var(--fab-shadow)}
 
 /* Tablas: encabezado con tinte y filas cálidas */
 .table-wrap thead th,.notebook-table thead th{background:var(--surface-2)!important}
@@ -2210,6 +2331,75 @@ input:focus,select:focus,textarea:focus{outline:none!important;border-color:var(
 .ab-versions li.ab-empty{display:block;color:var(--text-3);font-size:13px}
 @media(max-width:600px){.ab-versions li{flex-direction:column;align-items:stretch}}
 @media print{.auto-backup-chip,.app-topbar::after{display:none!important}}
+
+/* ==========================================================================
+   2.14.0 · Paletas. html[data-palette] elige la paleta; data-theme elige claro/oscuro.
+   «alegre» = la de 2.13.0 (sin atributo). «guinda» = vino y dorado. «custom» = la genera theme.js.
+   ========================================================================== */
+html[data-palette="guinda"]{
+  --fun-violet:#C9557A;--fun-pink:#E07A9B;--fun-coral:#D9825B;--fun-sun:#D4A752;--fun-mint:#5FB59B;--fun-sky:#7FA6C8;
+  --grad-main:linear-gradient(135deg,#B33A62 0%,#8E2449 100%);
+  --grad-warm:linear-gradient(135deg,#D4A752 0%,#B8892E 100%);
+  --grad-fresh:linear-gradient(135deg,#B33A62 0%,#8E2449 100%);
+  --grad-sun:linear-gradient(135deg,#E2BE6E 0%,#B8892E 100%);
+  --void:#170C11;--surface-0:#1D1016;--surface-1:#24151C;--surface-2:#2C1A22;--surface-3:#36212A;--surface-4:#422833;--surface-hover:#3A232D;
+  --card:#24151C;--glass:rgba(36,21,28,.84);--glass-strong:rgba(36,21,28,.96);
+  --border:rgba(232,190,200,.14);--border-strong:rgba(232,190,200,.26);
+  --text:#F6ECEF;--text-strong:#FFFFFF;--text-2:#D6C2C8;--text-3:#A8909A;
+  --primary:#C9557A;--primary-hover:#D86E90;--primary-soft:rgba(201,85,122,.20);--accent-text:#F0B3C6;--on-primary:#FFFFFF;
+  --success:#3BAF86;--success-bright:#4CC497;--success-soft:rgba(59,175,134,.16);--success-text:#8EDDBE;
+  --warning:#D4A752;--warning-soft:rgba(212,167,82,.17);--warning-text:#EBCB8A;
+  --danger:#F0606C;--danger-soft:rgba(240,96,108,.16);--danger-text:#FFA3AA;
+  --info:#7FA6C8;--info-soft:rgba(127,166,200,.16);--info-text:#B9D2E6;
+  --scroll-thumb:#6A4250;--scrim:rgba(14,6,10,.72);--chip-bg:rgba(23,12,17,.6);
+  --row-alt:#28171F;--row-hover:#331E27;--topbar-bg:rgba(23,12,17,.86);
+  --shadow-soft:0 10px 26px rgba(10,3,6,.38);--shadow-float:0 20px 48px rgba(10,3,6,.5);
+  --tint-violet:rgba(201,85,122,.18);--tint-pink:rgba(224,122,155,.15);--tint-coral:rgba(217,130,91,.16);--tint-sun:rgba(212,167,82,.16);--tint-mint:rgba(95,181,155,.15);--tint-sky:rgba(127,166,200,.15);
+  --ic-violet:#F0A5BD;--ic-pink:#F3B7C9;--ic-coral:#F0B096;--ic-sun:#EBCB8A;--ic-mint:#9ADBC5;--ic-sky:#B9D2E6;
+  --mark-a:#D4A752;--mark-b:#8E2449;
+  --blob-1:rgba(212,167,82,.12);--blob-2:rgba(179,58,98,.22);--blob-3:rgba(142,36,73,.14);
+  --line-grad:linear-gradient(90deg,#8E2449,#C9557A,#D4A752,#C9557A,#8E2449);
+  --primary-shadow:0 10px 22px rgba(142,36,73,.40);--tab-shadow:0 8px 20px rgba(142,36,73,.45);--fab-shadow:0 6px 14px rgba(184,137,46,.35);
+  --eyebrow:#D4A752;--badge-text:#FFFFFF;--btn-text:#FFFFFF;
+}
+html[data-palette="guinda"][data-theme="light"]{
+  --grad-main:linear-gradient(135deg,#9B2C52 0%,#6E1A36 100%);
+  --grad-fresh:linear-gradient(135deg,#9B2C52 0%,#6E1A36 100%);
+  --void:#FAF5F1;--surface-0:#F3E9E3;--surface-1:#FFFFFF;--surface-2:#FBF6F2;--surface-3:#F1E4DE;--surface-4:#E6D3CB;--surface-hover:#F6ECE7;
+  --card:#FFFFFF;--glass:rgba(255,255,255,.84);--glass-strong:rgba(255,255,255,.96);
+  --border:rgba(110,26,54,.13);--border-strong:rgba(110,26,54,.24);
+  --text:#2C1820;--text-strong:#1E0F15;--text-2:#5E4650;--text-3:#7E6670;
+  --primary:#8E2449;--primary-hover:#74193A;--primary-soft:rgba(142,36,73,.10);--accent-text:#7A1F3D;--on-primary:#FFFFFF;
+  --success:#1F8763;--success-bright:#1F8763;--success-soft:rgba(31,135,99,.12);--success-text:#156A4D;
+  --warning:#B8892E;--warning-soft:rgba(184,137,46,.15);--warning-text:#7D5A12;
+  --danger:#C8323F;--danger-soft:rgba(200,50,63,.10);--danger-text:#A6242F;
+  --info:#3E6A8A;--info-soft:rgba(62,106,138,.12);--info-text:#2C5170;
+  --scroll-thumb:#D9BFC6;--scrim:rgba(44,24,32,.38);--chip-bg:rgba(255,255,255,.75);
+  --row-alt:#FCF8F5;--row-hover:#F8EDF0;--topbar-bg:rgba(250,245,241,.88);
+  --shadow-soft:0 10px 26px rgba(110,26,54,.09);--shadow-float:0 20px 46px rgba(110,26,54,.16);
+  --tint-violet:#F7E6EC;--tint-pink:#FBEBF0;--tint-coral:#F9EAE2;--tint-sun:#F8F0DC;--tint-mint:#E4F3EE;--tint-sky:#E6EEF5;
+  --ic-violet:#8E2449;--ic-pink:#B33A62;--ic-coral:#A9502F;--ic-sun:#97701F;--ic-mint:#237A62;--ic-sky:#3E6A8A;
+  --mark-a:#B8892E;--mark-b:#8E2449;
+  --blob-1:rgba(212,167,82,.12);--blob-2:rgba(142,36,73,.10);--blob-3:rgba(201,85,122,.08);
+  --primary-shadow:0 10px 22px rgba(110,26,54,.25);--tab-shadow:0 8px 20px rgba(110,26,54,.28);
+  --eyebrow:#9A7020;
+}
+
+/* Panel Apariencia */
+.appearance-panel .appearance-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.palette-card{display:grid;gap:10px;text-align:left;padding:14px;border-radius:18px;border:2px solid var(--border);background:var(--surface-2);color:var(--text-strong);cursor:pointer;font:inherit;min-height:44px}
+.palette-card:hover{border-color:var(--border-strong)}
+.palette-card.active{border-color:var(--primary);box-shadow:0 0 0 4px var(--primary-soft)}
+.palette-card strong{display:block;font-size:15px;margin-bottom:2px}
+.palette-card small{display:block;color:var(--text-3);font-size:12.5px;line-height:1.4}
+.palette-swatches{display:flex;gap:6px}
+.palette-swatches i{width:28px;height:28px;border-radius:50%;border:2px solid rgba(255,255,255,.7);box-shadow:0 1px 4px rgba(0,0,0,.18)}
+.custom-color-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.custom-color-row input[type=color]{width:52px;height:44px;padding:2px;border-radius:12px;border:1px solid var(--border-strong);background:var(--surface-1);cursor:pointer}
+.custom-color-row .quick-colors{display:flex;gap:6px;flex-wrap:wrap}
+.custom-color-row .quick-colors button{width:30px;height:30px;border-radius:50%;border:2px solid var(--surface-1);box-shadow:0 0 0 1px var(--border-strong);cursor:pointer}
+.appearance-mode{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:14px}
+.appearance-mode .segmented{min-width:220px}
 
 /* ==========================================================================
    Edición especial «Silver & Black» · Para Palencia (MiAula 2.13.0)
@@ -2375,6 +2565,7 @@ html[data-theme="light"] .result-number,html[data-theme="light"] .result-number:
 .edition-logo-box{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding:14px 16px;margin-bottom:14px;border-radius:14px;background:var(--surface-2);border:1px solid var(--border)}
 .edition-logo-box strong{display:block;font-family:var(--font-sport);text-transform:uppercase;letter-spacing:.045em;color:var(--text-strong)}
 .edition-logo-box small{display:block;color:var(--text-3);font-size:13px;margin-top:2px}
+#appearancePanel{display:none!important}
 
 </style>
 </head>
@@ -2408,7 +2599,7 @@ html[data-theme="light"] .result-number,html[data-theme="light"] .result-number:
 <div id="tabletOnly" class="tablet-only hidden">
   <div class="tablet-only-card">
     <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMjAgMTQwIiByb2xlPSJpbWciIGFyaWEtbGFiZWw9IkVzY3VkbyBQYWxlbmNpYSI+CiAgPGRlZnM+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9InZTaWx2ZXIiIHgxPSIwIiB5MT0iMCIgeDI9IjEiIHkyPSIxIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjRjZGN0Y4Ii8+PHN0b3Agb2Zmc2V0PSIuNDUiIHN0b3AtY29sb3I9IiNBNUFDQUYiLz48c3RvcCBvZmZzZXQ9Ii43IiBzdG9wLWNvbG9yPSIjRDlERERGIi8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjNkI3MTc1Ii8+CiAgICA8L2xpbmVhckdyYWRpZW50PgogICAgPGxpbmVhckdyYWRpZW50IGlkPSJ2QmxhZGUiIHgxPSIwIiB5MT0iMCIgeDI9IjAiIHkyPSIxIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjRkZGRkZGIi8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjOEU5NTlBIi8+CiAgICA8L2xpbmVhckdyYWRpZW50PgogICAgPGxpbmVhckdyYWRpZW50IGlkPSJ2QmxhY2siIHgxPSIwIiB5MT0iMCIgeDI9IjAiIHkyPSIxIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjMjMyNDI3Ii8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjMDUwNTA2Ii8+CiAgICA8L2xpbmVhckdyYWRpZW50PgogIDwvZGVmcz4KICA8IS0tIEVzY3VkbyAtLT4KICA8cGF0aCBkPSJNNjAgNCAxMTIgMTd2NDZjMCAzNS0yMSA1OS01MiA3M0MyOSAxMjIgOCA5OCA4IDYzVjE3WiIgZmlsbD0idXJsKCN2QmxhY2spIiBzdHJva2U9InVybCgjdlNpbHZlcikiIHN0cm9rZS13aWR0aD0iNSIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPgogIDxwYXRoIGQ9Ik02MCAxMyAxMDMgMjR2MzljMCAyOS0xNyA1MC00MyA2Mi0yNi0xMi00My0zMy00My02MlYyNFoiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI0E1QUNBRiIgc3Ryb2tlLW9wYWNpdHk9Ii40NSIgc3Ryb2tlLXdpZHRoPSIxLjUiLz4KICA8IS0tIEVzcGFkYXMgY3J1emFkYXMgLS0+CiAgPGcgc3Ryb2tlPSIjMDUwNTA2IiBzdHJva2Utd2lkdGg9IjEuMiIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+CiAgICA8ZyB0cmFuc2Zvcm09InJvdGF0ZSgtMzggNjAgNzApIj4KICAgICAgPHBhdGggZD0iTTU3IDIyaDZsMSA2NGgtOFoiIGZpbGw9InVybCgjdkJsYWRlKSIvPgogICAgICA8cmVjdCB4PSI0NyIgeT0iODYiIHdpZHRoPSIyNiIgaGVpZ2h0PSI2IiByeD0iMyIgZmlsbD0idXJsKCN2U2lsdmVyKSIvPgogICAgICA8cmVjdCB4PSI1NyIgeT0iOTIiIHdpZHRoPSI2IiBoZWlnaHQ9IjE2IiByeD0iMiIgZmlsbD0iIzJCMkQzMCIvPgogICAgICA8Y2lyY2xlIGN4PSI2MCIgY3k9IjExMiIgcj0iNSIgZmlsbD0idXJsKCN2U2lsdmVyKSIvPgogICAgPC9nPgogICAgPGcgdHJhbnNmb3JtPSJyb3RhdGUoMzggNjAgNzApIj4KICAgICAgPHBhdGggZD0iTTU3IDIyaDZsMSA2NGgtOFoiIGZpbGw9InVybCgjdkJsYWRlKSIvPgogICAgICA8cmVjdCB4PSI0NyIgeT0iODYiIHdpZHRoPSIyNiIgaGVpZ2h0PSI2IiByeD0iMyIgZmlsbD0idXJsKCN2U2lsdmVyKSIvPgogICAgICA8cmVjdCB4PSI1NyIgeT0iOTIiIHdpZHRoPSI2IiBoZWlnaHQ9IjE2IiByeD0iMiIgZmlsbD0iIzJCMkQzMCIvPgogICAgICA8Y2lyY2xlIGN4PSI2MCIgY3k9IjExMiIgcj0iNSIgZmlsbD0idXJsKCN2U2lsdmVyKSIvPgogICAgPC9nPgogIDwvZz4KICA8IS0tIFAgZGUgUGFsZW5jaWEgLS0+CiAgPHBhdGggZmlsbC1ydWxlPSJldmVub2RkIiBkPSJNMzggMzRoMzJjMTcgMCAyNyAxMCAyNyAyNHMtMTAgMjQtMjcgMjRoLTl2MThIMzhaTTYxIDUydjEzaDdjNSAwIDgtMi41IDgtNi41UzczIDUyIDY4IDUyWiIgZmlsbD0iIzA1MDUwNiIgc3Ryb2tlPSJ1cmwoI3ZTaWx2ZXIpIiBzdHJva2Utd2lkdGg9IjQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KICA8cGF0aCBmaWxsLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik00NCAzOWgyNmMxMyAwIDIxIDcuNSAyMSAxOXMtOCAxOS0yMSAxOUg1NnYxOEg0NFpNNTYgNDd2MjNoMTJjOCAwIDEzLTQuNSAxMy0xMS41Uzc2IDQ3IDY4IDQ3WiIgZmlsbD0idXJsKCN2U2lsdmVyKSIvPgo8L3N2Zz4K" alt="MiAula">
-    <h1>MiAula Slate 2.13.0</h1>
+    <h1>MiAula Slate 2.14.0</h1>
     <p>Esta versión está diseñada para trabajar en tu tablet. Abre MiAula desde la Huawei MatePad 12X.</p>
   </div>
 </div>
@@ -2418,7 +2609,7 @@ html[data-theme="light"] .result-number,html[data-theme="light"] .result-number:
   <aside class="sidebar">
     <div class="brand">
       <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMjAgMTQwIiByb2xlPSJpbWciIGFyaWEtbGFiZWw9IkVzY3VkbyBQYWxlbmNpYSI+CiAgPGRlZnM+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9InZTaWx2ZXIiIHgxPSIwIiB5MT0iMCIgeDI9IjEiIHkyPSIxIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjRjZGN0Y4Ii8+PHN0b3Agb2Zmc2V0PSIuNDUiIHN0b3AtY29sb3I9IiNBNUFDQUYiLz48c3RvcCBvZmZzZXQ9Ii43IiBzdG9wLWNvbG9yPSIjRDlERERGIi8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjNkI3MTc1Ii8+CiAgICA8L2xpbmVhckdyYWRpZW50PgogICAgPGxpbmVhckdyYWRpZW50IGlkPSJ2QmxhZGUiIHgxPSIwIiB5MT0iMCIgeDI9IjAiIHkyPSIxIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjRkZGRkZGIi8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjOEU5NTlBIi8+CiAgICA8L2xpbmVhckdyYWRpZW50PgogICAgPGxpbmVhckdyYWRpZW50IGlkPSJ2QmxhY2siIHgxPSIwIiB5MT0iMCIgeDI9IjAiIHkyPSIxIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjMjMyNDI3Ii8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjMDUwNTA2Ii8+CiAgICA8L2xpbmVhckdyYWRpZW50PgogIDwvZGVmcz4KICA8IS0tIEVzY3VkbyAtLT4KICA8cGF0aCBkPSJNNjAgNCAxMTIgMTd2NDZjMCAzNS0yMSA1OS01MiA3M0MyOSAxMjIgOCA5OCA4IDYzVjE3WiIgZmlsbD0idXJsKCN2QmxhY2spIiBzdHJva2U9InVybCgjdlNpbHZlcikiIHN0cm9rZS13aWR0aD0iNSIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPgogIDxwYXRoIGQ9Ik02MCAxMyAxMDMgMjR2MzljMCAyOS0xNyA1MC00MyA2Mi0yNi0xMi00My0zMy00My02MlYyNFoiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI0E1QUNBRiIgc3Ryb2tlLW9wYWNpdHk9Ii40NSIgc3Ryb2tlLXdpZHRoPSIxLjUiLz4KICA8IS0tIEVzcGFkYXMgY3J1emFkYXMgLS0+CiAgPGcgc3Ryb2tlPSIjMDUwNTA2IiBzdHJva2Utd2lkdGg9IjEuMiIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+CiAgICA8ZyB0cmFuc2Zvcm09InJvdGF0ZSgtMzggNjAgNzApIj4KICAgICAgPHBhdGggZD0iTTU3IDIyaDZsMSA2NGgtOFoiIGZpbGw9InVybCgjdkJsYWRlKSIvPgogICAgICA8cmVjdCB4PSI0NyIgeT0iODYiIHdpZHRoPSIyNiIgaGVpZ2h0PSI2IiByeD0iMyIgZmlsbD0idXJsKCN2U2lsdmVyKSIvPgogICAgICA8cmVjdCB4PSI1NyIgeT0iOTIiIHdpZHRoPSI2IiBoZWlnaHQ9IjE2IiByeD0iMiIgZmlsbD0iIzJCMkQzMCIvPgogICAgICA8Y2lyY2xlIGN4PSI2MCIgY3k9IjExMiIgcj0iNSIgZmlsbD0idXJsKCN2U2lsdmVyKSIvPgogICAgPC9nPgogICAgPGcgdHJhbnNmb3JtPSJyb3RhdGUoMzggNjAgNzApIj4KICAgICAgPHBhdGggZD0iTTU3IDIyaDZsMSA2NGgtOFoiIGZpbGw9InVybCgjdkJsYWRlKSIvPgogICAgICA8cmVjdCB4PSI0NyIgeT0iODYiIHdpZHRoPSIyNiIgaGVpZ2h0PSI2IiByeD0iMyIgZmlsbD0idXJsKCN2U2lsdmVyKSIvPgogICAgICA8cmVjdCB4PSI1NyIgeT0iOTIiIHdpZHRoPSI2IiBoZWlnaHQ9IjE2IiByeD0iMiIgZmlsbD0iIzJCMkQzMCIvPgogICAgICA8Y2lyY2xlIGN4PSI2MCIgY3k9IjExMiIgcj0iNSIgZmlsbD0idXJsKCN2U2lsdmVyKSIvPgogICAgPC9nPgogIDwvZz4KICA8IS0tIFAgZGUgUGFsZW5jaWEgLS0+CiAgPHBhdGggZmlsbC1ydWxlPSJldmVub2RkIiBkPSJNMzggMzRoMzJjMTcgMCAyNyAxMCAyNyAyNHMtMTAgMjQtMjcgMjRoLTl2MThIMzhaTTYxIDUydjEzaDdjNSAwIDgtMi41IDgtNi41UzczIDUyIDY4IDUyWiIgZmlsbD0iIzA1MDUwNiIgc3Ryb2tlPSJ1cmwoI3ZTaWx2ZXIpIiBzdHJva2Utd2lkdGg9IjQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KICA8cGF0aCBmaWxsLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik00NCAzOWgyNmMxMyAwIDIxIDcuNSAyMSAxOXMtOCAxOS0yMSAxOUg1NnYxOEg0NFpNNTYgNDd2MjNoMTJjOCAwIDEzLTQuNSAxMy0xMS41Uzc2IDQ3IDY4IDQ3WiIgZmlsbD0idXJsKCN2U2lsdmVyKSIvPgo8L3N2Zz4K" alt="MiAula" class="brand-icon">
-      <div><strong>Para Palencia</strong><span>Silver &amp; Black · 2.13.0</span></div>
+      <div><strong>Para Palencia</strong><span>Silver &amp; Black · 2.14.0</span></div>
     </div>
     <nav>
       <button class="nav-item active" data-view="dashboard"><span class="nav-icon"><svg class="ui-icon" aria-hidden="true"><use href="#i-home"></use></svg></span><span>Inicio</span></button>
@@ -2618,12 +2809,12 @@ html[data-theme="light"] .result-number,html[data-theme="light"] .result-number:
       <div id="rubricLibrary" class="rubric-library hidden" role="tabpanel" aria-label="Rúbricas y listas de cotejo"></div>
       <div id="activitiesTabMain">
       <div class="grid-2">
-        <div class="panel"><div class="panel-head"><div><h3>Nueva actividad</h3><p>Trabajos, prácticas y exposiciones del parcial activo.</p></div></div>
+        <div class="panel"><div class="panel-head"><div><h3>Nueva actividad</h3><p>Del parcial activo. Elige en qué rubro cuenta.</p></div></div>
           <form id="activityForm" class="form-grid">
             <label class="span-2">Grupo<select name="group_id" id="activityGroup"></select></label>
             <label class="span-2">Nombre<input name="title" placeholder="Ej. Actividad de funciones" required></label>
-            <label>Tipo<select name="activity_type"><option>Trabajo</option><option>Práctica</option><option>Exposición</option></select></label>
-            <label class="hidden" id="activityRubroLabel">Cuenta en<select name="component_id" id="activityRubro"><option value="">Trabajos</option></select></label>
+            <input type="hidden" name="activity_type" value="Trabajo">
+            <label class="span-2" id="activityRubroLabel">Rubro<select name="component_id" id="activityRubro"><option value="">Trabajos</option></select><small class="field-help" id="activityRubroHelp">Para agregar más opciones crea rubros «Con actividades» en Más → Parcial.</small></label>
             <fieldset class="span-2 grading-mode-field">
               <legend>Cómo se califica</legend>
               <div class="grading-mode-options">
@@ -2736,7 +2927,7 @@ html[data-theme="light"] .result-number,html[data-theme="light"] .result-number:
             <label class="scheme-item fixed" id="attitudesSchemeItem"><span>Actitudes <small>docente</small></span><div class="percent-input"><input id="attitudesPct" type="number" min="0" max="100" step="1" value="10"><b>%</b></div></label>
             <label class="scheme-item fixed attendance-scheme-item hidden" id="attendanceSchemeItem"><span>Asistencia <small>automática · 0% = no cuenta</small></span><div class="percent-input"><input id="attendancePct" type="number" min="0" max="100" step="1" value="10"><b>%</b></div></label>
             <div class="custom-rubros span-2" id="customRubrosBox">
-              <div class="custom-rubros-head"><div><span class="field-label">Rubros adicionales</span><small>Crea los que necesites. «Captura directa»: escribes 0–10 por alumno. «Promedio de actividades»: eliges el rubro al crear la actividad.</small></div><button type="button" class="btn small subtle" id="addCustomRubro"><svg class="ui-icon" aria-hidden="true"><use href="#i-plus"></use></svg><span>Agregar rubro</span></button></div>
+              <div class="custom-rubros-head"><div><span class="field-label">Rubros adicionales</span><small>Crea los que necesites. <b>«Con actividades»</b>: aparece en la lista «Rubro» al crear una actividad y promedia sus calificaciones. <b>«Captura 0–10»</b>: escribes la calificación directa de cada alumno (no aparece en la lista).</small></div><button type="button" class="btn small subtle" id="addCustomRubro"><svg class="ui-icon" aria-hidden="true"><use href="#i-plus"></use></svg><span>Agregar rubro</span></button></div>
               <div id="customRubrosList" class="custom-rubros-list"></div>
             </div>
             <div class="scheme-total span-2"><span>Total</span><strong id="schemeTotal">100%</strong></div>
@@ -2840,7 +3031,8 @@ html[data-theme="light"] .result-number,html[data-theme="light"] .result-number:
           <div class="danger-zone"><strong>Importante</strong><p>Restaurar reemplaza los datos actuales de la tablet.</p></div>
         </div>
       </div>
-      <div class="panel"><div class="panel-head"><div><h3>Para Palencia · Edición Silver &amp; Black</h3><p>Cuaderno especial basado en MiAula Slate 2.13.0 · Prepa: rubros personalizables, copia automática, equipos y libreta por equipos.</p></div></div><div class="about-grid"><div><strong>Dispositivo</strong><span>Tablet, PC o celular</span></div><div><strong>Datos</strong><span>IndexedDB local</span></div><div><strong>Internet</strong><span>No requerido después de instalar</span></div><div><strong>Sincronización</strong><span>No incluida en esta versión</span></div></div></div>
+      <div class="panel appearance-panel" id="appearancePanel"><div class="panel-head"><div><h3>Apariencia</h3><p>Elige la paleta de colores y el modo claro u oscuro. Es una preferencia de este dispositivo.</p></div></div><div id="appearancePanelBody"></div></div>
+      <div class="panel"><div class="panel-head"><div><h3>Para Palencia · Edición Silver &amp; Black</h3><p>Cuaderno especial basado en MiAula Slate 2.14.0 · Prepa: rubros personalizables, copia automática, equipos y libreta por equipos.</p></div></div><div class="about-grid"><div><strong>Dispositivo</strong><span>Tablet, PC o celular</span></div><div><strong>Datos</strong><span>IndexedDB local</span></div><div><strong>Internet</strong><span>No requerido después de instalar</span></div><div><strong>Sincronización</strong><span>No incluida en esta versión</span></div></div></div>
     </section>
   </main>
 </div>
@@ -3844,7 +4036,7 @@ $('#evalDate').value=today;
 // 2.13.0: la versión de un solo archivo HTML (doble clic) no usa service worker.
 if('serviceWorker' in navigator && location.protocol.startsWith('http') && !window.MIAULA_SINGLE_FILE){
   let swControllerChanged=false;
-  navigator.serviceWorker.register('sw.js?v=2.13.0',{updateViaCache:'none'}).then(reg=>{
+  navigator.serviceWorker.register('sw.js?v=2.14.0',{updateViaCache:'none'}).then(reg=>{
     reg.update().catch(()=>{});
     document.addEventListener('visibilitychange',()=>{
       if(document.visibilityState==='visible')reg.update().catch(()=>{});
@@ -4997,9 +5189,10 @@ async function loadActivities(){
   const arr=(await MiAulaDB.byIndex('activities','group_period',[gid,p])).sort((a,b)=>b.id-a.id);
   const scheme=await getScheme(gid,p),actRubros=customComponents(scheme).filter(c=>c.source==='activities');
   await fillActivityRubroSelect(+$('#activityGroup').value||gid);
-  const rubroTag=a=>{const id=activityRubroId(a,scheme);return id?` · Rubro: ${escapeHtml(actRubros.find(c=>c.id===id)?.name||'')}`:'';};
+  // 2.14.0: se muestra el rubro (Trabajos o el rubro elegido); el tipo antiguo solo si no era «Trabajo».
+  const rubroTag=a=>{const id=activityRubroId(a,scheme);if(id)return `Rubro: ${escapeHtml(actRubros.find(c=>c.id===id)?.name||'')}`;const t=String(a.activity_type||'Trabajo');return t==='Trabajo'?'Trabajos':`Trabajos · ${escapeHtml(t)}`;};
   $('#activityCards').innerHTML=arr.length
-    ?arr.map(a=>`<div class="activity-card"><div><strong>${escapeHtml(a.title)}</strong>${activityMaxIndicator(a)}<small>${escapeHtml(a.activity_type)}${rubroTag(a)} · Parcial ${a.period} · Fecha ${escapeHtml(a.activity_date||'Sin fecha')} · Puntaje original ${a.max_score} · Peso ${a.weight}</small></div><div class="action-row">${activityCardButtons(a)}<button class="btn small subtle" onclick="editActivityDate(${a.id})">Editar fecha</button><button class="btn small danger" onclick="deleteActivity(${a.id})">Eliminar</button></div></div>`).join('')
+    ?arr.map(a=>`<div class="activity-card"><div><strong>${escapeHtml(a.title)}</strong>${activityMaxIndicator(a)}<small>${rubroTag(a)} · Parcial ${a.period} · Fecha ${escapeHtml(a.activity_date||'Sin fecha')} · Puntaje original ${a.max_score} · Peso ${a.weight}</small></div><div class="action-row">${activityCardButtons(a)}<button class="btn small subtle" onclick="editActivityDate(${a.id})">Editar fecha</button><button class="btn small danger" onclick="deleteActivity(${a.id})">Eliminar</button></div></div>`).join('')
     :`<div class="empty-state">Parcial ${p} limpio. Crea la primera actividad.</div>`;
   await syncGroupPeriodIndicators(gid);
 }
@@ -5011,7 +5204,7 @@ async function fillActivityRubroSelect(gid){
   const prev=sel.value;
   sel.innerHTML=`<option value="">Trabajos</option>${rubros.map(c=>`<option value="${escapeHtml(c.id)}">${escapeHtml(c.name)} (${+c.pct||0}%)</option>`).join('')}`;
   sel.value=rubros.some(c=>c.id===prev)?prev:'';
-  label.classList.toggle('hidden',!rubros.length);
+  $('#activityRubroHelp')?.classList.toggle('hidden',rubros.length>0);
 }
 window.openGrades=async aid=>{
   const activity=await MiAulaDB.get('activities',aid);if(!activity)return;
@@ -5257,7 +5450,7 @@ function renderSchemeRubros(){
   const box=$('#customRubrosList');if(!box)return;
   box.innerHTML=schemeRubrosDraft.length?schemeRubrosDraft.map((c,i)=>`<div class="custom-rubro-row" data-index="${i}">
     <input class="cr-name" type="text" maxlength="40" placeholder="Nombre del rubro (ej. Participación)" value="${escapeHtml(c.name||'')}" aria-label="Nombre del rubro">
-    <select class="cr-source" aria-label="Cómo se califica el rubro"><option value="manual"${c.source!=='activities'?' selected':''}>Captura directa</option><option value="activities"${c.source==='activities'?' selected':''}>Prom. de actividades</option></select>
+    <select class="cr-source" aria-label="Cómo se califica el rubro"><option value="manual"${c.source!=='activities'?' selected':''}>Captura 0–10</option><option value="activities"${c.source==='activities'?' selected':''}>Con actividades</option></select>
     <div class="percent-input"><input class="cr-pct" type="number" min="0" max="100" step="1" value="${+c.pct||0}" aria-label="Porcentaje del rubro"><b>%</b></div>
     <button type="button" class="btn small danger cr-remove" aria-label="Quitar rubro">Quitar</button>
   </div>`).join(''):'<div class="custom-rubros-empty">Sin rubros adicionales. Agrega los que uses (Participación, Tareas, Portafolio, Laboratorio…).</div>';
@@ -5964,7 +6157,7 @@ function renderNotebookPeriod(pd){
   const principalType=pd.scheme.principal_type||'project',principal=principalLabel(principalType);
   const attMode=isAttendanceScheme(pd.scheme),g=notebookData?.group,readOnly=isPeriodReadOnly(g,pd.period),closedP=isPeriodClosed(g,pd.period);
   const rubros=customComponents(pd.scheme),rubroName=a=>{const id=activityRubroId(a,pd.scheme);return id?rubros.find(c=>c.id===id)?.name:null;};
-  const activityHeads=pd.activities.map(a=>`<th class="activity-head"><span>${escapeHtml(a.title)}</span>${activityMaxIndicator(a)}<small>${isRubricActivity(a)?(activityRubric(a)?.kind==='cotejo'?'Lista de cotejo':'Rúbrica'):escapeHtml(a.activity_type)}${rubroName(a)?` · ${escapeHtml(rubroName(a))}`:''} · /${fmtShort(a.max_score,1)}</small>${teamColumnButton(a)}</th>`).join('');
+  const activityHeads=pd.activities.map(a=>`<th class="activity-head"><span>${escapeHtml(a.title)}</span>${activityMaxIndicator(a)}<small>${rubroName(a)?escapeHtml(rubroName(a)):isRubricActivity(a)?(activityRubric(a)?.kind==='cotejo'?'Lista de cotejo':'Rúbrica'):escapeHtml(a.activity_type)}${rubroName(a)&&isRubricActivity(a)?' · rúbrica':''} · /${fmtShort(a.max_score,1)}</small>${teamColumnButton(a)}</th>`).join('');
   const rubroCells=(s,gr)=>rubros.map(c=>c.source==='activities'
     ?`<td class="summary-cell rubro-cell"><span class="auto-score notebook-auto" data-rubro-cell="${pd.period}:${s.id}:${escapeHtml(c.id)}" title="Promedio de las actividades del rubro">${fmtNum(gr.custom_scores?.[c.id])}</span></td>`
     :`<td class="summary-cell rubro-cell">${notebookComponentInput(`rubro:${c.id}`,s,pd,gr.custom_scores?.[c.id]??null)}</td>`).join('');
@@ -6345,7 +6538,7 @@ async function downloadMiAulaBackup(){
   try{
     const data=await MiAulaDB.exportBackup();
     const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
-    downloadBlob(blob,`MiAula_Palencia_2.13.0_Respaldo_${new Date().toISOString().replace(/[:.]/g,'-')}.json`);
+    downloadBlob(blob,`MiAula_Palencia_2.14.0_Respaldo_${new Date().toISOString().replace(/[:.]/g,'-')}.json`);
     toast('Respaldo generado');
     try{localStorage.setItem('miaula:lastBackupAt',new Date().toISOString());}catch{}
     if(typeof renderBackupReminder==='function')renderBackupReminder();
@@ -6692,6 +6885,7 @@ function applyTheme(theme){
   const light=theme==='light';
   if(light)document.documentElement.setAttribute('data-theme','light');else document.documentElement.removeAttribute('data-theme');
   const meta=document.querySelector('meta[name="theme-color"]');if(meta)meta.setAttribute('content',light?'#E9EBEC':'#0A0A0B');
+  try{if(typeof MiAulaTheme!=='undefined')MiAulaTheme.syncMeta();}catch{} // const global: no vive en window
   const btn=$('#themeToggle');
   if(btn){const label=light?'Cambiar a modo oscuro':'Cambiar a modo claro';btn.setAttribute('aria-label',label);btn.title=label;btn.innerHTML=`<svg class="ui-icon" aria-hidden="true"><use href="#${light?'i-moon':'i-sun'}"></use></svg>`;}
   if(typeof drawWheel==='function'){try{drawWheel();}catch{}}
@@ -7902,7 +8096,7 @@ const MiAulaAutoBackup=(()=>{
 
   async function snapshot(){
     const data=await MiAulaDB.exportBackup();
-    data.appVersion='2.13.0-Palencia';data.autoBackup=true;
+    data.appVersion='2.14.0-Palencia';data.autoBackup=true;
     const body=JSON.stringify(data.stores);
     return {data,json:JSON.stringify(data,null,1),hash:hash(body),counts:counts(data)};
   }

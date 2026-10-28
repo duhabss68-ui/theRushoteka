@@ -1,6 +1,6 @@
-# PROMPT MAESTRO — MIAULA SLATE 2.13.0 · PREPA
+# PROMPT MAESTRO — MIAULA SLATE 2.14.0 · PREPA
 
-> Copia este documento completo al iniciar una conversación nueva y adjunta el ZIP más reciente (`MiAula_2.13.0_Prepa.zip`).
+> Copia este documento completo al iniciar una conversación nueva y adjunta el ZIP más reciente (`MiAula_2.14.0_Prepa.zip`).
 > **Los archivos del ZIP son la fuente de verdad técnica.** Este documento describe el comportamiento esperado. No sobrescribas código que funciona basándote solo en este texto: primero compara.
 
 ---
@@ -16,9 +16,10 @@ MiAula Slate · Prepa es la **edición general para preparatoria/bachillerato** 
 
 ## 2. Estado actual
 
-- **Versión vigente: MiAula Slate 2.13.0 · Prepa.** Se entrega como PWA (GitHub Pages) y como **un solo archivo HTML** (`dist/MiAula_Prepa_2.13.0.html`, generado con `python3 tools/build_single.py`).
+- **Versión vigente: MiAula Slate 2.14.0 · Prepa.** Se entrega como PWA (GitHub Pages) y como **un solo archivo HTML** (`dist/MiAula_Prepa_2.14.0.html`, generado con `python3 tools/build_single.py`).
+- **Edición especial «Mtro. Erick» (Palencia):** `python3 tools/build_single.py --edition palencia` → `dist/MiAula_Palencia_SilverBlack_2.14.0.html`. Archivos en `editions/palencia/` (textos, base `MiAulaPalenciaDB`, tema plata/negro, Oswald, escudo «P», botón «Cambiar logo»). No incluir logotipos oficiales de terceros.
 - No reconstruir desde cero. Trabajar siempre sobre los archivos de la última versión.
-- La siguiente versión es 2.13.1 si es una corrección, o 2.14.0 si trae funciones nuevas. Nunca una versión menor.
+- La siguiente versión es 2.14.1 si es una corrección, o 2.15.0 si trae funciones nuevas. Nunca una versión menor.
 
 ## 3. Reglas absolutas
 
@@ -68,6 +69,7 @@ Nunca sacrificar del 1 al 6 por el 8 o el 9.
   - `manifest.webmanifest`
   - `rubricas.js`: módulo `MiAulaRubricas`.
   - `autobackup.js` (2.13.0): módulo `MiAulaAutoBackup`, copia automática. Envuelve los métodos que escriben en `MiAulaDB` (es `const` global, no está en `window`). Base aparte `MiAulaPrepaAutoCopias` (almacenes `kv` y `versions`).
+  - `theme.js` (2.14.0, se carga en `<head>`): `MiAulaTheme`, paletas Alegre/Guinda/Personalizada (genera tokens desde un color) y panel Más → Apariencia. Claves localStorage: `miaula:palette`, `miaula:customColor`, `miaula:theme`.
   - `tools/build_single.py`: genera el HTML de un solo archivo (incrusta `styles-legacy.css`, `styles.css`, los 5 scripts y el icono; define `window.MIAULA_SINGLE_FILE` para no registrar service worker).
   - `xlsx-lite.js`
   - `db.js` está en el proyecto pero normalmente no cambia; `styles-legacy.css` y `assets/` tampoco.
@@ -192,7 +194,7 @@ Para actualizar la tablet:
 
 ### Actividades y calificaciones
 - Crear, editar, eliminar (con confirmación) y **cambiar la fecha sin perder calificaciones** (mismo ID).
-- Tipos: Trabajo, Práctica, Exposición, Proyecto y Examen. Tienen puntaje máximo y peso.
+- **2.14.0:** al crear una actividad hay una sola lista «Rubro» (Trabajos + rubros «Con actividades»); se guarda `activity_type:'Trabajo'` por compatibilidad. Las actividades antiguas conservan su tipo. Tienen puntaje máximo y peso.
 - **Indicador «Máx.»** (solo es una referencia y nunca bloquea):
   - Vale 10 el día de creación y baja 1 por cada día hábil (no cuentan sábado ni domingo).
   - Se ve gris; ámbar de 6 a 4 y rojo de 3 a 0.
@@ -329,7 +331,9 @@ Suites, con un servidor local (`python3 -m http.server`) y `APP_URL=http://local
 | `cambio-parcial.e2e.js` | 11/11 |
 | `asistencia-parcial.e2e.js` (2.11.0) | 41/41 |
 | `rubros.e2e.js` (2.12.0 Prepa) | 31/31 |
-| `autocopia.e2e.js` (2.13.0; con `SINGLE=dist/MiAula_Prepa_2.13.0.html`) | 25/25 |
+| `autocopia.e2e.js` (2.13.0; con `SINGLE=dist/MiAula_Prepa_2.14.0.html`) | 25/25 |
+| `apariencia.e2e.js` (2.14.0; con `PALENCIA=…`) | 23/23 |
+| `edicion-palencia.e2e.js` (con `PALENCIA=…` y `PREPA=…`) | 21/21 |
 
 - Al cambiar una regla de forma intencional, se ajustan las pruebas afectadas y se explica por qué.
 - Revisar capturas de pantalla en los dos temas antes de entregar.
@@ -373,7 +377,8 @@ Suites, con un servidor local (`python3 -m http.server`) y `APP_URL=http://local
 | 2.10.1 | El cuaderno abre el parcial nuevo tras cerrar; un parcial nuevo copia los porcentajes del anterior. |
 | 2.11.0 | Asistencia por parcial, Asistencia 10% automática en lugar de Valores y Actitudes, modo consulta de parciales pasados, barra sin «Respaldo». |
 | 2.12.0 · Prepa | Edición general para preparatoria: rubros adicionales al calificar (captura directa o promedio de actividades), Asistencia con % editable, base de datos y caché propias, sin textos de CETIS. |
-| **2.13.0 · Prepa** | Versión de un solo archivo HTML, copia automática en cada cambio (carpeta/archivo/descargas, pausa de seguridad, versiones internas) y tema «Alegre». |
+| 2.13.0 · Prepa | Versión de un solo archivo HTML, copia automática en cada cambio (carpeta/archivo/descargas, pausa de seguridad, versiones internas) y tema «Alegre». |
+| **2.14.0 · Prepa** | Más → Apariencia: paletas Alegre, Guinda / Vino y Personalizada (color principal), modo claro/oscuro; al crear actividad una sola lista «Rubro» (se quitó «Tipo»); rubros «Con actividades» / «Captura 0–10». |
 
 ## 13. Situación actual
 

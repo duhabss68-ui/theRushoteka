@@ -4,16 +4,16 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#FFF7EF">
-  <script>try{if(localStorage.getItem('miaula:theme')!=='dark')document.documentElement.setAttribute('data-theme','light');}catch(e){document.documentElement.setAttribute('data-theme','light');}</script>
+  <script src="theme.js?v=2.14.0"></script>
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="MiAula">
-  <title>MiAula Slate 2.13.0 · Prepa</title>
-  <link rel="manifest" href="manifest.webmanifest?v=2.13.0">
-  <link rel="icon" type="image/png" sizes="192x192" href="assets/icon-books-192.png?v=2.13.0">
-  <link rel="apple-touch-icon" href="assets/icon-books-192.png?v=2.13.0">
-  <link rel="stylesheet" href="styles.css?v=2.13.0">
+  <title>MiAula Slate 2.14.0 · Prepa</title>
+  <link rel="manifest" href="manifest.webmanifest?v=2.14.0">
+  <link rel="icon" type="image/png" sizes="192x192" href="assets/icon-books-192.png?v=2.14.0">
+  <link rel="apple-touch-icon" href="assets/icon-books-192.png?v=2.14.0">
+  <link rel="stylesheet" href="styles.css?v=2.14.0">
 </head>
 <body>
 <svg class="icon-sprite" aria-hidden="true" focusable="false">
@@ -44,8 +44,8 @@
 <div id="splash" class="splash" aria-hidden="true"><div class="splash-inner"><svg viewBox="0 0 64 64"><defs><linearGradient id="splashGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FF7A59"/><stop offset=".55" stop-color="#FF5FA2"/><stop offset="1" stop-color="#7B5CFF"/></linearGradient></defs><rect x="2" y="2" width="60" height="60" rx="16" fill="url(#splashGrad)"/><path d="M14 20.5c6-2.6 12-2.2 18 1.6v24c-6-3.8-12-4.2-18-1.6z" fill="#fff" opacity=".96"/><path d="M50 20.5c-6-2.6-12-2.2-18 1.6v24c6-3.8 12-4.2 18-1.6z" fill="#fff" opacity=".72"/><path d="m36.5 33.2 3.6 3.6 6.4-7" fill="none" stroke="#7B5CFF" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg><b>Mi<strong>Aula</strong></b></div></div>
 <div id="tabletOnly" class="tablet-only hidden">
   <div class="tablet-only-card">
-    <img src="assets/icon-books-192.png?v=2.13.0" alt="MiAula">
-    <h1>MiAula Slate 2.13.0</h1>
+    <img src="assets/icon-books-192.png?v=2.14.0" alt="MiAula">
+    <h1>MiAula Slate 2.14.0</h1>
     <p>Esta versión está diseñada para trabajar en tu tablet. Abre MiAula desde la Huawei MatePad 12X.</p>
   </div>
 </div>
@@ -54,8 +54,8 @@
 <div class="app-shell" id="appShell">
   <aside class="sidebar">
     <div class="brand">
-      <img src="assets/icon-books-192.png?v=2.13.0" alt="MiAula" class="brand-icon">
-      <div><strong>MiAula Slate</strong><span>2.13.0 · Prepa</span></div>
+      <img src="assets/icon-books-192.png?v=2.14.0" alt="MiAula" class="brand-icon">
+      <div><strong>MiAula Slate</strong><span>2.14.0 · Prepa</span></div>
     </div>
     <nav>
       <button class="nav-item active" data-view="dashboard"><span class="nav-icon"><svg class="ui-icon" aria-hidden="true"><use href="#i-home"></use></svg></span><span>Inicio</span></button>
@@ -87,7 +87,7 @@
       <div class="top-actions">
         <div class="save-state saved" id="saveStateWrap"><span class="save-state-dot"></span><span id="saveState">Todo guardado</span></div>
         <button type="button" class="auto-backup-chip off" id="autoBackupChip" title="Copia automática"><svg class="ui-icon" aria-hidden="true"><use href="#i-backup"></use></svg><span>Copia automática</span></button>
-        <span class="version-badge">MiAula Slate · 2.13.0 Prepa</span>
+        <span class="version-badge">MiAula Slate · 2.14.0 Prepa</span>
         <button class="btn icon-btn theme-toggle" id="themeToggle" type="button" aria-label="Cambiar a modo claro" title="Cambiar a modo claro"><svg class="ui-icon" aria-hidden="true"><use href="#i-sun"></use></svg></button>
         <button class="btn class-mode-btn" id="classModeTop">Modo clase</button>
         <button class="btn primary" id="quickAttendance">+ Asistencia</button>
@@ -255,12 +255,12 @@
       <div id="rubricLibrary" class="rubric-library hidden" role="tabpanel" aria-label="Rúbricas y listas de cotejo"></div>
       <div id="activitiesTabMain">
       <div class="grid-2">
-        <div class="panel"><div class="panel-head"><div><h3>Nueva actividad</h3><p>Trabajos, prácticas y exposiciones del parcial activo.</p></div></div>
+        <div class="panel"><div class="panel-head"><div><h3>Nueva actividad</h3><p>Del parcial activo. Elige en qué rubro cuenta.</p></div></div>
           <form id="activityForm" class="form-grid">
             <label class="span-2">Grupo<select name="group_id" id="activityGroup"></select></label>
             <label class="span-2">Nombre<input name="title" placeholder="Ej. Actividad de funciones" required></label>
-            <label>Tipo<select name="activity_type"><option>Trabajo</option><option>Práctica</option><option>Exposición</option></select></label>
-            <label class="hidden" id="activityRubroLabel">Cuenta en<select name="component_id" id="activityRubro"><option value="">Trabajos</option></select></label>
+            <input type="hidden" name="activity_type" value="Trabajo">
+            <label class="span-2" id="activityRubroLabel">Rubro<select name="component_id" id="activityRubro"><option value="">Trabajos</option></select><small class="field-help" id="activityRubroHelp">Para agregar más opciones crea rubros «Con actividades» en Más → Parcial.</small></label>
             <fieldset class="span-2 grading-mode-field">
               <legend>Cómo se califica</legend>
               <div class="grading-mode-options">
@@ -373,7 +373,7 @@
             <label class="scheme-item fixed" id="attitudesSchemeItem"><span>Actitudes <small>docente</small></span><div class="percent-input"><input id="attitudesPct" type="number" min="0" max="100" step="1" value="10"><b>%</b></div></label>
             <label class="scheme-item fixed attendance-scheme-item hidden" id="attendanceSchemeItem"><span>Asistencia <small>automática · 0% = no cuenta</small></span><div class="percent-input"><input id="attendancePct" type="number" min="0" max="100" step="1" value="10"><b>%</b></div></label>
             <div class="custom-rubros span-2" id="customRubrosBox">
-              <div class="custom-rubros-head"><div><span class="field-label">Rubros adicionales</span><small>Crea los que necesites. «Captura directa»: escribes 0–10 por alumno. «Promedio de actividades»: eliges el rubro al crear la actividad.</small></div><button type="button" class="btn small subtle" id="addCustomRubro"><svg class="ui-icon" aria-hidden="true"><use href="#i-plus"></use></svg><span>Agregar rubro</span></button></div>
+              <div class="custom-rubros-head"><div><span class="field-label">Rubros adicionales</span><small>Crea los que necesites. <b>«Con actividades»</b>: aparece en la lista «Rubro» al crear una actividad y promedia sus calificaciones. <b>«Captura 0–10»</b>: escribes la calificación directa de cada alumno (no aparece en la lista).</small></div><button type="button" class="btn small subtle" id="addCustomRubro"><svg class="ui-icon" aria-hidden="true"><use href="#i-plus"></use></svg><span>Agregar rubro</span></button></div>
               <div id="customRubrosList" class="custom-rubros-list"></div>
             </div>
             <div class="scheme-total span-2"><span>Total</span><strong id="schemeTotal">100%</strong></div>
@@ -477,7 +477,8 @@
           <div class="danger-zone"><strong>Importante</strong><p>Restaurar reemplaza los datos actuales de la tablet.</p></div>
         </div>
       </div>
-      <div class="panel"><div class="panel-head"><div><h3>MiAula Slate 2.13.0 · Prepa</h3><p>Edición general para preparatoria: rubros de evaluación personalizables, equipos persistentes y libreta por equipos.</p></div></div><div class="about-grid"><div><strong>Dispositivo</strong><span>Tablet, PC o celular</span></div><div><strong>Datos</strong><span>IndexedDB local</span></div><div><strong>Internet</strong><span>No requerido después de instalar</span></div><div><strong>Sincronización</strong><span>No incluida en esta versión</span></div></div></div>
+      <div class="panel appearance-panel" id="appearancePanel"><div class="panel-head"><div><h3>Apariencia</h3><p>Elige la paleta de colores y el modo claro u oscuro. Es una preferencia de este dispositivo.</p></div></div><div id="appearancePanelBody"></div></div>
+      <div class="panel"><div class="panel-head"><div><h3>MiAula Slate 2.14.0 · Prepa</h3><p>Edición general para preparatoria: rubros de evaluación personalizables, equipos persistentes y libreta por equipos.</p></div></div><div class="about-grid"><div><strong>Dispositivo</strong><span>Tablet, PC o celular</span></div><div><strong>Datos</strong><span>IndexedDB local</span></div><div><strong>Internet</strong><span>No requerido después de instalar</span></div><div><strong>Sincronización</strong><span>No incluida en esta versión</span></div></div></div>
     </section>
   </main>
 </div>
@@ -540,10 +541,10 @@
 
 <div id="modal" class="modal hidden"><div class="modal-card"><div class="modal-head"><h3 id="modalTitle">Editar</h3><button class="icon-btn" id="modalClose">×</button></div><div id="modalBody"></div></div></div>
 <div id="toast" class="toast"></div>
-<script src="db.js?v=2.13.0"></script>
-<script src="xlsx-lite.js?v=2.13.0"></script>
-<script src="rubricas.js?v=2.13.0"></script>
-<script src="app.js?v=2.13.0"></script>
-<script src="autobackup.js?v=2.13.0"></script>
+<script src="db.js?v=2.14.0"></script>
+<script src="xlsx-lite.js?v=2.14.0"></script>
+<script src="rubricas.js?v=2.14.0"></script>
+<script src="app.js?v=2.14.0"></script>
+<script src="autobackup.js?v=2.14.0"></script>
 </body>
 </html>

@@ -50,7 +50,7 @@ const MiAulaAutoBackup=(()=>{
 
   async function snapshot(){
     const data=await MiAulaDB.exportBackup();
-    data.appVersion='2.13.0-Prepa';data.autoBackup=true;
+    data.appVersion='2.14.0-Prepa';data.autoBackup=true;
     const body=JSON.stringify(data.stores);
     return {data,json:JSON.stringify(data,null,1),hash:hash(body),counts:counts(data)};
   }

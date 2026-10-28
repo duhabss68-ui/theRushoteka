@@ -78,7 +78,7 @@ const wait=(p,ms)=>p.waitForTimeout(ms);
   // ---------- Actividad que cuenta en el rubro «Tareas» ----------
   await p.evaluate(()=>goView('activities'));await wait(p,700);
   const sel=await p.evaluate(()=>({hidden:$('#activityRubroLabel').classList.contains('hidden'),opts:[...document.querySelectorAll('#activityRubro option')].map(o=>o.textContent)}));
-  check('Nueva actividad: selector «Cuenta en» con Trabajos y Tareas (no ofrece rubros de captura)',!sel.hidden&&sel.opts.length===2&&sel.opts[0]==='Trabajos'&&sel.opts[1].startsWith('Tareas'),JSON.stringify(sel));
+  check('Nueva actividad: lista «Rubro» con Trabajos y Tareas (no ofrece rubros de captura)',!sel.hidden&&sel.opts.length===2&&sel.opts[0]==='Trabajos'&&sel.opts[1].startsWith('Tareas'),JSON.stringify(sel));
   await p.fill('#activityForm [name="title"]','Tarea 1');
   await p.selectOption('#activityRubro',rTar);
   await p.click('#activityForm button[type="submit"]');await wait(p,800);
@@ -128,8 +128,9 @@ const wait=(p,ms)=>p.waitForTimeout(ms);
   await p.fill('#workPct','40');await p.click('#schemeForm button[type="submit"]');await wait(p,800);
   const rm=await p.evaluate(async a=>{const s=await MiAulaDB.get('gradingSchemes',`${a.gid}:1`);const r=await computeGroupGrading(a.gid,'1');const act=(await MiAulaDB.byIndex('activities','group_id',a.gid)).find(x=>x.title==='Tarea 1');return {n:customComponents(s).length,work:r.students[0].work_avg,cid:act.component_id};},{gid});
   check('Quitar «Tareas»: la actividad conserva su dato y vuelve a contar en Trabajos (Ana (8+10)/2 = 9)',rm.n===1&&rm.work===9&&rm.cid===rTar,JSON.stringify(rm));
-  const sel2=await p.evaluate(async()=>{goView('activities');await loadActivities();return $('#activityRubroLabel').classList.contains('hidden');});
-  check('Sin rubros de actividades, el selector «Cuenta en» se oculta',sel2);
+  // 2.14.0: la lista «Rubro» siempre está (reemplaza a «Tipo»); sin rubros de actividades solo ofrece Trabajos y muestra ayuda.
+  const sel2=await p.evaluate(async()=>{goView('activities');await loadActivities();return {vis:!$('#activityRubroLabel').classList.contains('hidden'),opts:[...document.querySelectorAll('#activityRubro option')].map(o=>o.textContent),help:!$('#activityRubroHelp').classList.contains('hidden')};});
+  check('Sin rubros de actividades, «Rubro» solo ofrece Trabajos y muestra cómo crear más',sel2.vis&&sel2.opts.join()==='Trabajos'&&sel2.help,JSON.stringify(sel2));
 
   // ---------- Asistencia editable ----------
   await p.evaluate(()=>goView('grading'));await wait(p,800);

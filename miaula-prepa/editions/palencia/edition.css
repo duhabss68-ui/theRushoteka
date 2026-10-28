@@ -162,3 +162,4 @@ html[data-theme="light"] .result-number,html[data-theme="light"] .result-number:
 .edition-logo-box{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding:14px 16px;margin-bottom:14px;border-radius:14px;background:var(--surface-2);border:1px solid var(--border)}
 .edition-logo-box strong{display:block;font-family:var(--font-sport);text-transform:uppercase;letter-spacing:.045em;color:var(--text-strong)}
 .edition-logo-box small{display:block;color:var(--text-3);font-size:13px;margin-top:2px}
+#appearancePanel{display:none!important}

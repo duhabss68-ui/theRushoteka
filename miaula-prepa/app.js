@@ -231,7 +231,7 @@ $('#evalDate').value=today;
 // 2.13.0: la versión de un solo archivo HTML (doble clic) no usa service worker.
 if('serviceWorker' in navigator && location.protocol.startsWith('http') && !window.MIAULA_SINGLE_FILE){
   let swControllerChanged=false;
-  navigator.serviceWorker.register('sw.js?v=2.13.0',{updateViaCache:'none'}).then(reg=>{
+  navigator.serviceWorker.register('sw.js?v=2.14.0',{updateViaCache:'none'}).then(reg=>{
     reg.update().catch(()=>{});
     document.addEventListener('visibilitychange',()=>{
       if(document.visibilityState==='visible')reg.update().catch(()=>{});
@@ -1384,9 +1384,10 @@ async function loadActivities(){
   const arr=(await MiAulaDB.byIndex('activities','group_period',[gid,p])).sort((a,b)=>b.id-a.id);
   const scheme=await getScheme(gid,p),actRubros=customComponents(scheme).filter(c=>c.source==='activities');
   await fillActivityRubroSelect(+$('#activityGroup').value||gid);
-  const rubroTag=a=>{const id=activityRubroId(a,scheme);return id?` · Rubro: ${escapeHtml(actRubros.find(c=>c.id===id)?.name||'')}`:'';};
+  // 2.14.0: se muestra el rubro (Trabajos o el rubro elegido); el tipo antiguo solo si no era «Trabajo».
+  const rubroTag=a=>{const id=activityRubroId(a,scheme);if(id)return `Rubro: ${escapeHtml(actRubros.find(c=>c.id===id)?.name||'')}`;const t=String(a.activity_type||'Trabajo');return t==='Trabajo'?'Trabajos':`Trabajos · ${escapeHtml(t)}`;};
   $('#activityCards').innerHTML=arr.length
-    ?arr.map(a=>`<div class="activity-card"><div><strong>${escapeHtml(a.title)}</strong>${activityMaxIndicator(a)}<small>${escapeHtml(a.activity_type)}${rubroTag(a)} · Parcial ${a.period} · Fecha ${escapeHtml(a.activity_date||'Sin fecha')} · Puntaje original ${a.max_score} · Peso ${a.weight}</small></div><div class="action-row">${activityCardButtons(a)}<button class="btn small subtle" onclick="editActivityDate(${a.id})">Editar fecha</button><button class="btn small danger" onclick="deleteActivity(${a.id})">Eliminar</button></div></div>`).join('')
+    ?arr.map(a=>`<div class="activity-card"><div><strong>${escapeHtml(a.title)}</strong>${activityMaxIndicator(a)}<small>${rubroTag(a)} · Parcial ${a.period} · Fecha ${escapeHtml(a.activity_date||'Sin fecha')} · Puntaje original ${a.max_score} · Peso ${a.weight}</small></div><div class="action-row">${activityCardButtons(a)}<button class="btn small subtle" onclick="editActivityDate(${a.id})">Editar fecha</button><button class="btn small danger" onclick="deleteActivity(${a.id})">Eliminar</button></div></div>`).join('')
     :`<div class="empty-state">Parcial ${p} limpio. Crea la primera actividad.</div>`;
   await syncGroupPeriodIndicators(gid);
 }
@@ -1398,7 +1399,7 @@ async function fillActivityRubroSelect(gid){
   const prev=sel.value;
   sel.innerHTML=`<option value="">Trabajos</option>${rubros.map(c=>`<option value="${escapeHtml(c.id)}">${escapeHtml(c.name)} (${+c.pct||0}%)</option>`).join('')}`;
   sel.value=rubros.some(c=>c.id===prev)?prev:'';
-  label.classList.toggle('hidden',!rubros.length);
+  $('#activityRubroHelp')?.classList.toggle('hidden',rubros.length>0);
 }
 window.openGrades=async aid=>{
   const activity=await MiAulaDB.get('activities',aid);if(!activity)return;
@@ -1644,7 +1645,7 @@ function renderSchemeRubros(){
   const box=$('#customRubrosList');if(!box)return;
   box.innerHTML=schemeRubrosDraft.length?schemeRubrosDraft.map((c,i)=>`<div class="custom-rubro-row" data-index="${i}">
     <input class="cr-name" type="text" maxlength="40" placeholder="Nombre del rubro (ej. Participación)" value="${escapeHtml(c.name||'')}" aria-label="Nombre del rubro">
-    <select class="cr-source" aria-label="Cómo se califica el rubro"><option value="manual"${c.source!=='activities'?' selected':''}>Captura directa</option><option value="activities"${c.source==='activities'?' selected':''}>Prom. de actividades</option></select>
+    <select class="cr-source" aria-label="Cómo se califica el rubro"><option value="manual"${c.source!=='activities'?' selected':''}>Captura 0–10</option><option value="activities"${c.source==='activities'?' selected':''}>Con actividades</option></select>
     <div class="percent-input"><input class="cr-pct" type="number" min="0" max="100" step="1" value="${+c.pct||0}" aria-label="Porcentaje del rubro"><b>%</b></div>
     <button type="button" class="btn small danger cr-remove" aria-label="Quitar rubro">Quitar</button>
   </div>`).join(''):'<div class="custom-rubros-empty">Sin rubros adicionales. Agrega los que uses (Participación, Tareas, Portafolio, Laboratorio…).</div>';
@@ -2351,7 +2352,7 @@ function renderNotebookPeriod(pd){
   const principalType=pd.scheme.principal_type||'project',principal=principalLabel(principalType);
   const attMode=isAttendanceScheme(pd.scheme),g=notebookData?.group,readOnly=isPeriodReadOnly(g,pd.period),closedP=isPeriodClosed(g,pd.period);
   const rubros=customComponents(pd.scheme),rubroName=a=>{const id=activityRubroId(a,pd.scheme);return id?rubros.find(c=>c.id===id)?.name:null;};
-  const activityHeads=pd.activities.map(a=>`<th class="activity-head"><span>${escapeHtml(a.title)}</span>${activityMaxIndicator(a)}<small>${isRubricActivity(a)?(activityRubric(a)?.kind==='cotejo'?'Lista de cotejo':'Rúbrica'):escapeHtml(a.activity_type)}${rubroName(a)?` · ${escapeHtml(rubroName(a))}`:''} · /${fmtShort(a.max_score,1)}</small>${teamColumnButton(a)}</th>`).join('');
+  const activityHeads=pd.activities.map(a=>`<th class="activity-head"><span>${escapeHtml(a.title)}</span>${activityMaxIndicator(a)}<small>${rubroName(a)?escapeHtml(rubroName(a)):isRubricActivity(a)?(activityRubric(a)?.kind==='cotejo'?'Lista de cotejo':'Rúbrica'):escapeHtml(a.activity_type)}${rubroName(a)&&isRubricActivity(a)?' · rúbrica':''} · /${fmtShort(a.max_score,1)}</small>${teamColumnButton(a)}</th>`).join('');
   const rubroCells=(s,gr)=>rubros.map(c=>c.source==='activities'
     ?`<td class="summary-cell rubro-cell"><span class="auto-score notebook-auto" data-rubro-cell="${pd.period}:${s.id}:${escapeHtml(c.id)}" title="Promedio de las actividades del rubro">${fmtNum(gr.custom_scores?.[c.id])}</span></td>`
     :`<td class="summary-cell rubro-cell">${notebookComponentInput(`rubro:${c.id}`,s,pd,gr.custom_scores?.[c.id]??null)}</td>`).join('');
@@ -2732,7 +2733,7 @@ async function downloadMiAulaBackup(){
   try{
     const data=await MiAulaDB.exportBackup();
     const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
-    downloadBlob(blob,`MiAula_Prepa_2.13.0_Respaldo_${new Date().toISOString().replace(/[:.]/g,'-')}.json`);
+    downloadBlob(blob,`MiAula_Prepa_2.14.0_Respaldo_${new Date().toISOString().replace(/[:.]/g,'-')}.json`);
     toast('Respaldo generado');
     try{localStorage.setItem('miaula:lastBackupAt',new Date().toISOString());}catch{}
     if(typeof renderBackupReminder==='function')renderBackupReminder();
@@ -3079,6 +3080,7 @@ function applyTheme(theme){
   const light=theme==='light';
   if(light)document.documentElement.setAttribute('data-theme','light');else document.documentElement.removeAttribute('data-theme');
   const meta=document.querySelector('meta[name="theme-color"]');if(meta)meta.setAttribute('content',light?'#FFF7EF':'#140F26');
+  try{if(typeof MiAulaTheme!=='undefined')MiAulaTheme.syncMeta();}catch{} // const global: no vive en window
   const btn=$('#themeToggle');
   if(btn){const label=light?'Cambiar a modo oscuro':'Cambiar a modo claro';btn.setAttribute('aria-label',label);btn.title=label;btn.innerHTML=`<svg class="ui-icon" aria-hidden="true"><use href="#${light?'i-moon':'i-sun'}"></use></svg>`;}
   if(typeof drawWheel==='function'){try{drawWheel();}catch{}}

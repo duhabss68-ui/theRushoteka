@@ -1,8 +1,8 @@
-MIAULA SLATE 2.13.0 · PREPA (edición general para preparatoria)
+MIAULA SLATE 2.14.0 · PREPA (edición general para preparatoria)
 
 DOS FORMAS DE USARLA
 A) UN SOLO ARCHIVO HTML (lo más fácil)
-   1. Copia dist/MiAula_Prepa_2.13.0.html a tu computadora (o a una USB).
+   1. Copia dist/MiAula_Prepa_2.14.0.html a tu computadora (o a una USB).
    2. Ábrelo con doble clic en Chrome o Edge. No necesita internet.
    3. Ve a Más -> Respaldo -> «Elegir carpeta de copias» y elige una carpeta
       (Documentos, OneDrive, USB…). Desde ese momento CADA CAMBIO se guarda solo en
@@ -25,10 +25,12 @@ SEGURIDAD DE DATOS
 ACTUALIZAR
 - HTML: reemplaza el archivo por el nuevo CON EL MISMO NOMBRE Y EN LA MISMA CARPETA
   (los datos dependen del navegador y del lugar del archivo). Antes, deja que se haga la copia automática.
-- GitHub: Más -> Crear respaldo, sube el ZIP SOLO_GITHUB y abre …/index.html?actualizar=2.13.0.
+- GitHub: Más -> Crear respaldo, sube el ZIP SOLO_GITHUB y abre …/index.html?actualizar=2.14.0.
 
 DOCUMENTOS
-- NOVEDADES_2.13.0.md, NOVEDADES_2.12.0.md   qué cambió.
-- VALIDACION_2.13.0.md                       pruebas ejecutadas.
-- PROMPT_MAESTRO_MiAula_Prepa_2.13.0.md      para seguir el desarrollo en otra conversación.
-- tools/build_single.py                      genera el HTML de un solo archivo.
+- NOVEDADES_2.14.0.md, NOVEDADES_2.12.0.md   qué cambió.
+- VALIDACION_2.14.0.md                       pruebas ejecutadas.
+- Más -> Apariencia: paleta Alegre, Guinda / Vino o tu propio color; modo claro u oscuro.
+- PROMPT_MAESTRO_MiAula_Prepa_2.14.0.md      para seguir el desarrollo en otra conversación.
+- tools/build_single.py                      genera el HTML de un solo archivo
+                                             (--edition palencia: edición especial «Mtro. Erick»).
