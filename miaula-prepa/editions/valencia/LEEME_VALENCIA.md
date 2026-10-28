@@ -23,3 +23,8 @@ Cuaderno especial basado en **MiAula Slate 2.13.0 · Prepa**, con los colores pl
 - Se genera con `python3 tools/build_single.py --edition valencia` → `dist/MiAula_Valencia_SilverBlack_<versión>.html`.
 - `editions/valencia/edition.py`: textos, base de datos y nombres de archivo; `edition.css`: tema; `emblem.svg`: escudo.
 - Prueba: `tests/e2e/edicion-valencia.e2e.js`.
+
+## Validación (2.13.0)
+- `edicion-valencia.e2e.js`: 14/14.
+- Suites funcionales corridas directamente sobre el HTML de Valencia (file://): miaula 33/33, proyecto 19/19, cierre 13/13, lista-asistencia 15/15, cambio-parcial 11/11, asistencia-parcial 41/41, regresión 35/36 y rubros 30/31. Las dos diferencias son intencionales: la edición inicia en negro y su base se llama `MiAulaValenciaDB`; ambas se verifican en `edicion-valencia.e2e.js`.
+- MiAula Prepa sin cambios de comportamiento: las 9 suites (regresión 36/36, miaula 33/33, proyecto 19/19, cierre 13/13, lista-asistencia 15/15, cambio-parcial 11/11, asistencia-parcial 41/41, rubros 31/31, autocopia 25/25) y la lógica de rúbricas 17/17.
