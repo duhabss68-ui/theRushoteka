@@ -90,7 +90,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--rd-silver)!important;
 html[data-theme="light"] #view-dashboard .hero{background:repeating-linear-gradient(90deg,rgba(255,255,255,.08) 0 2px,transparent 2px 64px),linear-gradient(135deg,#2B2D30,#0A0A0B 70%)!important}
 #view-dashboard .hero::after{content:"";position:absolute;left:0;right:0;bottom:0;height:4px;background:linear-gradient(90deg,#2B2D30,#A5ACAF,#F4F5F6,#A5ACAF,#2B2D30)}
 #view-dashboard .hero h2{background:linear-gradient(180deg,#FFFFFF 0%,#D5D9DB 45%,#8D9397 100%);-webkit-background-clip:text;background-clip:text;color:transparent!important;
-  font-size:clamp(34px,5vw,58px)!important;line-height:1!important;letter-spacing:.06em!important;text-shadow:none}
+  font-size:clamp(36px,5.2vw,62px)!important;line-height:1.05!important;letter-spacing:.015em!important;text-transform:none!important;text-shadow:none;padding-bottom:4px}
 #view-dashboard .hero .hero-author{color:#BCC1C4!important;text-transform:uppercase;letter-spacing:.12em;font-size:13px!important}
 #view-dashboard .hero .btn.ghost-light{color:#ECEEEF!important;border-color:rgba(165,172,175,.45)!important}
 #view-dashboard .hero .btn.primary,#view-dashboard .hero .btn.primary *{color:#0A0A0B!important}

@@ -55,7 +55,7 @@ def html(src, emblem_uri):
         ('<title>MiAula Slate 2.13.0 · Prepa</title>', '<title>Para Palencia · MiAula Silver &amp; Black</title>'),
         ('<meta name="apple-mobile-web-app-title" content="MiAula">', '<meta name="apple-mobile-web-app-title" content="Palencia">'),
         ('<div><strong>MiAula Slate</strong><span>2.13.0 · Prepa</span></div>', '<div><strong>Para Palencia</strong><span>Silver &amp; Black · 2.13.0</span></div>'),
-        ('<h2>Control de bitácora</h2>', '<h2>Para Palencia</h2>'),
+        ('<h2>Control de bitácora</h2>', '<h2>Mtro. Erick</h2>'),
         ('<p class="hero-author">by Ing. Niccolás C.M.</p>', '<p class="hero-author">Cuaderno edición Silver &amp; Black · by Ing. Niccolás C.M.</p>'),
         (hero_brand, f'<div class="hero-brand"><div class="edition-emblem"><img src="{emblem_uri}" alt="Escudo Palencia"></div></div>'),
         (splash, f'<div class="splash-inner"><img src="{emblem_uri}" alt=""><b>Para <strong>Palencia</strong></b></div>'),

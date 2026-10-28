@@ -24,7 +24,7 @@ const wait=(p,ms)=>p.waitForTimeout(ms);
     badge:document.querySelector('.version-badge')?.textContent,emblem:!!document.querySelector('.edition-emblem img'),ed:window.MIAULA_EDITION?.id,
     theme:document.documentElement.getAttribute('data-theme'),primary:getComputedStyle(document.documentElement).getPropertyValue('--primary').trim(),
     font:document.fonts.check('700 20px "Oswald V"'),h2font:getComputedStyle(document.querySelector('#view-dashboard .hero h2')).fontFamily}));
-  check('Dice «Para Palencia» (título, portada y emblema)',id.title.startsWith('Para Palencia')&&id.hero==='Para Palencia'&&id.emblem&&id.ed==='palencia',JSON.stringify([id.title,id.hero]));
+  check('Dice «Para Palencia» (pestaña y emblema) y la portada «Mtro. Erick»',id.title.startsWith('Para Palencia')&&id.hero==='Mtro. Erick'&&id.emblem&&id.ed==='palencia',JSON.stringify([id.title,id.hero]));
   check('Conserva la firma del autor',id.author.includes('Niccolás C.M.'),id.author);
   check('Negro y plata por omisión',id.theme===null&&id.primary.toUpperCase()==='#A5ACAF',`${id.theme} ${id.primary}`);
   check('Tipografía Oswald incrustada y aplicada a los títulos',id.font&&id.h2font.includes('Oswald V'),id.h2font);

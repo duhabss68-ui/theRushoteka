@@ -7,7 +7,7 @@ Cuaderno especial basado en **MiAula Slate 2.13.0 · Prepa**, con los colores pl
 2. Ábrelo con doble clic en **Chrome o Edge**. No necesita internet.
 3. Ve a **Más → Respaldo → «Elegir carpeta de copias»** y elige una carpeta (OneDrive, Documentos o una USB).
    Desde ese momento cada cambio se guarda solo en `MiAula_Palencia_ultima_copia.json`, más una copia por día.
-4. El botón de sol/luna cambia entre **negro** (por omisión) y **«Día plata»** (claro).
+4. La portada dice «Mtro. Erick». El botón de sol/luna cambia entre **negro** (por omisión) y **«Día plata»** (claro).
 
 ## Datos
 - Su base de datos es propia (`MiAulaPalenciaDB`): aunque en la misma computadora se abra otra edición de MiAula, no se mezclan.
@@ -26,6 +26,6 @@ Cuaderno especial basado en **MiAula Slate 2.13.0 · Prepa**, con los colores pl
 - Prueba: `tests/e2e/edicion-palencia.e2e.js`.
 
 ## Validación (2.13.0)
-- `edicion-palencia.e2e.js`: 21/21 (incluye «Cambiar logo»: se aplica en portada, barra e ícono, se reduce a 320 px, se conserva al reabrir y «Quitar logo» regresa al escudo).
+- `edicion-palencia.e2e.js`: 21/21 (portada «Mtro. Erick») (incluye «Cambiar logo»: se aplica en portada, barra e ícono, se reduce a 320 px, se conserva al reabrir y «Quitar logo» regresa al escudo).
 - Suites funcionales sobre el HTML de Palencia (file://): miaula 33/33, asistencia-parcial 41/41, regresión 35/36 y rubros 30/31. Las dos diferencias son intencionales: la edición inicia en negro y su base se llama `MiAulaPalenciaDB`; ambas se verifican en `edicion-palencia.e2e.js`.
 - En la versión anterior (antes del cambio de nombre) también pasaron proyecto 19/19, cierre 13/13, lista-asistencia 15/15 y cambio-parcial 11/11; el programa no cambió desde entonces.
